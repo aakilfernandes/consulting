@@ -1,0 +1,6 @@
+suites:
+  isoform_suite:
+    namespace: Isoform
+    spec_prefix: spec
+    spec_path: app
+    src_path: app
