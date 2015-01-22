@@ -872,10 +872,11 @@ app.config(function($provide){
     		
         	$log.error(exception.stack)
 
-        	var payload = TraceKit.computeStackTrace(exception)
-        		payload._key = angulytics.key
+        	var data = TraceKit.computeStackTrace(exception)
+        	
+        	data._key = angulytics.key
 
-			callAjax('POST',angulytics.endpoint,payload)
+			callAjax('POST',angulytics.endpoint,{dataJson:angular.toJson(data)})
 
     	};
     });
@@ -897,16 +898,26 @@ app.config(['$httpProvider',function($httpProvider){
 }])
 
 function callAjax(method, url, params, callback){
-    var xmlhttp;
-    // compatible with IE7+, Firefox, Chrome, Opera, Safari
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function(){
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200 && callback){
-            callback(xmlhttp.responseText);
-        }
-    }
+	var paramString = getParamString(params)
+    	,xmlhttp = new XMLHttpRequest();
+
+    console.log(params,paramString)
+    
     xmlhttp.open(method, url, true);
-    xmlhttp.send(params);
+    xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xmlhttp.send(paramString);
+}
+
+function getParamString(parameters){
+  var qs = "";
+  for(var key in parameters) {
+    var value = parameters[key];
+    qs += encodeURIComponent(key) + "=" + encodeURIComponent(value) + "&";
+  }
+  if (qs.length > 0){
+    qs = qs.substring(0, qs.length-1); //chop off last "&"
+  }
+  return qs;
 }
 
 }())

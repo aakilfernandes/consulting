@@ -3,6 +3,15 @@
 class Error extends \Eloquent {
 	protected $fillable = ['message','name','url','useragent','stack'];
 
+	public function __construct(){
+		$this->saving(function($error){
+			$error->summary = $error->generateSummary();
+			$error->browser = $error->generateBrowser();
+			$error->os = $error->generateOs();
+			return true;
+		});
+	}
+
 	public function bucket(){
 		return $this->belongsTo('Bucket');
 	}
@@ -25,22 +34,20 @@ class Error extends \Eloquent {
 
 
 		$this->attributes['stack'] = $valueJson; 
-		$this->summary = createSummary($value);
 	}
 
 	public function getStackAttribute(){
 		return json_decode($this->attributes['stack']);
 	}
 
-	public function createSummary($stack = null){
+	public function generateSummary(){
 
-		$summaryParts = [$this->name];
+		$summaryParts = [];
 
-		if(!$stack) $stack = $this->stack;
-
-		$firstLine = $stack[0];
-		$urlParts = explode('\\', $firstLine->url);
+		$firstLine = $this->stack[0];
+		$urlParts = explode('/', $firstLine->url);
 		$summaryParts[] = end($urlParts);
+
 		$summaryParts[] = $firstLine->line;
 		$summaryParts[] = $firstLine->column;
 		

@@ -11,6 +11,8 @@
 			}
 			,link: function(scope, element, attrs, modelCtrl) {
 
+				console.log(x)
+
 				var value = element[0].value
 				switch(scope.type){
 					case 'json':

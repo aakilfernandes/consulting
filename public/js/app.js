@@ -1,15 +1,13 @@
 var app = angular.module('app',['isoform','frontloader','httpi','angulytics'])
 
-/*
 app.config(function(angulyticsProvider){
 	angulyticsProvider.$get = function(){
 		this.endpoint = 'http://localhost:8000/endpoints/1'
 		this.key = '8f33fdc9de2e520c42f6cc5b'
-		console.log(this)
+		console.log('angulytics configured',this)
 		return this
 	}
 })
-*/
 
 app.controller('BucketsController',function($scope,hapi,frontloaded,language){
 	$scope.buckets = frontloaded.buckets

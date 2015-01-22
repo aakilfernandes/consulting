@@ -12,4 +12,4 @@
 */
 
 
-Artisan::add(new EvalCommand);
+Artisan::add(new RefreshErrorSummariesCommand);
