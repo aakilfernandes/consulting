@@ -1,131 +1,97 @@
-(function(){
+var app = angular.module('app',['isoform','frontloader','httpi','angulytics'])
 
-	var isoformModule = angular.module('isoform', [])
+/*
+app.config(function(angulyticsProvider){
+	angulyticsProvider.$get = function(){
+		this.endpoint = 'http://localhost:8000/endpoints/1'
+		this.key = '8f33fdc9de2e520c42f6cc5b'
+		console.log(this)
+		return this
+	}
+})
+*/
 
-	isoformModule.directive('isoform',function(Isoform){
-		return {
-			compile:function(){
-				return {
-					pre:function(scope,element,attributes){
-						var isoformSeed = JSON.parse(attributes.isoform)
-						scope.isoform = new Isoform(scope,isoformSeed)
-						scope.$watch('isoform.values',function(){
-							scope.isoform.validate()
-						},true)
-					}
-				}
-			}
-		}
-	})
+app.controller('BucketsController',function($scope,hapi,frontloaded,language){
+	$scope.buckets = frontloaded.buckets
 
-	isoformModule.directive('isoformMessages',function(){
-		return {
-			scope:true
-			,link:function(scope,element,attributes){
-				scope.isoformMessages=[]
-				scope.$watch('isoform.messages',function(messages){
-					if(messages[attributes.isoformMessages])
-						scope.isoformMessages = messages[attributes.isoformMessages]
-				})
+	$scope.new = function(){
+		var name = window.prompt(language.bucketName);
+		if(name===null) return
 
-			}
-		}
-	})
+		hapi('POST','/api/buckets',{name:name})
+			.success(function(bucket){
+				$scope.buckets.push(bucket)
+			})
+			.withBlocker()
+	}
 
+	$scope.editName = function(bucket,index){
+		var name = window.prompt(language.bucketName)
+		if(name===null) return
 
-	isoformModule.directive('isoformValidate',function($http){
-		return {
-			require:'ngModel'
-			,link:function(scope,element,attributes,ngModel){
-				var isoform = scope.isoform
-					,field = attributes['isoformValidate']
-					,rules = isoform.fields[field]
-					,value = scope[attributes.ngModel] = isoform.values[field]
+		bucket.name = name
 
+		hapi('POST','/api/buckets/:id',bucket).success(function(bucket){
+			$scope.buckets[index] = bucket
+			console.log($scope.buckets)
+		})
+	}
 
-				scope.$watch(attributes.ngModel,function(){
-					isoform.values[field] = value = scope[attributes.ngModel]
-				},true)
+})
 
-				scope.$watch('isoform.response',function(event,payload){
-					if( !scope.isoform.response
-						|| !scope.isoform.response.values[field]
-						|| value!=scope.isoform.response.values[field]) return
-					if(scope.isoform.response.messages[field].length>0)
-						ngModel.$setValidity('isoform',false)
-					else
-						ngModel.$setValidity('isoform',true)
-				})
-			}
-		}
-	})
+app.factory('hapi',function($rootScope,httpi,frontloaded){
+	return function(method,url,params,error){
+		var cleanParams = {};
+		if(params)
+			Object.keys(params).forEach(function(param){
+				if(typeof params[param] == 'function')
+					return true
 
-	isoformModule.factory('Isoform',function($http,$q,$timeout,$rootScope){
+				if(param[0]=='$')
+					return true
 
-		var Isoform = function(scope,isoformSeed){
-			this.url = '/isoform'
-			this.scope = scope
-			this.fields = isoformSeed.fields
-			this.values = isoformSeed.values
-			this.messages = isoformSeed.messages
-			this.request = null
-			this.timeout = null
-			this.throttle = 500
-			this.response = null
+				cleanParams[param]=params[param]
+			})
 
-		}
+		if(frontloaded.csrfToken)
+			cleanParams._token = frontloaded.csrfToken
 
+		var promise = 
+			httpi({
+			    method: method,
+			    url: url,
+			    params: cleanParams
+			})
+			.error(function(response){
+				if(response.error.message)
+					alert('Error: '+response.error.message)
+				else
+					alert('Something went wrong')
 
-		Isoform.prototype.validate = function(isSubmit){
+				if(error) error()
+			})
 
-			var fields = angular.copy(this.fields)
-				,isoform = this
-
-
-			if(!isSubmit){
-				Object.keys(fields).forEach(function(field){
-					if(!(field in isoform.values) || isoform.values[field]===undefined) delete fields[field]
-				})
-			}
-
-			if(Object.keys(fields).length==0) return
-			
-			if(isoform.timeout) $timeout.cancel(isoform.timeout)
-
-			isoform.timeout = $timeout(function(){
-
-				if(isoform.request) isoform.request.resolve()
-			
-				isoform.request = $q.defer()
-
-				var values = angular.copy(isoform.values)
-
-				$http({
-				    url: '/isoform'
-				    ,method: "GET"
-				    ,params: {values:values,fields:fields}
-				 	,timeout: isoform.request
-				}).then(httpHandler,httpHandler);
-
-				function httpHandler(response){
-					isoform.scope.isoform.messages = response.data
-					isoform.scope.$broadcast('isoform.response',{
-						values:values
-						,messages:response.data
-					})
-				}
-
-				isoform.timeout = null
-			
-			},this.throttle)
-
-			return $http;
+		promise.withBlocker = function(){
+			$rootScope.isBlocker = true
+			promise.finally(function(){
+				$rootScope.isBlocker = false
+			})
+			return promise
 		}
 
-		return Isoform
+		return promise
+	}
+})
 
-	})
+app.factory('language', function() {
+  return {
+  	bucketName:'What should we name your bucket?'
+  }
+});
 
-}())
 
-var app = angular.module('app',['isoform'])
+app.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+});

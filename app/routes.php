@@ -15,19 +15,45 @@ Route::get('/login', function(){
 	return View::make('login');	
 });
 
-Route::group(['before'=>'csrf'],function(){
-	Route::post('/login', function(){
-		$validation = Isoform::validateInputs(['login.email','login.password']);	
-		if($validation->fails())
-			return Isoform::redirect(
-				'/login'
-				,['login.email','login.password']
-				,$validation->messages()
-			);
-		return Redirect::to('app');
-	});
+Route::get('/logout', function(){
+	Auth::logout();
+	return Redirect::to('login');	
 });
 
+Route::get('/join', function(){
+	return View::make('join');	
+});
+
+Route::post('/endpoints/{id}','ErrorsController@store');
+
+Route::group(['before'=>'csrf'],function(){
+	Route::post('/login', 'AuthController@login');
+	Route::post('/join', 'AuthController@join');
+});
+
+Route::group(['before'=>'auth'],function(){
+	Route::get('/buckets',function(){
+		return View::make('buckets');
+	});
+
+	Route::get('/buckets/{id}/{slug}',function($id,$slug){
+
+		$bucket = Bucket::find($id);
+
+		if(!$bucket) App::abort(404,'Bucket not found');
+
+		return View::make('bucket',compact('bucket'));
+	});
+
+
+	Route::get('/api/buckets','BucketsController@index');
+	Route::get('/api/buckets/{id}','BucketsController@show');
+
+	Route::group(['before'=>'csrf'],function(){
+		Route::post('/api/buckets', 'BucketsController@store');
+		Route::post('/api/buckets/{id}', 'BucketsController@update');
+	});
+});
 
 Route::get('isoform', function()
 {

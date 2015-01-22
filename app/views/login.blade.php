@@ -6,7 +6,7 @@
 	<form {{Isoform::directive('login.email','login.password')}} method="post" action="">
 		@if(Session::has('isoformMessages'))
 		<noscript><div class="alert alert-danger"><ul>
-			@foreach(Session::get('isoformMessages')->toArray() as $field=>$messages)
+			@foreach(Session::get('isoformMessages') as $field=>$messages)
 				@foreach($messages as $message)
 					<li>{{$message}}</li>
 				@endforeach
