@@ -38,6 +38,7 @@ app.controller('BucketsController',function($scope,hapi,frontloaded,language){
 })
 
 app.controller('ProfilesController',function($scope,httpi,frontloaded,language){
+	$scope.profiles = []
 	httpi({
 		method:'get'
 		,url:'/api/buckets/:bucket_id/profiles'
@@ -47,6 +48,7 @@ app.controller('ProfilesController',function($scope,httpi,frontloaded,language){
 	}).success(function(profiles){
 		$scope.profiles = profiles
 	})
+
 })
 
 

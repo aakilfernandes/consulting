@@ -5,7 +5,7 @@
 	<div class="container">
 		<h1>{{$bucket->name}} Error Profiles</h1>
 		<div ng-controller="ProfilesController">
-			<div class="panel panel-default" ng-repeat="profile in profiles" ng-cloak>
+			<div class="panel panel-default" ng-repeat="profile in profiles | reverse" ng-cloak>
 				<div class="panel-heading">
 					<h3 class="panel-title">
 						<a ng-show="profile.documentationLink" class="glyphicon glyphicon-book" alt="View Angular Documentation" ng-href="@{{profile.documentationLink}}" target='_blank'></a>
@@ -26,6 +26,10 @@
 						</tr>
 						<tr>
 							<td>Last Seen</td>
+							<td timestamp="profile.lastError.created_at"></td>
+						</tr>
+						<tr>
+							<td>First Seen</td>
 							<td timestamp="profile.created_at"></td>
 						</tr>
 						<tr>
@@ -36,11 +40,13 @@
 										<th>Browser</th>
 										<th>Os</th>
 										<th>Device</th>
+										<th>Count</th>
 									</tr>
 									<tr ng-repeat="client in profile.clients">
 										<td>@{{client.browser}}</td>
 										<td>@{{client.os}}</td>
 										<td>@{{client.device}}</td>
+										<td>@{{client.errorsCount}}</td>
 									</tr>
 								</table>
 							</td>

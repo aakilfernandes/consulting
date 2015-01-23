@@ -3,7 +3,7 @@
 class Profile extends \Eloquent {
 	protected $fillable = ['bucket_id','summary','message','name'];
 
-	protected $appends = ['errorsCount','lastError','clients','alias','documentationLink'];
+	protected $appends = ['errorsCount','lastError','alias','documentationLink','clients'];
 
 	public function __construct(){
 
@@ -64,7 +64,11 @@ class Profile extends \Eloquent {
 	}
 
 	public function getClientsAttribute(){
-		return $this->errors()->groupBy('browser','os','device')->get();
+		return DB::table('errors')
+			->select('browser','os','device',DB::raw('count(*) as errorsCount'))
+			->groupBy('browser','os','device')
+			->where('profile_id','=',$this->id)
+			->get();
 	}
 
 	public function getDocumentationLinkAttribute(){
