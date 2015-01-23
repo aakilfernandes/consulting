@@ -26,12 +26,7 @@
 						</tr>
 						<tr>
 							<td>Last Seen</td>
-							<td>
-								@{{profile.lastError.created_at+' +00' | timeAgo}}
-								<br><small class="text-muted">
-									@{{profile.lastError.created_at | localTime}}
-								</small>
-							</td>
+							<td timestamp="profile.created_at"></td>
 						</tr>
 						<tr>
 							<td>Effected Clients</td>

@@ -92,6 +92,13 @@ app.controller('ErrorsController',function($scope,httpi,frontloaded,language){
 
 })
 
+app.directive('timestamp',function(){
+	return {
+		scope:{timestamp:'=timestamp'}
+		,templateUrl:'/templates/timestamp.html'
+	}
+})
+
 app.factory('hapi',function($rootScope,httpi,frontloaded){
 	return function(method,url,params,error){
 		var cleanParams = {};
@@ -144,8 +151,8 @@ app.factory('language', function() {
 
 app.filter('localTime', function($filter) {
   return function(timestamp) {
-  	return $filter('date')(new Date(timestamp), "medium",'UTC');
-
+  	var date = new Date(timestamp+' +00')
+  	return $filter('date')(date, 'MMM d, y')+' at '+$filter('date')(date, 'h:mm:ss a')
   };
 });
 
