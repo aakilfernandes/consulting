@@ -68,8 +68,9 @@ class Error extends \Eloquent {
 
 		$summaryParts[] = $firstLine->line;
 		$summaryParts[] = $firstLine->column;
-		
-		return implode(':',$summaryParts);
+		$summaryParts[] = $this->message;
+
+		return json_encode($summaryParts);
 	}
 
 	public function parseUseragent(){
@@ -81,8 +82,7 @@ class Error extends \Eloquent {
 		
 		$profile = $this->bucket->profiles()->where('summary','=',$this->summary)->first();
 		
-		if($profile)
-			return $profile->id;
+		if($profile) return $profile->id;
 
 		$profile = new Profile;
 		$profile->fill($this->attributes);

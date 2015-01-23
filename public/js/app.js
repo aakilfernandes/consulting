@@ -1,4 +1,4 @@
-var app = angular.module('app',['isoform','frontloader','httpi','angulytics','ui.bootstrap'])
+var app = angular.module('app',['isoform','frontloader','httpi','angulytics','ui.bootstrap','yaru22.angular-timeago'])
 
 app.config(function(angulyticsProvider){
 	angulyticsProvider.$get = function(){
@@ -142,6 +142,12 @@ app.factory('language', function() {
   }
 });
 
+app.filter('localTime', function($filter) {
+  return function(timestamp) {
+  	return $filter('date')(new Date(timestamp), "medium",'UTC');
+
+  };
+});
 
 app.filter('reverse', function() {
   return function(items) {

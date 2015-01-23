@@ -250,12 +250,9 @@ TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
     function findSourceInUrls(re, urls) {
         var source, m;
         for (var i = 0, j = urls.length; i < j; ++i) {
-            // console.log('searching', urls[i]);
             if ((source = getSource(urls[i])).length) {
                 source = source.join('\n');
                 if ((m = re.exec(source))) {
-                    // console.log('Found function in ' + urls[i]);
-
                     return {
                         'url': urls[i],
                         'line': source.substring(0, m.index).split('\n').length,
@@ -264,9 +261,6 @@ TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
                 }
             }
         }
-
-        // console.log('no match');
-
         return null;
     }
 
@@ -710,7 +704,6 @@ TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
 
         for (var curr = computeStackTraceByWalkingCallerChain.caller; curr && !recursion; curr = curr.caller) {
             if (curr === computeStackTrace || curr === TraceKit.report) {
-                // console.log('skipping internal function');
                 continue;
             }
 
@@ -751,8 +744,6 @@ TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
         }
 
         if (depth) {
-            // console.log('depth is ' + depth);
-            // console.log('stack is ' + stack.length);
             stack.splice(0, depth);
         }
 
@@ -855,12 +846,10 @@ TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
 var app = angular.module('angulytics',[])
 
 app.service('angulytics',function(){
-	console.log('angulytics')
 	return {}
 })
 
 app.service('angulyticsInterceptor',function(){
-	console.log('interceptors')
 	return {}
 })
 
@@ -900,9 +889,7 @@ app.config(['$httpProvider',function($httpProvider){
 function callAjax(method, url, params, callback){
 	var paramString = getParamString(params)
     	,xmlhttp = new XMLHttpRequest();
-
-    console.log(params,paramString)
-    
+   
     xmlhttp.open(method, url, true);
     xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     xmlhttp.send(paramString);

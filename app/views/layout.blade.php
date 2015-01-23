@@ -10,6 +10,7 @@
 	{{HTML::script('/components/angular/angular.min.js')}}
 	{{HTML::script('/components/angular-bootstrap/ui-bootstrap-tpls.min.js')}}
 	{{HTML::script('/components/angular-httpi/build/httpi.min.js')}}
+	{{HTML::script('/components/angular-timeago/src/timeAgo.js')}}
 	{{HTML::script('/js/angulytics.js')}}
 	{{HTML::script('/js/frontloader.js')}}
 	{{HTML::script('/js/isoform.js')}}

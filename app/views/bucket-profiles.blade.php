@@ -26,7 +26,12 @@
 						</tr>
 						<tr>
 							<td>Last Seen</td>
-							<td>@{{profile.lastError.created_at}}</td>
+							<td>
+								@{{profile.lastError.created_at+' +00' | timeAgo}}
+								<br><small class="text-muted">
+									@{{profile.lastError.created_at | localTime}}
+								</small>
+							</td>
 						</tr>
 						<tr>
 							<td>Effected Clients</td>
