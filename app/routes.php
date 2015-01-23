@@ -37,16 +37,27 @@ Route::group(['before'=>'auth'],function(){
 	});
 
 	Route::get('/buckets/{id}/profiles',function($id){
-		$bucket = Bucket::find($id);
+		$bucket = Auth::user()->buckets()->find($id);
 		if(!$bucket) App::abort(404,'Bucket not found');
 		return View::make('bucket-profiles',compact('bucket'));
 	});
 
+	Route::get('/buckets/{bucket_id}/profiles/{profile_id}/referenceLink',function($bucket_id,$profile_id){
+		$profile = Auth::user()->buckets()->find($bucket_id)->profiles()->find($profile_id);
+		
+		if(!$profile) App::abort(404,'Profile not found');
+		if(!$profile->documentation) App::abort(404,'Profile has no documentation');
+
+		return Redirect::to($profile->documentation);		
+	});
+
 	Route::get('/buckets/{id}/errors',function($id){
-		$bucket = Bucket::find($id);
+		$bucket = Auth::user()->buckets()->find($id);
 		if(!$bucket) App::abort(404,'Bucket not found');
 		return View::make('bucket-errors',compact('bucket'));
 	});
+
+
 
 
 	Route::get('/api/buckets','BucketsController@index');

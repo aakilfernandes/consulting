@@ -3,7 +3,7 @@
 class Profile extends \Eloquent {
 	protected $fillable = ['bucket_id','summary','message','name'];
 
-	protected $appends = ['errorsCount','lastError','clients','alias'];
+	protected $appends = ['errorsCount','lastError','clients','alias','documentationLink'];
 
 	public function __construct(){
 
@@ -29,10 +29,30 @@ class Profile extends \Eloquent {
 		if($this->attributes['alias'])
 			return $this->attributes['alias'];
 		
-		if($this->reference)
-			return 'Angular: '.$this->reference->hint;
+		if($this->reference){
+			$aliasParts = ['Angular:',$this->reference->hint];
+			if($this->argumentsString)
+				$aliasParts[] = $this->argumentsString;
+			return implode(' ',$aliasParts);
+		}
 
 		return $this->name.': '.$this->message;
+	}
+
+	public function getArgumentsStringAttribute(){
+		$parsedDocumentationUrl = parse_url($this->documentationLink);
+		
+		if(!isset($parsedDocumentationUrl['query']))
+			return null;
+		
+		$params = [];
+		$fragmentParts = parse_str($parsedDocumentationUrl['query'],$params);
+
+		$arguments = array_map(function($value){
+			return $value;
+		}, $params);
+
+		return '('.implode(',',$params).')';
 	}
 
 	public function getErrorsCountAttribute(){
@@ -45,6 +65,15 @@ class Profile extends \Eloquent {
 
 	public function getClientsAttribute(){
 		return $this->errors()->groupBy('browser','os','device')->get();
+	}
+
+	public function getDocumentationLinkAttribute(){
+
+		if(stripos($this->message,'errors.angularjs.org') === false)
+			return null;
+		
+		return explode(' ',$this->message)[1];
+
 	}
 
 	public function determineReferenceId(){
