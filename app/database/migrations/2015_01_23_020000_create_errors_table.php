@@ -26,11 +26,6 @@ class CreateErrorsTable extends Migration {
 				->references('id')
 				->on('profiles')
 				->onDelete('cascade');
-			$table->integer('reference_id')->unsigned()->nullable();
-			$table
-				->foreign('reference_id')
-				->references('id')
-				->on('references');
 			$table->string('message');
 			$table->string('name');
 			$table->string('summary')->index();

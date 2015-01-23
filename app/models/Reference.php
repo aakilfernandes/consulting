@@ -18,7 +18,24 @@ class Reference extends \Eloquent {
 		$this->attributes['html'] = removeLineBreaks($value);
 	}
 
-	public static function matchingMessage(){
+	public static function matchingMessage($message){
 
+		if(stripos($message,'errors.angularjs.org')===-1)
+			return null;
+
+		$messageParts0 = explode(' ',$message)[0];
+		$messageParts0 = str_ireplace('[','',$messageParts0);
+		$messageParts0 = str_ireplace(']','',$messageParts0);
+		$messageParts0Parts = explode(':',$messageParts0);
+		array_unshift($messageParts0Parts,'error');
+
+		$path = implode('/',$messageParts0Parts);
+
+		$reference = Reference::where('path','=',$path)->first();
+
+		if(!$reference)
+			return null;
+		else
+			return $reference;
 	}
 }

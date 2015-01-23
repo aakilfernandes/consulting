@@ -155,3 +155,11 @@ app.filter('fileName', function() {
     return urlParts[urlParts.length-1]
   };
 });
+
+app.filter('withoutFileName', function() {
+  return function(url) {
+    var urlParts = url.split('/')
+    urlParts.splice(urlParts.length-1,1)
+  	return urlParts.join('/')
+  };
+});

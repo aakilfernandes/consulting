@@ -7,13 +7,12 @@ class Error extends \Eloquent {
 	public function __construct(){
 		$this->saving(function($error){
 			
-			$error->summary = $error->generateSummary();
-			
 			$parsedUseragent = $error->parseUseragent();
 			$error->browser = $parsedUseragent->ua->family;
 			$error->os = $parsedUseragent->os->family;
 			$error->device = $parsedUseragent->device->family;
 
+			$error->summary = $error->determineSummary();
 			$error->profile_id = $error->determineProfileId();
 
 			$parsedUrl = parse_url($this->url);
@@ -59,7 +58,7 @@ class Error extends \Eloquent {
 		return json_decode($this->attributes['stack']);
 	}
 
-	public function generateSummary(){
+	public function determineSummary(){
 
 		$summaryParts = [];
 
@@ -79,6 +78,7 @@ class Error extends \Eloquent {
 	}
 
 	public function determineProfileId(){
+		
 		$profile = $this->bucket->profiles()->where('summary','=',$this->summary)->first();
 		
 		if($profile)
@@ -90,4 +90,5 @@ class Error extends \Eloquent {
 
 		return $profile->id;
 	}
+
 }

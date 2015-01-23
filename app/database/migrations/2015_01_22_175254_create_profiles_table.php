@@ -12,6 +12,7 @@ class CreateProfilesTable extends Migration {
 	 */
 	public function up()
 	{
+		DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 		Schema::create('profiles',function($table){
 			$table->increments('id');
 			$table->integer('bucket_id')->unsigned();
@@ -20,12 +21,18 @@ class CreateProfilesTable extends Migration {
 				->references('id')
 				->on('buckets')
 				->onDelete('cascade');
+			$table->integer('reference_id')->unsigned()->nullable();
+			$table
+				->foreign('reference_id')
+				->references('id')
+				->on('references');
 			$table->string('summary')->index();
 			$table->string('alias')->nullable();
 			$table->string('message');
 			$table->string('name');
 			$table->timestamps();
 		});
+		DB::statement('SET FOREIGN_KEY_CHECKS = 1');
 	}
 
 	/**

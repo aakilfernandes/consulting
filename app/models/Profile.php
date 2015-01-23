@@ -3,20 +3,12 @@
 class Profile extends \Eloquent {
 	protected $fillable = ['bucket_id','summary','message','name'];
 
-	protected $appends = ['errorsCount','lastError','clients'];
+	protected $appends = ['errorsCount','lastError','clients','alias'];
 
 	public function __construct(){
 
 		$this->saving(function($profile){
-			if(stripos($profile->message,'errors.angularjs.org')===-1)
-				return true;
-			
-			$reference = Reference::matchingMessage($profile->message);
-
-			if(!$reference)
-				return true;
-
-			$this->reference_id = $reference->id;
+			$profile->reference_id = $profile->determineReferenceId();
 			return true;
 		});
 	}
@@ -29,10 +21,17 @@ class Profile extends \Eloquent {
 		return $this->hasMany('Error');
 	}
 
+	public function reference(){
+		return $this->belongsTo('Reference');
+	}
+
 	public function getAliasAttribute(){
 		if($this->attributes['alias'])
 			return $this->attributes['alias'];
 		
+		if($this->reference)
+			return 'Angular: '.$this->reference->hint;
+
 		return $this->name.': '.$this->message;
 	}
 
@@ -46,6 +45,17 @@ class Profile extends \Eloquent {
 
 	public function getClientsAttribute(){
 		return $this->errors()->groupBy('browser','os','device')->get();
+	}
+
+	public function determineReferenceId(){
+
+		$reference = Reference::matchingMessage($this->message);
+
+		if(!$reference)
+			return null;
+		else
+			return $reference->id;
+
 	}
 
 }
