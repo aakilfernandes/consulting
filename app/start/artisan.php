@@ -12,4 +12,4 @@
 */
 
 
-Artisan::add(new RefreshErrorSummariesCommand);
+Artisan::add(new ScrapeReferencesCommand);

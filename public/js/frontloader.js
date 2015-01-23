@@ -11,12 +11,14 @@
 			}
 			,link: function(scope, element, attrs, modelCtrl) {
 
-				console.log(x)
-
 				var value = element[0].value
+
 				switch(scope.type){
 					case 'json':
 						frontloaded[scope.id] = JSON.parse(value)
+						break;
+					case 'integer':
+						frontloaded[scope.id] = parseInt(value)
 						break;
 					case 'string':
 					default:

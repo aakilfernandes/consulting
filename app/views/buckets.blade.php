@@ -9,8 +9,8 @@
 	<div class="panel panel-default" ng-repeat="bucket in buckets | reverse" ng-cloak>
 		<div class="panel-heading">
 			<h4 class="panel-title">
-				<a ng-href="/buckets/@{{bucket.id}}/@{{bucket.slug}}">@{{bucket.name}}</a>
-				<small class="glyphicon glyphicon-edit text-muted" ng-click="editName(bucket,$index)" style="top:-2px"></small>
+				<a ng-href="/buckets/@{{bucket.id}}/profiles">@{{bucket.name}}</a>
+				<small class="glyphicon glyphicon-edit text-muted" ng-click="editName(bucket)" style="top:-2px"></small>
 			</h4>
 		</div>
 		<div class="panel-body">

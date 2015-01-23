@@ -3,7 +3,6 @@
 class Bucket extends \Eloquent {
 
 	protected $fillable = ['name'];
-	protected $appends = ['slug'];
 
 	public function __construct(){
 		$this->key = substr(str_shuffle(MD5(microtime())), 0, 24);
@@ -13,8 +12,12 @@ class Bucket extends \Eloquent {
 		return $this->belongsToMany('User');
 	}
 
-	public function getSlugAttribute(){
-		return slugify($this->name);
+	public function profiles(){
+		return $this->hasMany('Profile');
+	}
+
+	public function errors(){
+		return $this->hasMany('Error');
 	}
 
 }

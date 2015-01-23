@@ -7,9 +7,9 @@ class ErrorsController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index($bucket_id)
 	{
-		//
+		return Auth::user()->buckets()->find($bucket_id)->errors;
 	}
 
 

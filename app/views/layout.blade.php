@@ -5,6 +5,7 @@
 </head>
 <body ng-app="app">
 	<textarea frontload="csrfToken">{{csrf_token()}}</textarea>
+	<textarea frontload="inputs" frontload-type="json">{{json_encode(Input::all())}}</textarea>
 	@yield('content')
 	{{HTML::script('/components/angular/angular.min.js')}}
 	{{HTML::script('/components/angular-bootstrap/ui-bootstrap-tpls.min.js')}}

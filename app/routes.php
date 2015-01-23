@@ -36,18 +36,23 @@ Route::group(['before'=>'auth'],function(){
 		return View::make('buckets');
 	});
 
-	Route::get('/buckets/{id}/{slug}',function($id,$slug){
-
+	Route::get('/buckets/{id}/profiles',function($id){
 		$bucket = Bucket::find($id);
-
 		if(!$bucket) App::abort(404,'Bucket not found');
+		return View::make('bucket-profiles',compact('bucket'));
+	});
 
-		return View::make('bucket',compact('bucket'));
+	Route::get('/buckets/{id}/errors',function($id){
+		$bucket = Bucket::find($id);
+		if(!$bucket) App::abort(404,'Bucket not found');
+		return View::make('bucket-errors',compact('bucket'));
 	});
 
 
 	Route::get('/api/buckets','BucketsController@index');
 	Route::get('/api/buckets/{id}','BucketsController@show');
+	Route::get('/api/buckets/{bucket_id}/profiles', 'ProfilesController@index');
+	Route::get('/api/buckets/{bucket_id}/errors', 'ErrorsController@index');
 
 	Route::group(['before'=>'csrf'],function(){
 		Route::post('/api/buckets', 'BucketsController@store');

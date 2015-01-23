@@ -1,4 +1,4 @@
-var app = angular.module('app',['isoform','frontloader','httpi','angulytics'])
+var app = angular.module('app',['isoform','frontloader','httpi','angulytics','ui.bootstrap'])
 
 app.config(function(angulyticsProvider){
 	angulyticsProvider.$get = function(){
@@ -34,6 +34,61 @@ app.controller('BucketsController',function($scope,hapi,frontloaded,language){
 			console.log($scope.buckets)
 		})
 	}
+
+})
+
+app.controller('ProfilesController',function($scope,httpi,frontloaded,language){
+	httpi({
+		method:'get'
+		,url:'/api/buckets/:bucket_id/profiles'
+		,params:{
+			bucket_id:frontloaded.bucket_id
+		}
+	}).success(function(profiles){
+		$scope.profiles = profiles
+	})
+})
+
+
+app.directive('showStack',function(frontloaded,$modal){
+	return {
+		scope:{
+			stack:'=showStack'
+		},
+		link: function(scope, element, attributes, ngModel) {
+
+			element.on('click',function () {
+
+			    var modalInstance = $modal.open({
+			    	templateUrl: '/templates/stackModal.html',
+			    	controller: 'StackModalController',
+			    	resolve: {
+			    		stack: function () { return scope.stack }
+			    	}
+			    });
+			});
+	    }
+	}
+})
+
+app.controller('StackModalController', function($scope,$modalInstance,stack){
+	$scope.stack = stack
+	$scope.ok = function () {
+    	$modalInstance.dismiss('cancel');
+  	};
+})
+
+app.controller('ErrorsController',function($scope,httpi,frontloaded,language){
+	
+	httpi({
+		method:'get'
+		,url:'/api/buckets/:bucket_id/errors'
+		,params:{
+			bucket_id:frontloaded.bucket_id
+		}
+	}).success(function(errors){
+		$scope.errors = errors
+	})
 
 })
 
@@ -91,5 +146,12 @@ app.factory('language', function() {
 app.filter('reverse', function() {
   return function(items) {
     return items.slice().reverse();
+  };
+});
+
+app.filter('fileName', function() {
+  return function(url) {
+    var urlParts = url.split('/')
+    return urlParts[urlParts.length-1]
   };
 });

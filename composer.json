@@ -6,6 +6,8 @@
 	"type": "project",
 	"require": {
 		"laravel/framework": "4.2.*"
+		,"ua-parser/uap-php": "dev-master"
+		,"passioncoder/simplecurl": "dev-master"
 	},"require-dev": {
 	    "way/generators": "~2.0"
 	    ,"phpunit/phpunit":"4.0.*@dev"

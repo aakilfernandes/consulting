@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateErrorsTable extends Migration {
+class CreateProfilesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,16 +12,18 @@ class CreateErrorsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('errors',function($table){
+		Schema::create('profiles',function($table){
 			$table->increments('id');
 			$table->integer('bucket_id')->unsigned();
-			$table->foreign('bucket_id')->references('id')->on('buckets')->onDelete('cascade');;
+			$table
+				->foreign('bucket_id')
+				->references('id')
+				->on('buckets')
+				->onDelete('cascade');
+			$table->string('summary')->index();
+			$table->string('alias')->nullable();
 			$table->string('message');
 			$table->string('name');
-			$table->string('summary')->index();
-			$table->string('url');
-			$table->string('useragent');
-			$table->mediumText('stack');
 			$table->timestamps();
 		});
 	}
@@ -33,7 +35,9 @@ class CreateErrorsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('errors');
+		DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+		Schema::drop('profiles');
+		DB::statement('SET FOREIGN_KEY_CHECKS = 1');
 	}
 
 }

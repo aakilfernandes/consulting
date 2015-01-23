@@ -8,3 +8,15 @@ function slugify($str) {
     $str = str_replace(' ', '-', $str);
     return preg_replace('/\-{2,}/', '-', $str);
 }
+
+function removeLineBreaks($output){
+	$output = str_replace(array("\r\n", "\r"), "\n", $output);
+	$lines = explode("\n", $output);
+	$new_lines = array();
+
+	foreach ($lines as $i => $line) {
+	    if(!empty($line))
+	        $new_lines[] = trim($line);
+	}
+	return implode($new_lines);
+}
