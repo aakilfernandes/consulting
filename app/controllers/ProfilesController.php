@@ -9,7 +9,33 @@ class ProfilesController extends \BaseController {
 	 */
 	public function index($bucket_id)
 	{
-		return Auth::user()->buckets()->find($bucket_id)->profiles;
+		$query = Auth::user()->buckets()->find($bucket_id)->profiles();
+
+		$filters = json_decode(Input::get('filtersJson'));
+
+		foreach($filters as $field => $value){
+			if(is_array($value))
+				$query->whereIn($field,$value);
+			else
+				$query->where($field,'=',$value);
+		}
+
+		switch(Input::get('sort')){
+			case 'highestPriority':
+				return $query
+					->join('statuses', 'status_id', '=', 'statuses.id')
+					->orderBy('statuses.priority','DESC')
+					->get(['profiles.*','statuses.priority']);
+				break;
+			case 'recentlySeen':
+				return $query
+					->join('errors', 'profiles.id', '=', 'errors.profile_id')
+					->orderBy('recentlySeen','DESC')
+					->groupBy('errors.profile_id')
+					->get(['profiles.*',DB::raw('MAX(errors.created_at) as recentlySeen')]);
+		}
+
+		return $query->orderBy('created_at','DESC')->get();
 	}
 
 

@@ -26,6 +26,10 @@ class Profile extends \Eloquent {
 		return $this->belongsTo('Reference');
 	}
 
+	public function status(){
+		return $this->belongsTo('Status');
+	}
+
 	public function getIsCollapsedAttribute(){
 		return (boolean) $this->attributes['isCollapsed'];
 	}

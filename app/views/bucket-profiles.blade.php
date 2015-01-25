@@ -5,7 +5,32 @@
 	<div class="container">
 		<h1>{{$bucket->name}} Error Profiles</h1>
 		<div ng-controller="ProfilesController">
-			<div class="panel panel-default" ng-repeat="profile in profiles | reverse" ng-cloak profile="profile">
+			<div class="row">
+				<div class="col-sm-4">
+					<select class="form-control"
+						ng-model="profilesFilters.status_id"
+						ng-options="statusFilter.status_ids as statusFilter.label for statusFilter in statusFilters"
+					></select>
+				</div>
+				<div class="col-sm-4 col-xs-6">
+					<select class="form-control"
+						ng-model="profilesSort"
+						ng-options="profilesSort.id as profilesSort.label for profilesSort in profilesSorts"
+					></select>
+				</div>
+				<div class="col-sm-4 col-xs-6 text-right">
+					<button class="btn btn-primary"  ng-cloak
+						ng-click="setIsCollapsed(true)"
+						ng-show="where(profiles,{isCollapsed:true}).length<profiles.length"
+					>Collapse all</button>
+					<button class="btn btn-primary" ng-cloak
+						ng-click="setIsCollapsed(false)"
+						ng-show="where(profiles,{isCollapsed:true}).length>0"
+					>Expand all</button>
+				</div>
+			</div>
+			<hr>
+			<div class="panel panel-default" ng-repeat="profile in profiles" ng-cloak profile="profile">
 				<div class="panel-heading">
 					<div class="row">
 						<div class="col-sm-10">

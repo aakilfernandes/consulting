@@ -16,6 +16,7 @@ class CreateStatusesTable extends Migration {
 			$table->string('id')->primary();
 			$table->string('label');
 			$table->integer('order');
+			$table->integer('priority')->default(0);
 			$table->timestamps();
 		});
 

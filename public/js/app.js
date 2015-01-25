@@ -6,6 +6,7 @@ var app = angular.module('app',[
 	,'ui.bootstrap'
 	,'yaru22.angular-timeago'
 	,'simpleStorage'
+	,'angular-underscore'
 ])
 
 app.config(function(angulyticsProvider,$provide){
@@ -59,16 +60,67 @@ app.controller('ProfilesController',function($scope,httpi,frontloaded,language){
 	$scope.profiles = []
 	$scope.statuses = frontloaded.statuses
 	$scope.bucket_id = frontloaded.bucket_id
+	$scope.profilesFilters = {}
 	
-	httpi({
-		method:'get'
-		,url:'/api/buckets/:bucket_id/profiles'
-		,params:{
-			bucket_id:frontloaded.bucket_id
-		}
-	}).success(function(profiles){
-		$scope.profiles = profiles
+	$scope.statusFilters = [
+		new StatusFilter('Any Status',undefined)
+		,new StatusFilter('Only Open Profiles',['default','low','medium','high','critical'])
+	]
+	$scope.statuses.forEach(function(status){
+		$scope.statusFilters.push(new StatusFilter(status.label,[status.id]))
 	})
+
+	$scope.profilesSorts = [
+		new ProfilesSort('Recently Seen','recentlySeen')
+		,new ProfilesSort('Recently Created',undefined)
+		,new ProfilesSort('Highest Priority','highestPriority')
+	]
+
+	$scope.$watch('profilesFilters',function(value,oldValue){
+		if(angular.equals(value,oldValue)) return
+		loadProfiles()
+	},true)
+
+	$scope.$watch('profilesSort',function(value,oldValue){
+		if(angular.equals(value,oldValue)) return
+		loadProfiles()
+	},true)
+
+	$scope.setIsCollapsed = function(isCollapsed){
+		$scope.profiles.forEach(function(profile){
+			profile.isCollapsed = isCollapsed
+		})
+	}
+
+	loadProfiles()
+
+	function loadProfiles(){
+		
+		var params = {
+			bucket_id:frontloaded.bucket_id
+			,filtersJson:angular.toJson($scope.profilesFilters)
+			,sort:$scope.profilesSort
+		}
+
+
+		httpi({
+			method:'get'
+			,url:'/api/buckets/:bucket_id/profiles'
+			,params:params
+		}).success(function(profiles){
+			$scope.profiles = profiles
+		})
+	}
+
+	function StatusFilter(label,status_ids){
+		this.label = label
+		this.status_ids = status_ids
+	}
+
+	function ProfilesSort(label,id){
+		this.label = label
+		this.id = id
+	}
 })
 
 app.directive('profile',function(httpi,frontloaded,urlJson,$local){
@@ -281,6 +333,7 @@ app.filter('reverse', function() {
 
 app.filter('fileName', function() {
   return function(url) {
+  	if(!url) return
     var urlParts = url.split('/')
     return urlParts[urlParts.length-1]
   };
@@ -288,6 +341,7 @@ app.filter('fileName', function() {
 
 app.filter('withoutFileName', function() {
   return function(url) {
+  	if(!url) return
     var urlParts = url.split('/')
     urlParts.splice(urlParts.length-1,1)
   	return urlParts.join('/')
