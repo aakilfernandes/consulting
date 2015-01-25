@@ -7,7 +7,7 @@
 		<ol class="breadcrumb">
 		  	<li><a href="/">Home</a></li>
 		  	<li><a href="/buckets">Buckets</a></li>
-		  	<li><a href="/buckets/{{$bucket->id}}">{{$bucket->name}}</a></li>
+		  	<li>{{$bucket->name}}</li>
 		  	<li><a href="/buckets/{{$bucket->id}}/profiles">Profiles</a></li>
 		  	<li class="active">{{$profile->alias}}</li>
 		</ol>

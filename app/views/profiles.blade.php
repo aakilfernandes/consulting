@@ -7,7 +7,7 @@
 		<ol class="breadcrumb">
 		  	<li><a href="/">Home</a></li>
 		  	<li><a href="/buckets">Buckets</a></li>
-		  	<li><a href="/buckets/{{$bucket->id}}">{{$bucket->name}}</a></li>
+		  	<li>{{$bucket->name}}</li>
 		  	<li class="active">Profiles</li>
 		</ol>
 		<h1>{{$bucket->name}} Error Profiles</h1>
@@ -16,7 +16,7 @@
 				<div class="col-sm-4">
 					<select class="form-control"
 						ng-model="params.filters.status_id"
-						ng-options="statusFilter.status_ids as statusFilter.label for statusFilter in statusFilters"
+						ng-options="statusFilter.id as statusFilter.label for statusFilter in statusFilters"
 					></select>
 				</div>
 				<div class="col-sm-4 col-xs-6">
@@ -27,13 +27,13 @@
 				</div>
 			</div>
 			<hr>
-			<div class="panel panel-default" ng-repeat="profile in profiles | whereIn:'status_id':params.filters.status_id" ng-cloak profile="profile">
+			<div class="panel panel-default" ng-repeat="profile in profiles" ng-cloak profile="profile" ng-hide="params.filters.status_id && profile.status_id != params.filters.status_id">
 				<div class="panel-heading">
 					<div class="row">
 						<div class="col-sm-10">
 							<h3 class="panel-title">
 								<a ng-show="profile.documentationLink" class="glyphicon glyphicon-book" alt="View Angular Documentation" ng-href="@{{profile.documentationLink}}" target='_blank'></a>
-								<a ng-href="/buckets/@{{frontloaded.buckets.id}}/profiles/@{{profile.id}}">@{{profile.alias}}<a>
+								<a ng-href="/buckets/@{{frontloaded.bucket.id}}/profiles/@{{profile.id}}">@{{profile.alias}}<a>
 							</h3>
 							<div class="text-muted">
 								@{{profile.lastError.stack[0].url | withoutFileName}}/<b>@{{profile.lastError.stack[0].url | fileName}}</b>
@@ -48,7 +48,7 @@
 						<hr class="hidden-sm hidden-md hidden-lg hidden-xl">
 						<div class="col-sm-2">
 							<span class="label label-danger" alt="Errors Count">@{{profile.errorsCount}}</span>
-							<a class="btn btn-xs btn-primary" href="/buckets/@{{frontloaded.buckets.id}}/profiles/@{{profile.id}}">Explore</a>
+							<a class="btn btn-xs btn-primary" href="/buckets/@{{frontloaded.bucket.id}}/profiles/@{{profile.id}}">Explore</a>
 							<select class="form-control input-sm" ng-model="profile.status_id"
 								ng-options="status.id as status.label for status in frontloaded.statuses | orderBy:'order' ">
 							</select>

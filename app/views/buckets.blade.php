@@ -7,18 +7,35 @@
 <div class="container" ng-controller="BucketsController">
 	<h1>Buckets <button class="btn btn-primary" ng-click="new()">New</button></h1>
 	<div class="panel panel-default" ng-repeat="bucket in buckets | reverse" ng-cloak>
-		<div class="panel-heading">
-			<h4 class="panel-title">
-				<a ng-href="/buckets/@{{bucket.id}}/profiles">@{{bucket.name}}</a>
-				<small class="glyphicon glyphicon-edit text-muted" ng-click="editName(bucket)" style="top:-2px"></small>
-			</h4>
-		</div>
+		<div class="panel-heading"><div class="row">
+			<div class="col-xs-8">
+				<h4 class="panel-title">
+					<a ng-href="/buckets/@{{bucket.id}}/profiles">@{{bucket.name}}</a>
+					<small class="glyphicon glyphicon-edit text-muted" ng-click="editName(bucket)" style="top:-2px"></small>
+				</h4>
+				12 open error profiles
+			</div>
+			<div class="col-xs-4 text-right">
+				<a href="/buckets/@{{bucket.id}}/profiles" class="btn btn-xs btn-primary">Explore</a>
+				<a href="/buckets/@{{bucket.id}}/profiles" class="btn btn-xs btn-danger">Delete</a>
+			</div>
+		</div></div>
 		<div class="panel-body">
-			<p>
-				<b>Config Key:</b> @{{bucket.key}}
-			</p>
-			<textarea class="form-control" ng-model="bucket.script">
-			</textarea>
+			<h4>Installation</h4>
+			<table class="table">
+				<tr>
+					<td>Endpoint</td>
+					<td>https://angulytics.com/endpoints/@{{bucket.id}}/@{{bucket.key}}</td>
+				</tr>
+				<tr>
+					<td>Status</td>
+					<td>Not installed</td>
+				</tr>
+			</table>
+			<h4>Email Notifications</h4>
+			<label><input type="checkbox"> When new error profiles are created</label>
+			<br><label><input type="checkbox"> When error profile marked as closed registers a new error</label>
+			<br><label><input type="checkbox"> A daily summary</label>
 		</div>
 	</div>
 </div>

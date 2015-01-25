@@ -33,16 +33,26 @@ app.run(function($rootScope,frontloaded) {
 
 
 
-app.controller('BucketsController',function($scope,hapi,language){
+app.controller('BucketsController',function($scope,httpi,language){
+
+	httpi({
+		method:'GET'
+		,url:'/api/buckets'
+	}).success(function(buckets){
+		$scope.buckets = buckets
+	})
+
 	$scope.new = function(){
 		var name = window.prompt(language.bucketName);
 		if(name===null) return
 
-		hapi('POST','/api/buckets',{name:name})
-			.success(function(bucket){
-				$scope.frontloaded.buckets.push(bucket)
-			})
-			.withBlocker()
+
+		httpi({
+			method:'POST'
+			,url:'/api/buckets'
+		}).success(function(){
+			$scope.buckets = buckets
+		})
 	}
 
 	$scope.editName = function(bucket,index){
@@ -61,38 +71,29 @@ app.controller('BucketsController',function($scope,hapi,language){
 app.controller('ProfilesController',function($scope,httpi,$local){
 	$scope.profiles = []
 	
-	$scope.statusFilters = [
-		new StatusFilter('Any Status',undefined)
-		,new StatusFilter('Only Open Profiles',['default','low','medium','high','critical'])
+	$scope.statusFilters = angular.copy($scope.frontloaded.statuses)
+	$scope.statusFilters.unshift({id:undefined,label:'Any Status'})
+
+	$scope.sorts = [
+		{id:'recentlySeen',label:'Most recently seen'}
+		,{id:'recentlyCreated',label:'Most recently Created'}
 	]
 
-	$scope.frontloaded.statuses.forEach(function(status){
-		$scope.statusFilters.push(new StatusFilter(status.label,[status.id]))
-	})
+	var filters = $local.get('profilesFilters') ? $local.get('profilesFilters') : {}
 
 	$scope.params = {
 		bucket_id: $scope.frontloaded.bucket.id
-		,filters: $local.get('profilesFilters') ? $local.get('profilesFilters') : {
-			status_id: $scope.statusFilters[1].status_ids
+		,filters: {
+			status_id: filters.status_id ? filters.status_id : 'default'
 		}
-		,sort:$local.get('profilesSort') ? $local.get('profilesSort') : undefined
+		,sort:$local.get('profilesSort') ? $local.get('profilesSort') : 'recentlyCreated'
 	}
-
-	$scope.sorts = [
-		new Sort('Recently Seen','recentlySeen')
-		,new Sort('Recently Created',undefined)
-		,new Sort('Highest Priority','highestPriority')
-	]
 
 	$scope.$watch('params',function(value,oldValue){
 		if(angular.equals(value,oldValue)) return
 		loadProfiles()
 	},true)
 
-	$scope.$watch('sorts',function(value,oldValue){
-		if(angular.equals(value,oldValue)) return
-		loadProfiles()
-	},true)
 
 	loadProfiles()
 
@@ -107,29 +108,18 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 		})
 	}
 
-	function StatusFilter(label,status_ids){
-		this.label = label
-		this.status_ids = status_ids
-	}
-
-	function Sort(label,id){
-		this.label = label
-		this.id = id
-	}
 })
 
-app.directive('profile',function(httpi,urlJson,$local){
+app.directive('profile',function(httpi){
 
 	return {
-		link:function(scope,element,attributes){
-
-			scope.profile = scope.$eval(attributes.profile)
-
-			scope.viewErrors = function(){
-				$local.set('errorsFilters',{profile_id:scope.profile.id})
-			}
+		scope:{
+			profile:'=profile'
+			,params:'=params'
+		},link:function(scope,element,attributes){
 
 			scope.$watch('profile',function(profile,oldProfile){
+
 				if(angular.equals(profile,oldProfile)) return
 
 				httpi({
@@ -294,6 +284,7 @@ app.filter('localTime', function($filter) {
 
 app.filter('reverse', function() {
   return function(items) {
+  	if(!items) return
     return items.slice().reverse();
   };
 });
