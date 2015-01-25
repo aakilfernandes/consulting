@@ -1,6 +1,5 @@
 (function(){
 
-
 	var frontloader = angular.module('frontloader',[])
 
 	frontloader.directive('frontload',function(frontloaded){
@@ -15,7 +14,7 @@
 
 				switch(scope.type){
 					case 'json':
-						frontloaded[scope.id] = JSON.parse(value)
+						frontloaded[scope.id] = angular.fromJson(value)
 						break;
 					case 'integer':
 						frontloaded[scope.id] = parseInt(value)

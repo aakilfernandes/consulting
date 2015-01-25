@@ -2,6 +2,7 @@
 
 class Reference extends \Eloquent {
 	protected $fillable = [];
+	protected $hidden = ['html'];
 
 	public function __construct(){
 		$this->saving(function($reference){

@@ -12,27 +12,31 @@ class CreateProfilesTable extends Migration {
 	 */
 	public function up()
 	{
-		DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 		Schema::create('profiles',function($table){
 			$table->increments('id');
-			$table->integer('bucket_id')->unsigned();
+			$table->integer('bucket_id')->unsigned()->index();
 			$table
 				->foreign('bucket_id')
 				->references('id')
 				->on('buckets')
 				->onDelete('cascade');
-			$table->integer('reference_id')->unsigned()->nullable();
+			$table->string('status_id')->default('default')->index();
+			$table
+				->foreign('status_id')
+				->references('id')
+				->on('statuses');
+			$table->integer('reference_id')->unsigned()->index()->nullable();
 			$table
 				->foreign('reference_id')
 				->references('id')
 				->on('references');
+			$table->boolean('isCollapsed')->default(0);
 			$table->string('summary')->index();
 			$table->string('alias')->nullable();
 			$table->string('message');
 			$table->string('name');
 			$table->timestamps();
 		});
-		DB::statement('SET FOREIGN_KEY_CHECKS = 1');
 	}
 
 	/**

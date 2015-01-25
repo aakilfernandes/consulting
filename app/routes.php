@@ -67,7 +67,8 @@ Route::group(['before'=>'auth'],function(){
 
 	Route::group(['before'=>'csrf'],function(){
 		Route::post('/api/buckets', 'BucketsController@store');
-		Route::post('/api/buckets/{id}', 'BucketsController@update');
+		Route::put('/api/buckets/{id}', 'BucketsController@update');
+		Route::put('/api/buckets/{bucket_id}/profiles/{id}', 'ProfilesController@update');
 	});
 });
 

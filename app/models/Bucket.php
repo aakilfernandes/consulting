@@ -20,4 +20,27 @@ class Bucket extends \Eloquent {
 		return $this->hasMany('Error');
 	}
 
+	public function getErrorsFiltersOptionsAttribute(){
+		$filtersOptions = new stdClass;
+		//TODO: get profile options in less expensive way
+		$filtersOptions->profiles = $this->profiles;
+		foreach($filtersOptions->profiles as $key=>$profile){
+			$filtersOptions->profiles[$key]->attributes['lastError'] = null;
+			$filtersOptions->profiles[$key]->attributes['stack'] = null;
+		}
+
+		$filtersOptions->browsers = $this-> optionsForField('browser');
+		$filtersOptions->oses = $this-> optionsForField('os');
+		$filtersOptions->devices = $this-> optionsForField('device');
+		return $filtersOptions;
+	}
+
+	public function optionsForField($field){
+		return DB::table('errors')
+			->where('bucket_id','=',$this->id)
+			->select(DB::raw("$field as value"))
+			->groupBy($field)
+			->get();
+	}
+
 }

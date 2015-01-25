@@ -1,14 +1,15 @@
 <?php
 
 class Profile extends \Eloquent {
-	protected $fillable = ['bucket_id','summary','message','name'];
+	protected $fillable = ['bucket_id','summary','message','name','status_id','isCollapsed'];
 
-	protected $appends = ['errorsCount','lastError','alias','documentationLink','clients'];
+	protected $appends = ['errorsCount','lastError','alias','documentationLink','clients','isCollapsed'];
 
 	public function __construct(){
 
 		$this->saving(function($profile){
 			$profile->reference_id = $profile->determineReferenceId();
+
 			return true;
 		});
 	}
@@ -23,6 +24,10 @@ class Profile extends \Eloquent {
 
 	public function reference(){
 		return $this->belongsTo('Reference');
+	}
+
+	public function getIsCollapsedAttribute(){
+		return (boolean) $this->attributes['isCollapsed'];
 	}
 
 	public function getAliasAttribute(){

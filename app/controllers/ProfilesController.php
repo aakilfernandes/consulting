@@ -65,9 +65,14 @@ class ProfilesController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update($bucket_id,$id)
 	{
-		//
+		$profile = Auth::user()->buckets()->find($bucket_id)->profiles()->find($id);
+		if(!$profile) App::error(404,'Profile not found');
+
+		$profile->fill(Input::all());
+		$profile->save();
+		return $profile;
 	}
 
 
