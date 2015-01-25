@@ -1,9 +1,18 @@
-<html>
+<html route="{{Route::getCurrentRoute()->getPath()}}">
 <head>
 	{{HTML::style('/components/bootstrap/dist/css/bootstrap.min.css')}}
+	{{HTML::style('/css/slim.css')}}
 	{{HTML::style('/css/style.css')}}
 </head>
 <body ng-app="app">
+	<nav class="navbar navbar-default navbar-static-top navbar-inverse">
+		<div class="container">
+			<a class="navbar-brand">Angulytics</a>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+			</ul>
+		</div>
+	</nav>
 	<textarea frontload="csrfToken">{{csrf_token()}}</textarea>
 	<textarea frontload="inputs" frontload-type="json">{{json_encode(Input::all())}}</textarea>
 	<textarea frontload="statuses" frontload-type="json">{{Status::orderBy('order','ASC')->get()}}</textarea>

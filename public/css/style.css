@@ -1,12 +1,12 @@
-.container{
-	max-width: 970px;
-}
-
+body{background-color: #f3f3f3}
+.navbar{background-color: #1c2b36 !important;}
+.navbar-brand{color:white !important; font-weight: bold;}
+.container{max-width: 970px;}
+.breadcrumb a{text-decoration: underline;}
 [ng-cloak],[frontload]{display: none}
-
-*:first-child{
-	margin-top: 0
-}
+.glyphicon a{text-decoration: none;}
+*:first-child{margin-top: 0}
+.modal-dialog{padding-top: 20px;}
 
 .blocker{
 	display: none;
@@ -14,4 +14,16 @@
 	top: 100%;
 	width: 100%;
 	background-color: rgba(0,0,0,.4);
+}
+
+[route="login"] .table,[route="signup"] .table{
+	table-layout: fixed;
+}
+
+.panel-body{position: relative;}
+
+.notification{
+	position: absolute;
+	right: -12px;
+	top: -12px;
 }

@@ -8,7 +8,7 @@
 		  	<li><a href="/">Home</a></li>
 		  	<li><a href="/buckets">Buckets</a></li>
 		  	<li>{{$bucket->name}}</li>
-		  	<li class="active">Profiles</li>
+		  	<li>Profiles</li>
 		</ol>
 		<h1>{{$bucket->name}} Error Profiles</h1>
 		<div ng-controller="ProfilesController">
@@ -28,17 +28,17 @@
 			</div>
 			<hr>
 			<div class="panel panel-default" ng-repeat="profile in profiles" ng-cloak profile="profile" ng-hide="params.filters.status_id && profile.status_id != params.filters.status_id">
-				<div class="panel-heading">
+				<div class="panel-body">
+					<span class="label label-warning label-xs notification" alt="Errors Count" tooltip="errors count" >@{{profile.errorsCount}}</span>
 					<div class="row">
-						<div class="col-sm-10">
-							<h3 class="panel-title">
-								<a ng-show="profile.documentationLink" class="glyphicon glyphicon-book" alt="View Angular Documentation" ng-href="@{{profile.documentationLink}}" target='_blank'></a>
-								<a ng-href="/buckets/@{{frontloaded.bucket.id}}/profiles/@{{profile.id}}">@{{profile.alias}}<a>
-							</h3>
+						<div class="col-sm-9">
+							<b>
+								@{{profile.alias}}
+							</b>
 							<div class="text-muted">
 								@{{profile.lastError.stack[0].url | withoutFileName}}/<b>@{{profile.lastError.stack[0].url | fileName}}</b>
 								line <b>@{{profile.lastError.stack[0].line}}</b>
-								column	<b>@{{profile.lastError.stack[0].column}}</b>
+								column <b>@{{profile.lastError.stack[0].column}}</b>
 								<a href="glyphicon glyphicon-link" alt="View javascript file" ng-href="@{{profile.lastError.stack[0].url}}" class="glyphicon glyphicon-link" target="_blank"></a>
 								<br>
 									Last seen <b>@{{profile.lastError.created_at+' +00' | timeAgo}}</b>,
@@ -46,9 +46,16 @@
 							</div>
 						</div>
 						<hr class="hidden-sm hidden-md hidden-lg hidden-xl">
-						<div class="col-sm-2">
-							<span class="label label-danger" alt="Errors Count">@{{profile.errorsCount}}</span>
-							<a class="btn btn-xs btn-primary" href="/buckets/@{{frontloaded.bucket.id}}/profiles/@{{profile.id}}">Explore</a>
+						<div class="col-sm-3 text-right">
+							<a ng-show="profile.documentationLink" alt="View Angular Documentation" ng-href="@{{profile.documentationLink}}" target='_blank' class="btn btn-xs btn-info">Docs</a>
+							<a show-stack="profile.lastError.stack" class="btn btn-xs btn-info">Stack</a>
+							<a class="btn btn-xs btn-primary"
+								href="/buckets/@{{frontloaded.bucket.id}}/profiles/@{{profile.id}}"
+								>Explore</a>
+							<a class="btn btn-xs btn-danger"
+								href="/buckets/@{{frontloaded.bucket.id}}/profiles/@{{profile.id}}"
+								>Delete</a>
+							<div style="height:5px"></div>
 							<select class="form-control input-sm" ng-model="profile.status_id"
 								ng-options="status.id as status.label for status in frontloaded.statuses | orderBy:'order' ">
 							</select>

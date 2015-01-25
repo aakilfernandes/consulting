@@ -11,7 +11,7 @@
 		  	<li><a href="/buckets/{{$bucket->id}}/profiles">Profiles</a></li>
 		  	<li class="active">{{$profile->alias}}</li>
 		</ol>
-		<h1>{{$profile->alias}}</h1>
+		<h2>{{$profile->alias}}</h2>
 		<div class="row" ng-controller="ErrorsController">
 			<div class="col-sm-5">
 				<table class="table">
@@ -26,7 +26,7 @@
 						<td>@{{client.browser}}</td>
 						<td>@{{client.os}}</td>
 						<td>@{{client.device}}</td>
-						<td><label class="label label-danger label-xs">@{{client.errorsCount}}</label></td>
+						<td><label class="label label-warning label-xs">@{{client.errorsCount}}</label></td>
 						<td><button class="btn btn-xs btn-primary" ng-show="frontloaded.profile.clients.length>1">Explore</button></td>
 					</tr>
 				</table>
