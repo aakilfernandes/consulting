@@ -7,13 +7,13 @@ class ErrorsController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function index($bucket_id)
+	public function index($bucket_id,$profile_id)
 	{
-		$pageSize = 10;
-		$query = Auth::user()->buckets()->find($bucket_id)->errors();
+		$pageSize = Input::get('pageSize');
+		$query = Auth::user()->buckets()->find($bucket_id)->profiles()->find($profile_id)->errors()->orderBy('created_at','DESC');
 
-		if(Input::has('filtersJson')){
-			$filters = json_decode(Input::get('filtersJson'));
+		if(Input::has('filters')){
+			$filters = json_decode(Input::get('filters'));
 			foreach($filters as $field => $value) 
 				$query->where($field,'=',$value);
 		}

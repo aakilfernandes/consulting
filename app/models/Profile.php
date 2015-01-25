@@ -85,8 +85,8 @@ class Profile extends \Eloquent {
 		if(stripos($this->message,'errors.angularjs.org') === false)
 			return null;
 		
-		return explode(' ',$this->message)[1];
-
+		$stripos = stripos($this->message,'errors.angularjs.org');
+		return 'http://'.substr($this->message,$stripos);
 	}
 
 	public function determineReferenceId(){

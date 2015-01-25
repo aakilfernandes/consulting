@@ -1,5 +1,9 @@
 [ng-cloak],[frontload]{display: none}
 
+*:first-child{
+	margin-top: 0
+}
+
 .blocker{
 	display: none;
 	position: fixed;

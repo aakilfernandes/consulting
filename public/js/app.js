@@ -6,10 +6,9 @@ var app = angular.module('app',[
 	,'ui.bootstrap'
 	,'yaru22.angular-timeago'
 	,'simpleStorage'
-	,'angular-underscore'
 ])
 
-app.config(function(angulyticsProvider,$provide){
+app.config(function(angulyticsProvider,$provide,$compileProvider){
 	angulyticsProvider.$get = function(){
 		this.endpoint = 'http://localhost:8000/endpoints/1'
 		this.key = '8f33fdc9de2e520c42f6cc5b'
@@ -27,18 +26,21 @@ app.config(function(angulyticsProvider,$provide){
 	})
 })
 
+app.run(function($rootScope,frontloaded) {
+	$rootScope._ = _
+	$rootScope.frontloaded = frontloaded
+});
 
 
-app.controller('BucketsController',function($scope,hapi,frontloaded,language){
-	$scope.buckets = frontloaded.buckets
 
+app.controller('BucketsController',function($scope,hapi,language){
 	$scope.new = function(){
 		var name = window.prompt(language.bucketName);
 		if(name===null) return
 
 		hapi('POST','/api/buckets',{name:name})
 			.success(function(bucket){
-				$scope.buckets.push(bucket)
+				$scope.frontloaded.buckets.push(bucket)
 			})
 			.withBlocker()
 	}
@@ -56,57 +58,50 @@ app.controller('BucketsController',function($scope,hapi,frontloaded,language){
 
 })
 
-app.controller('ProfilesController',function($scope,httpi,frontloaded,language){
+app.controller('ProfilesController',function($scope,httpi,$local){
 	$scope.profiles = []
-	$scope.statuses = frontloaded.statuses
-	$scope.bucket_id = frontloaded.bucket_id
-	$scope.profilesFilters = {}
 	
 	$scope.statusFilters = [
 		new StatusFilter('Any Status',undefined)
 		,new StatusFilter('Only Open Profiles',['default','low','medium','high','critical'])
 	]
-	$scope.statuses.forEach(function(status){
+
+	$scope.frontloaded.statuses.forEach(function(status){
 		$scope.statusFilters.push(new StatusFilter(status.label,[status.id]))
 	})
 
-	$scope.profilesSorts = [
-		new ProfilesSort('Recently Seen','recentlySeen')
-		,new ProfilesSort('Recently Created',undefined)
-		,new ProfilesSort('Highest Priority','highestPriority')
+	$scope.params = {
+		bucket_id: $scope.frontloaded.bucket.id
+		,filters: $local.get('profilesFilters') ? $local.get('profilesFilters') : {
+			status_id: $scope.statusFilters[1].status_ids
+		}
+		,sort:$local.get('profilesSort') ? $local.get('profilesSort') : undefined
+	}
+
+	$scope.sorts = [
+		new Sort('Recently Seen','recentlySeen')
+		,new Sort('Recently Created',undefined)
+		,new Sort('Highest Priority','highestPriority')
 	]
 
-	$scope.$watch('profilesFilters',function(value,oldValue){
+	$scope.$watch('params',function(value,oldValue){
 		if(angular.equals(value,oldValue)) return
 		loadProfiles()
 	},true)
 
-	$scope.$watch('profilesSort',function(value,oldValue){
+	$scope.$watch('sorts',function(value,oldValue){
 		if(angular.equals(value,oldValue)) return
 		loadProfiles()
 	},true)
-
-	$scope.setIsCollapsed = function(isCollapsed){
-		$scope.profiles.forEach(function(profile){
-			profile.isCollapsed = isCollapsed
-		})
-	}
 
 	loadProfiles()
 
 	function loadProfiles(){
 		
-		var params = {
-			bucket_id:frontloaded.bucket_id
-			,filtersJson:angular.toJson($scope.profilesFilters)
-			,sort:$scope.profilesSort
-		}
-
-
 		httpi({
 			method:'get'
 			,url:'/api/buckets/:bucket_id/profiles'
-			,params:params
+			,params:angular.copy($scope.params)
 		}).success(function(profiles){
 			$scope.profiles = profiles
 		})
@@ -117,13 +112,13 @@ app.controller('ProfilesController',function($scope,httpi,frontloaded,language){
 		this.status_ids = status_ids
 	}
 
-	function ProfilesSort(label,id){
+	function Sort(label,id){
 		this.label = label
 		this.id = id
 	}
 })
 
-app.directive('profile',function(httpi,frontloaded,urlJson,$local){
+app.directive('profile',function(httpi,urlJson,$local){
 
 	return {
 		link:function(scope,element,attributes){
@@ -137,24 +132,11 @@ app.directive('profile',function(httpi,frontloaded,urlJson,$local){
 			scope.$watch('profile',function(profile,oldProfile){
 				if(angular.equals(profile,oldProfile)) return
 
-				if(profile.status_id != oldProfile.status_id){
-					changeIsCollapsed(profile)
-					return
-				}
-
 				httpi({
 					method:'PUT'
 					,url:'/api/buckets/:bucket_id/profiles/:id'
 					,data:angular.copy(profile)
 				})
-
-				function changeIsCollapsed(profile){
-					if(['closed','ignored'].indexOf(profile.status_id)!==-1){
-						profile.isCollapsed = true
-					}else{
-						profile.isCollapsed = false
-					}
-				}
 
 			},true)
 
@@ -162,7 +144,7 @@ app.directive('profile',function(httpi,frontloaded,urlJson,$local){
 	}
 })
 
-app.directive('showStack',function(frontloaded,$modal){
+app.directive('showStack',function($modal){
 	return {
 		scope:{
 			stack:'=showStack'
@@ -190,83 +172,38 @@ app.controller('StackModalController', function($scope,$modalInstance,stack){
   	};
 })
 
-app.controller('ErrorsController',function($scope,httpi,frontloaded,$local){
+app.controller('ErrorsController',function($scope,httpi,$local){
 
 	$scope.pages = []
 	$scope.errors = []
+	$scope.pageSize = 5
 
 	var pagesVisible = 10
 
 	$scope.params={
 		page:0
-		,take:10
-		,bucket_id:frontloaded.bucket_id
-		,filters:$local.get('errorsFilters')
+		,pageSize:$scope.pageSize
+		,bucket_id:$scope.frontloaded.bucket.id
+		,profile_id:$scope.frontloaded.profile.id
+		,filters:{}
 	}
 	
-	$scope.errorsFiltersOptions = frontloaded.errorsFiltersOptions
-	
-	Object.keys($scope.errorsFiltersOptions).forEach(function(filter){
-		var options = $scope.errorsFiltersOptions[filter]
-		options.forEach(function(option){
-			if(!option.id && option.value) option.id = option.value
-			if(!option.value && option.alias) option.value = option.alias
-		})
-	})
-
-	addDefaultOption('profiles','All Profiles')
-	addDefaultOption('browsers','All Browsers')
-	addDefaultOption('oses','All Operating Systems')
-	addDefaultOption('devices','All Devices')
-
 	loadErrors()
 
 	$scope.$watch('params',function(value,oldValue){
 		if(angular.equals(value,oldValue)) return
-		$local.set('errorsFilters',value)
+		$local.set('errorsFilters',value.filters)
 		loadErrors()
 	},true)
-
-	$scope.$watch('errors',function(value,oldValue){
-		if(angular.equals(value,oldValue)) return
-
-		var pages = []
-			,pageNumber = $scope.params.page
-			,pagesVisibleParity = pagesVisible %2 ? 'even':'odd'
-			,pagesFlankCount = Math.floor(pagesVisible/2)
-			,pageStart = pageNumber < pagesVisible/2 ? 1 : pageNumber - pagesFlankCount
-
-		for(var i = pageStart; i <= pagesVisible; i++)
-			pages.push(new Page(i,i===pageNumber))
-
-		
-		if(i!=1)
-			pages.unshift(new Page(''))
-
-		function Page(label,isActive){
-			this.label = label
-			this.isActive = isActive
-		}
-
-		$scope.pages = pages
-		
-	})
 
 	function loadErrors(){
 		httpi({
 			method:'get'
-			,url:'/api/buckets/:bucket_id/errors'
+			,url:'/api/buckets/:bucket_id/profiles/:profile_id/errors'
 			,params:angular.copy($scope.params)
 		}).success(function(response){
 			$scope.errors = response.data
 			$scope.errorsCount = response.total
-		})
-	}
-
-	function addDefaultOption(filter,value){
-		$scope.errorsFiltersOptions[filter].unshift({
-			id:undefined
-			,value:value
 		})
 	}
 
@@ -280,7 +217,7 @@ app.directive('timestamp',function(){
 	}
 })
 
-app.factory('hapi',function($rootScope,httpi,frontloaded){
+app.factory('hapi',function($rootScope,httpi){
 	return function(method,url,params,error){
 		var cleanParams = {};
 		if(params)
@@ -293,9 +230,6 @@ app.factory('hapi',function($rootScope,httpi,frontloaded){
 
 				cleanParams[param]=params[param]
 			})
-
-		if(frontloaded.csrfToken)
-			cleanParams._token = frontloaded.csrfToken
 
 		var promise = 
 			httpi({
@@ -361,6 +295,15 @@ app.filter('localTime', function($filter) {
 app.filter('reverse', function() {
   return function(items) {
     return items.slice().reverse();
+  };
+});
+
+app.filter('whereIn', function() {
+  return function(items,property,values) {
+  	if(!values) return items
+  	return items.filter(function(item){
+  		return values.indexOf(item[property]) !== -1
+  	})
   };
 });
 

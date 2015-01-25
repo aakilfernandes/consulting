@@ -30,7 +30,7 @@ class CreateProfilesTable extends Migration {
 				->foreign('reference_id')
 				->references('id')
 				->on('references');
-			$table->boolean('isCollapsed')->default(0);
+			$table->boolean('isCollapsed')->default(1);
 			$table->string('summary')->index();
 			$table->string('alias')->nullable();
 			$table->string('message');

@@ -30,7 +30,7 @@ angular.module('yaru22.angular-timeago', [
         nowTime = Date.now();
         updateTime();
       });
-    }, 1000);
+    }, 1000*60);
   };
   updateTime();
   return function() {

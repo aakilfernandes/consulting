@@ -11,13 +11,14 @@ class ProfilesController extends \BaseController {
 	{
 		$query = Auth::user()->buckets()->find($bucket_id)->profiles();
 
-		$filters = json_decode(Input::get('filtersJson'));
-
-		foreach($filters as $field => $value){
-			if(is_array($value))
-				$query->whereIn($field,$value);
-			else
-				$query->where($field,'=',$value);
+		if(Input::has('filters')){
+			$filters = json_decode(Input::get('filters'));
+			foreach($filters as $field => $value){
+				if(is_array($value))
+					$query->whereIn($field,$value);
+				else
+					$query->where($field,'=',$value);
+			}
 		}
 
 		switch(Input::get('sort')){
