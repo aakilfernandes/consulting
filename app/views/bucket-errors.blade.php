@@ -34,6 +34,15 @@
 				</div>
 			</div>
 			<hr>
+			<div class="text-center">
+				<div pagination  class="" ng-cloak
+					total-items="errorsCount"
+					max-size="10"
+					ng-model="params.page"
+					previous-text="Prev"
+					boundary-links="true"
+				></div>
+			</div>
 			<div class="panel panel-default" ng-repeat="error in errors" ng-cloak>
 				<div class="panel-body">
 					<table class="table">
@@ -60,6 +69,15 @@
 				<div class="panel-footer">
 					<button class="btn btn-danger">Delete</button>
 				</div>
+			</div>
+			<div class="text-center">
+				<div pagination  class="" ng-cloak
+					total-items="errorsCount"
+					max-size="10"
+					ng-model="params.page"
+					previous-text="Prev"
+					boundary-links="true"
+				></div>
 			</div>
 		</div>
 	</div>

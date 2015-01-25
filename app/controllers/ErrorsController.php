@@ -9,12 +9,16 @@ class ErrorsController extends \BaseController {
 	 */
 	public function index($bucket_id)
 	{
+		$pageSize = 10;
 		$query = Auth::user()->buckets()->find($bucket_id)->errors();
 
-		foreach(Input::all() as $field => $value)
-			$query->where($field,'=',$value);
+		if(Input::has('filtersJson')){
+			$filters = json_decode(Input::get('filtersJson'));
+			foreach($filters as $field => $value) 
+				$query->where($field,'=',$value);
+		}
 
-		return $query->get();
+		return $query->paginate($pageSize);
 	}
 
 

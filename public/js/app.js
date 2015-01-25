@@ -191,10 +191,21 @@ app.controller('StackModalController', function($scope,$modalInstance,stack){
 })
 
 app.controller('ErrorsController',function($scope,httpi,frontloaded,$local){
+
+	$scope.pages = []
+	$scope.errors = []
+
+	var pagesVisible = 10
+
+	$scope.params={
+		page:0
+		,take:10
+		,bucket_id:frontloaded.bucket_id
+		,filters:$local.get('errorsFilters')
+	}
 	
 	$scope.errorsFiltersOptions = frontloaded.errorsFiltersOptions
-	$scope.errorsFilters = $local.get('errorsFilters')
-
+	
 	Object.keys($scope.errorsFiltersOptions).forEach(function(filter){
 		var options = $scope.errorsFiltersOptions[filter]
 		options.forEach(function(option){
@@ -210,23 +221,45 @@ app.controller('ErrorsController',function($scope,httpi,frontloaded,$local){
 
 	loadErrors()
 
-	$scope.$watch('errorsFilters',function(value,oldValue){
-		console.log('watch',value,oldValue)
+	$scope.$watch('params',function(value,oldValue){
 		if(angular.equals(value,oldValue)) return
 		$local.set('errorsFilters',value)
 		loadErrors()
 	},true)
 
-	function loadErrors(){
-		var params = $scope.errorsFilters ? $scope.errorsFilters : {}
-		params.bucket_id = frontloaded.bucket_id
+	$scope.$watch('errors',function(value,oldValue){
+		if(angular.equals(value,oldValue)) return
 
+		var pages = []
+			,pageNumber = $scope.params.page
+			,pagesVisibleParity = pagesVisible %2 ? 'even':'odd'
+			,pagesFlankCount = Math.floor(pagesVisible/2)
+			,pageStart = pageNumber < pagesVisible/2 ? 1 : pageNumber - pagesFlankCount
+
+		for(var i = pageStart; i <= pagesVisible; i++)
+			pages.push(new Page(i,i===pageNumber))
+
+		
+		if(i!=1)
+			pages.unshift(new Page(''))
+
+		function Page(label,isActive){
+			this.label = label
+			this.isActive = isActive
+		}
+
+		$scope.pages = pages
+		
+	})
+
+	function loadErrors(){
 		httpi({
 			method:'get'
 			,url:'/api/buckets/:bucket_id/errors'
-			,params:params
-		}).success(function(errors){
-			$scope.errors = errors
+			,params:angular.copy($scope.params)
+		}).success(function(response){
+			$scope.errors = response.data
+			$scope.errorsCount = response.total
 		})
 	}
 

@@ -19,7 +19,7 @@
 					></select>
 				</div>
 				<div class="col-sm-4 col-xs-6 text-right">
-					<button class="btn btn-primary"  ng-cloak
+					<button class="btn btn-primary" ng-cloak
 						ng-click="setIsCollapsed(true)"
 						ng-show="where(profiles,{isCollapsed:true}).length<profiles.length"
 					>Collapse all</button>
