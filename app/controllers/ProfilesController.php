@@ -9,7 +9,7 @@ class ProfilesController extends \BaseController {
 	 */
 	public function index($bucket_id)
 	{
-		$query = Auth::user()->buckets()->find($bucket_id)->profiles();
+		$query = Auth::user()->bucket($bucket_id)->profiles();
 
 		if(Input::has('filters')){
 			$filters = json_decode(Input::get('filters'));

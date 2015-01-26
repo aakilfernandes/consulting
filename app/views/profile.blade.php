@@ -44,7 +44,7 @@
 						></div>
 					</div>
 				</div>
-				<div class="alert alert-info text-center" loading="isLoading">Loading Errors</div>
+				<div class="alert alert-info text-center" show-debounced="isLoading">Loading Errors</div>
 				<div class="panel panel-default" ng-repeat="error in errors" ng-cloak>
 					<div class="panel-body">
 						<div class="row">

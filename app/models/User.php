@@ -24,4 +24,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsToMany('Bucket');
 	}
 
+	public function bucket($id){
+		return $this->buckets()->whereBucketId($id)->first();
+	}
+
 }

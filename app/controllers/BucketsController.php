@@ -48,7 +48,7 @@ class BucketsController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$bucket = Bucket::find($id);
+		$bucket = Auth::user()->bucket($id);
 		if(!$bucket) return App::abort(404,'Bucket not found');
 		return $bucket;
 	}
@@ -74,7 +74,7 @@ class BucketsController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$bucket = Auth::user()->buckets()->find($id);
+		$bucket = Auth::user()->bucket($id);
 		if(!$bucket) return App::abort(404,'Bucket not found');
 
 		$bucket->fill(Input::all());
@@ -92,7 +92,7 @@ class BucketsController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		Auth::user()->bucket($id)->delete();
 	}
 
 }

@@ -17,8 +17,7 @@ app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider){
 
 	$provide.decorator('$http',function($delegate,frontloaded){
 		$delegate.defaults.transformRequest.push(function(dataJson){
-			if(!dataJson) return
-			var data = angular.fromJson(dataJson)
+			var data = dataJson ? angular.fromJson(dataJson) : {}
 			data._token = frontloaded.csrfToken
 			return angular.toJson(data)
 		})
@@ -47,12 +46,14 @@ app.controller('BucketsController',function($scope,httpi,language){
 		var name = window.prompt(language.bucketName);
 		if(name===null) return
 
-
+		$scope.isLoading = true
 		httpi({
 			method:'POST'
 			,url:'/api/buckets'
-		}).success(function(){
-			$scope.buckets = buckets
+			,data:{name:name}
+		}).success(function(bucket){
+			$scope.buckets.push(bucket)
+			$scope.isLoading = false
 		})
 	}
 
@@ -62,9 +63,22 @@ app.controller('BucketsController',function($scope,httpi,language){
 
 		bucket.name = name
 
-		hapi('put','/api/buckets/:id',bucket).success(function(bucket){
-			$scope.buckets[index] = bucket
+		httpi({
+			method:'PUT'
+			,url:'/api/buckets/:id'
+			,data:bucket
+		}).success(function(bucket){
+			$scope.bucket = bucket
 		})
+	}
+
+	$scope.delete = function(bucket,index){
+		httpi({
+			method:'DELETE'
+			,url:'/api/buckets/:id'
+			,data:bucket
+		})
+		$scope.buckets.splice(index,1)
 	}
 
 })
@@ -325,13 +339,13 @@ app.filter('withoutFileName', function() {
   };
 });
 
-app.directive('loading',function($timeout){
+app.directive('showDebounced',function($timeout){
 	return {
 		scope:{
-			isLoading:'=loading'
+			isShowing:'=showDebounced'
 		},link:function(scope,element){
 			var timeout
-			scope.$watch('isLoading',function(value){
+			scope.$watch('isShowing',function(value){
 				if(value){
 					element.css('display','')
 					return

@@ -37,13 +37,13 @@ Route::group(['before'=>'auth'],function(){
 	});
 
 	Route::get('/buckets/{id}/profiles',function($id){
-		$bucket = Auth::user()->buckets()->find($id);
+		$bucket = Auth::user()->bucket($id);
 		if(!$bucket) App::abort(404,'Bucket not found');
 		return View::make('profiles',compact('bucket'));
 	});
 
 	Route::get('/buckets/{bucket_id}/profiles/{profile_id}',function($bucket_id,$profile_id){
-		$bucket = Auth::user()->buckets()->find($bucket_id);
+		$bucket = Auth::user()->bucket($bucket_id);
 		if(!$bucket) App::abort(404,'profile not found');
 
 		$profile = $bucket->profiles()->find($profile_id);
@@ -53,7 +53,7 @@ Route::group(['before'=>'auth'],function(){
 	});
 
 	Route::get('/buckets/{bucket_id}/profiles/{profile_id}/referenceLink',function($bucket_id,$profile_id){
-		$profile = Auth::user()->buckets()->find($bucket_id)->profiles()->find($profile_id);
+		$bucket = Auth::user()->bucket($bucket_id)->profiles()->find($profile_id);
 		
 		if(!$profile) App::abort(404,'Profile not found');
 		if(!$profile->documentation) App::abort(404,'Profile has no documentation');
@@ -67,9 +67,6 @@ Route::group(['before'=>'auth'],function(){
 		return View::make('errors',compact('errors'));
 	});
 
-
-
-
 	Route::get('/api/buckets','BucketsController@index');
 	Route::get('/api/buckets/{id}','BucketsController@show');
 	Route::get('/api/buckets/{bucket_id}/profiles', 'ProfilesController@index');
@@ -78,6 +75,7 @@ Route::group(['before'=>'auth'],function(){
 	Route::group(['before'=>'csrf'],function(){
 		Route::post('/api/buckets', 'BucketsController@store');
 		Route::put('/api/buckets/{id}', 'BucketsController@update');
+		Route::delete('/api/buckets/{id}', 'BucketsController@destroy');
 		Route::put('/api/buckets/{bucket_id}/profiles/{id}', 'ProfilesController@update');
 	});
 });
