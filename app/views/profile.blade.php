@@ -21,7 +21,7 @@
 						<th>Device</th>
 						<th></th>
 						<th><button class="btn btn-xs btn-primary"
-							ng-show="frontloaded.profile.clients.length>1"
+							ng-show="frontloaded.profile.clients.length>1 && (params.filters.browser || params.filters.os || params.filters.device)"
 							ng-click="filterByClient({})"
 						>View All</button></th>
 					</tr>
@@ -31,7 +31,11 @@
 						<td>@{{client.device}}</td>
 						<td>@{{client.errorsCount}}</td>
 						<td><button class="btn btn-xs btn-primary"
-							ng-show="frontloaded.profile.clients.length>1"
+							ng-show="frontloaded.profile.clients.length>1 && (
+								params.filters.browser != client.browser
+								|| params.filters.os != client.os
+								|| params.filters.device != client.device
+							)"
 							ng-click="filterByClient(client)"
 						>Filter</button></td>
 					</tr>

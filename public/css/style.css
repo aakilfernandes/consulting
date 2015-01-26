@@ -43,3 +43,6 @@ a.ti-link{text-decoration: none;}
 [route="buckets/{bucket_id}/profiles/{profile_id}"] .clients .btn{
 	width: 100%;
 }
+[route="buckets/{bucket_id}/profiles/{profile_id}"] .clients td{
+	height:48px;
+}

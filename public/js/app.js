@@ -29,6 +29,7 @@ app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider){
 
 app.run(function($rootScope,$http,frontloaded) {
 	$rootScope._ = _
+	$rootScope._ = angular
 	$rootScope.frontloaded = frontloaded
 	
 	$http.defaults.headers.delete = { 'Content-Type' : 'application/json' };
