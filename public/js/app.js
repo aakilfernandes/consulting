@@ -38,12 +38,13 @@ app.run(function($rootScope,$http,frontloaded) {
 
 
 app.controller('BucketsController',function($scope,httpi,language){
-
+	$scope.isLoading = true
 	httpi({
 		method:'GET'
 		,url:'/api/buckets'
 	}).success(function(buckets){
 		$scope.buckets = buckets
+		$scope.isLoading = false
 	})
 
 	$scope.new = function(){
