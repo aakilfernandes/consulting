@@ -126,7 +126,7 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 			,url:'/api/buckets/:bucket_id/profiles'
 			,params:angular.copy($scope.params)
 		}).success(function(response){
-			$scope.profilesCount = response.total
+			$scope.response = response
 			$scope.profiles = response.data
 			$scope.isLoading = false
 		})
@@ -353,17 +353,17 @@ app.directive('showDebounced',function($timeout){
 		},link:function(scope,element){
 			var timeout
 			scope.$watch('isShowing',function(value){
-				if(value){
-					element.css('display','')
-					return
-				}
+				var display = value ? '' : 'none'
+
+				if(!timeout)
+					element.css('display',display)
 
 				if(timeout)
 					$timeout.cancel(timeout)
 				
 
 				timeout = $timeout(function(){
-					element.css('display','none')
+					element.css('display',display)
 				},500)
 			})
 		}
