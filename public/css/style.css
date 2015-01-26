@@ -1,13 +1,16 @@
 body{background-color: #f3f3f3}
 .navbar{background-color: #1c2b36 !important;}
 .navbar-brand{color:white !important; font-weight: bold;}
+.pagination a{padding:4px 10px !important;font-size: 10px;}
+.pagination{margin-bottom: 0}
+
 .container{max-width: 970px;}
 .breadcrumb a{text-decoration: underline;}
 [ng-cloak],[frontload]{display: none}
-.glyphicon a{text-decoration: none;}
+a.ti-link{text-decoration: none;}
 *:first-child{margin-top: 0}
 .modal-dialog{padding-top: 20px;}
-
+.breadcrumb{background-color: transparent;}
 .blocker{
 	display: none;
 	position: fixed;

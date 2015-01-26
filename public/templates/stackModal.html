@@ -9,6 +9,9 @@
                 <td>
                     {{line.url | fileName}}:{{line.line}}:{{line.column}}
                 </td>
+                <td>
+                    <a class="ti-link" ng-href="{{line.url}}" target="_blank"></a>
+                </td>
             </tr>
         </tbody>
     </table>

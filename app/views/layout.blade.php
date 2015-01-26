@@ -2,6 +2,7 @@
 <head>
 	{{HTML::style('/components/bootstrap/dist/css/bootstrap.min.css')}}
 	{{HTML::style('/css/slim.css')}}
+	{{HTML::style('/fonts/themify-icons/themify-icons.min.css')}}
 	{{HTML::style('/css/style.css')}}
 </head>
 <body ng-app="app">

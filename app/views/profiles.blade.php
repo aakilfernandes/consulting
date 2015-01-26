@@ -39,7 +39,7 @@
 								@{{profile.lastError.stack[0].url | withoutFileName}}/<b>@{{profile.lastError.stack[0].url | fileName}}</b>
 								line <b>@{{profile.lastError.stack[0].line}}</b>
 								column <b>@{{profile.lastError.stack[0].column}}</b>
-								<a href="glyphicon glyphicon-link" alt="View javascript file" ng-href="@{{profile.lastError.stack[0].url}}" class="glyphicon glyphicon-link" target="_blank"></a>
+								<a alt="View javascript file" ng-href="@{{profile.lastError.stack[0].url}}" class="ti-link" target="_blank"></a>
 								<br>
 									Last seen <b>@{{profile.lastError.created_at+' +00' | timeAgo}}</b>,
 									First seen <b>@{{profile.created_at+' +00' | timeAgo}}</b>

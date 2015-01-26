@@ -34,6 +34,17 @@ class ProfilesController extends \BaseController {
 					->orderBy('recentlySeen','DESC')
 					->groupBy('errors.profile_id')
 					->get(['profiles.*',DB::raw('MAX(errors.created_at) as recentlySeen')]);
+				break;
+			case 'mostErrors':
+				return $query
+					->join('errors', 'profiles.id', '=', 'errors.profile_id')
+					->orderBy('errorsCount','DESC')
+					->groupBy('errors.profile_id')
+					->get(['profiles.*',DB::raw('COUNT(errors.id) as errorsCount')]);
+				break;
+			case 'oldest':
+				return $query->orderBy('created_at','ASC')->get();
+				break;
 		}
 
 		return $query->orderBy('created_at','DESC')->get();

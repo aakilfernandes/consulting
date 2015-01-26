@@ -75,8 +75,10 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 	$scope.statusFilters.unshift({id:undefined,label:'Any Status'})
 
 	$scope.sorts = [
-		{id:'recentlySeen',label:'Most recently seen'}
-		,{id:'recentlyCreated',label:'Most recently Created'}
+		{id:'oldest',label:'Oldest'}
+		,{id:'recentlySeen',label:'Recently Seen'}
+		,{id:'recentlyCreated',label:'Recently Created'}
+		,{id:'mostErrors',label:'Highest Errors Count'}
 	]
 
 	var filters = $local.get('profilesFilters') ? $local.get('profilesFilters') : {}
