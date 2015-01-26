@@ -37,6 +37,8 @@ a.ti-link{text-decoration: none;}
 	top: -12px;
 }
 
+[route="buckets/{bucket_id}/profiles/{profile_id}"] .clients{table-layout:fixed;}
+
 [route="buckets/{bucket_id}/profiles/{profile_id}"] .client{
 	font-size: 12px;
 }

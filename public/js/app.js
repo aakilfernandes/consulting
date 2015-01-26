@@ -106,7 +106,8 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 	$scope.params = {
 		bucket_id: $scope.frontloaded.bucket.id
 		,filters: {
-			status_id: filters.status_id ? filters.status_id : 'default'
+			status_id: $local.get('profilesStatusFilter') ?
+				$local.get('profilesStatusFilter') : 'default'
 		}
 		,sort:$local.get('profilesSort') ? $local.get('profilesSort') : 'recentlyCreated'
 		,pageSize:5
@@ -114,6 +115,8 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 
 	$scope.$watch('params',function(value,oldValue){
 		if(angular.equals(value,oldValue)) return
+		$local.set('profilesStatusFilter',$scope.params.filters.status_id)
+		$local.set('profilesSort',$scope.params.sort)
 		loadProfiles()
 	},true)
 
