@@ -353,17 +353,19 @@ app.directive('showDebounced',function($timeout){
 		},link:function(scope,element){
 			var timeout
 			scope.$watch('isShowing',function(value){
-				var display = value ? '' : 'none'
+				
 
-				if(!timeout)
-					element.css('display',display)
+				if(!value){
+					element.css('display','')
+					return
+				}
 
 				if(timeout)
 					$timeout.cancel(timeout)
 				
 
 				timeout = $timeout(function(){
-					element.css('display',display)
+					element.css('display','none')
 				},500)
 			})
 		}
