@@ -188,15 +188,11 @@ app.controller('StackModalController', function($scope,$modalInstance,stack){
 
 app.controller('ErrorsController',function($scope,httpi,$local){
 
-	$scope.pages = []
 	$scope.errors = []
-	$scope.pageSize = 5
-
-	var pagesVisible = 10
 
 	$scope.params={
 		page:0
-		,pageSize:$scope.pageSize
+		,pageSize:5
 		,bucket_id:$scope.frontloaded.bucket.id
 		,profile_id:$scope.frontloaded.profile.id
 		,filters:{}
@@ -206,7 +202,6 @@ app.controller('ErrorsController',function($scope,httpi,$local){
 
 	$scope.$watch('params',function(value,oldValue){
 		if(angular.equals(value,oldValue)) return
-		$local.set('errorsFilters',value.filters)
 		loadErrors()
 	},true)
 
@@ -222,6 +217,14 @@ app.controller('ErrorsController',function($scope,httpi,$local){
 			$scope.errorsCount = response.total
 			$scope.isLoading = false
 		})
+	}
+
+	$scope.filterByClient = function (client){
+		$scope.params.filters = {
+			browser:client.browser
+			,os:client.os
+			,device:client.device
+		}
 	}
 
 })
@@ -366,7 +369,7 @@ app.directive('showDebounced',function($timeout){
 
 				timeout = $timeout(function(){
 					element.css('display','none')
-				},500)
+				},1000)
 			})
 		}
 	}

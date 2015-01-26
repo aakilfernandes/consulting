@@ -14,24 +14,30 @@
 		<h2>{{$profile->alias}}</h2>
 		<div class="row" ng-controller="ErrorsController">
 			<div class="col-sm-5">
-				<table class="table">
+				<table class="table clients">
 					<tr>
-						<td>Browser</td>
-						<td>OS</td>
-						<td>Device</td>
-						<td></td>
-						<td><button class="btn btn-xs btn-primary" ng-show="frontloaded.profile.clients.length>1">View All</button></td>
+						<th>Browser</th>
+						<th>OS</th>
+						<th>Device</th>
+						<th></th>
+						<th><button class="btn btn-xs btn-primary"
+							ng-show="frontloaded.profile.clients.length>1"
+							ng-click="filterByClient({})"
+						>View All</button></th>
 					</tr>
-					<tr ng-repeat="client in frontloaded.profile.clients" ng-cloak>
+					<tr class="client" ng-repeat="client in frontloaded.profile.clients" ng-cloak>
 						<td>@{{client.browser}}</td>
 						<td>@{{client.os}}</td>
 						<td>@{{client.device}}</td>
-						<td><label class="label label-warning label-xs">@{{client.errorsCount}}</label></td>
-						<td><button class="btn btn-xs btn-primary" ng-show="frontloaded.profile.clients.length>1">Explore</button></td>
+						<td>@{{client.errorsCount}}</td>
+						<td><button class="btn btn-xs btn-primary"
+							ng-show="frontloaded.profile.clients.length>1"
+							ng-click="filterByClient(client)"
+						>Filter</button></td>
 					</tr>
 				</table>
 			</div>
-			<div class="col-sm-7" ng-controller="ErrorsController">
+			<div class="col-sm-7">
 				<div class="panel" ng-show="errorsCount>params.pageSize" ng-cloak>
 					<div class="panel-heading text-center">
 						<div pagination  class="" ng-cloak
