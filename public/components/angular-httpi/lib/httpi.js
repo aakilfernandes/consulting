@@ -19,8 +19,8 @@
 
 				config.url = interpolateUrl( 
 					config.url,
-					config.params,
-					config.data, 
+					angular.copy(config.params),
+					angular.copy(config.data), 
 					( config.keepTrailingSlash != true )
 				);
 

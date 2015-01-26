@@ -72,8 +72,6 @@ app.controller('BucketsController',function($scope,httpi,language){
 			method:'PUT'
 			,url:'/api/buckets/:id'
 			,data:bucket
-		}).success(function(bucket){
-			$scope.bucket = bucket
 		})
 	}
 

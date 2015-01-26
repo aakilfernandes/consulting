@@ -21,7 +21,7 @@
 	{{HTML::script('/components/underscore/underscore-min.js')}}
 	{{HTML::script('/components/angular/angular.js')}}
 	{{HTML::script('/components/angular-bootstrap/ui-bootstrap-tpls.min.js')}}
-	{{HTML::script('/components/angular-httpi/build/httpi.min.js')}}
+	{{HTML::script('/components/angular-httpi/lib/httpi.js')}}
 	{{HTML::script('/components/angular-timeago/src/timeAgo.js')}}
 	{{HTML::script('/components/angular-simple-storage/dist/angular-simpleStorage.js')}}
 	{{HTML::script('/components/angular-underscore/angular-underscore.min.js')}}
