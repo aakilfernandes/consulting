@@ -27,6 +27,7 @@
 				</div>
 			</div>
 			<hr>
+		<div class="alert alert-info text-center" loading="isLoading">Loading Error Profiles</div>
 			<div class="panel panel-default" ng-repeat="profile in profiles" ng-cloak profile="profile" ng-hide="params.filters.status_id && profile.status_id != params.filters.status_id">
 				<div class="panel-body">
 					<span class="label label-warning label-xs notification" alt="Errors Count" tooltip="errors count" >@{{profile.errorsCount}}</span>

@@ -1,0 +1,30 @@
+{
+  "name": "angular-debounce",
+  "version": "1.0.1",
+  "main": "dist/angular-debounce.js",
+  "ignore": [
+    "**/.*",
+    "src",
+    "node_modules",
+    "bower_components",
+    "test",
+    "Gruntfile.coffee"
+  ],
+  "dependencies": {
+    "angular": "*"
+  },
+  "devDependencies": {
+    "angular-mocks": "*"
+  },
+  "homepage": "https://github.com/rubenv/angular-debounce",
+  "_release": "1.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.1",
+    "commit": "d9f7843b132b24822a6f38c4708cb2d0a58933ca"
+  },
+  "_source": "git://github.com/rubenv/angular-debounce.git",
+  "_target": "~1.0.1",
+  "_originalSource": "angular-debounce",
+  "_direct": true
+}

@@ -6,6 +6,12 @@ body{background-color: #f3f3f3}
 
 .container{max-width: 970px;}
 .breadcrumb a{text-decoration: underline;}
+.breadcrumb{
+	background-color: transparent;
+	padding-left: 0;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 20px;
+}
 [ng-cloak],[frontload]{display: none}
 a.ti-link{text-decoration: none;}
 *:first-child{margin-top: 0}

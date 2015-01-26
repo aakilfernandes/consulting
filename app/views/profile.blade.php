@@ -32,20 +32,19 @@
 				</table>
 			</div>
 			<div class="col-sm-7" ng-controller="ErrorsController">
-				<div class="panel">
-					<div class="panel-heading">
-						<div class="text-center" ng-cloak ng-show="errorsCount>10">
-							<div pagination  class="" ng-cloak
-								total-items="errorsCount"
-								max-size="7"
-								ng-model="params.page"
-								previous-text="Prev"
-								boundary-links="true"
-								items-per-page="params.pageSize"
-							></div>
-						</div>
+				<div class="panel" ng-show="errorsCount>10" ng-cloak>
+					<div class="panel-heading text-center">
+						<div pagination  class="" ng-cloak
+							total-items="errorsCount"
+							max-size="7"
+							ng-model="params.page"
+							previous-text="Prev"
+							boundary-links="true"
+							items-per-page="params.pageSize"
+						></div>
 					</div>
 				</div>
+				<div class="alert alert-info text-center" loading="isLoading">Loading Errors</div>
 				<div class="panel panel-default" ng-repeat="error in errors" ng-cloak>
 					<div class="panel-body">
 						<div class="row">

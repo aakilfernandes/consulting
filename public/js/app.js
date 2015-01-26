@@ -8,7 +8,7 @@ var app = angular.module('app',[
 	,'simpleStorage'
 ])
 
-app.config(function(angulyticsProvider,$provide,$compileProvider){
+app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider){
 	angulyticsProvider.$get = function(){
 		this.endpoint = 'http://localhost:8000/endpoints/1'
 		this.key = '8f33fdc9de2e520c42f6cc5b'
@@ -22,6 +22,7 @@ app.config(function(angulyticsProvider,$provide,$compileProvider){
 			data._token = frontloaded.csrfToken
 			return angular.toJson(data)
 		})
+
 		return $delegate
 	})
 })
@@ -100,13 +101,14 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 	loadProfiles()
 
 	function loadProfiles(){
-		
+		$scope.isLoading = true
 		httpi({
 			method:'get'
 			,url:'/api/buckets/:bucket_id/profiles'
 			,params:angular.copy($scope.params)
 		}).success(function(profiles){
 			$scope.profiles = profiles
+			$scope.isLoading = false
 		})
 	}
 
@@ -189,6 +191,8 @@ app.controller('ErrorsController',function($scope,httpi,$local){
 	},true)
 
 	function loadErrors(){
+		$scope.isLoading = true
+		$scope.errors = []
 		httpi({
 			method:'get'
 			,url:'/api/buckets/:bucket_id/profiles/:profile_id/errors'
@@ -196,11 +200,11 @@ app.controller('ErrorsController',function($scope,httpi,$local){
 		}).success(function(response){
 			$scope.errors = response.data
 			$scope.errorsCount = response.total
+			$scope.isLoading = false
 		})
 	}
 
 })
-
 
 app.directive('timestamp',function(){
 	return {
@@ -277,6 +281,10 @@ app.factory('urlJson',function(){
 	}
 })
 
+app.factory('httpRequests',function(){
+	return {}
+})
+
 app.filter('localTime', function($filter) {
   return function(timestamp) {
   	var date = new Date(timestamp+' +00')
@@ -316,3 +324,27 @@ app.filter('withoutFileName', function() {
   	return urlParts.join('/')
   };
 });
+
+app.directive('loading',function($timeout){
+	return {
+		scope:{
+			isLoading:'=loading'
+		},link:function(scope,element){
+			var timeout
+			scope.$watch('isLoading',function(value){
+				if(value){
+					element.css('display','')
+					return
+				}
+
+				if(timeout)
+					$timeout.cancel(timeout)
+				
+
+				timeout = $timeout(function(){
+					element.css('display','none')
+				},500)
+			})
+		}
+	}
+})
