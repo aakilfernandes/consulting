@@ -32,7 +32,7 @@
 				</table>
 			</div>
 			<div class="col-sm-7" ng-controller="ErrorsController">
-				<div class="panel" ng-show="errorsCount>10" ng-cloak>
+				<div class="panel" ng-show="errorsCount>params.pageSize" ng-cloak>
 					<div class="panel-heading text-center">
 						<div pagination  class="" ng-cloak
 							total-items="errorsCount"

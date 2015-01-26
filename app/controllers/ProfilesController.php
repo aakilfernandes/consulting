@@ -9,6 +9,7 @@ class ProfilesController extends \BaseController {
 	 */
 	public function index($bucket_id)
 	{
+		$pageSize = Input::get('pageSize');
 		$query = Auth::user()->bucket($bucket_id)->profiles();
 
 		if(Input::has('filters')){
@@ -23,31 +24,34 @@ class ProfilesController extends \BaseController {
 
 		switch(Input::get('sort')){
 			case 'highestPriority':
-				return $query
+				$query
 					->join('statuses', 'status_id', '=', 'statuses.id')
 					->orderBy('statuses.priority','DESC')
 					->get(['profiles.*','statuses.priority']);
 				break;
 			case 'recentlySeen':
-				return $query
+				$query
 					->join('errors', 'profiles.id', '=', 'errors.profile_id')
 					->orderBy('recentlySeen','DESC')
 					->groupBy('errors.profile_id')
 					->get(['profiles.*',DB::raw('MAX(errors.created_at) as recentlySeen')]);
 				break;
 			case 'mostErrors':
-				return $query
+				$query
 					->join('errors', 'profiles.id', '=', 'errors.profile_id')
 					->orderBy('errorsCount','DESC')
 					->groupBy('errors.profile_id')
 					->get(['profiles.*',DB::raw('COUNT(errors.id) as errorsCount')]);
 				break;
 			case 'oldest':
-				return $query->orderBy('created_at','ASC')->get();
+				$query->orderBy('created_at','ASC')->get();
+				break;
+			default:
+				$query->orderBy('created_at','DESC')->get();
 				break;
 		}
 
-		return $query->orderBy('created_at','DESC')->get();
+		return $query->paginate($pageSize);
 	}
 
 

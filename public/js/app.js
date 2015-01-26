@@ -108,6 +108,7 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 			status_id: filters.status_id ? filters.status_id : 'default'
 		}
 		,sort:$local.get('profilesSort') ? $local.get('profilesSort') : 'recentlyCreated'
+		,pageSize:5
 	}
 
 	$scope.$watch('params',function(value,oldValue){
@@ -124,8 +125,9 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 			method:'get'
 			,url:'/api/buckets/:bucket_id/profiles'
 			,params:angular.copy($scope.params)
-		}).success(function(profiles){
-			$scope.profiles = profiles
+		}).success(function(response){
+			$scope.profilesCount = response.total
+			$scope.profiles = response.data
 			$scope.isLoading = false
 		})
 	}
