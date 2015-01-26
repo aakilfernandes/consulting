@@ -24,11 +24,14 @@ app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider){
 
 		return $delegate
 	})
+	
 })
 
-app.run(function($rootScope,frontloaded) {
+app.run(function($rootScope,$http,frontloaded) {
 	$rootScope._ = _
 	$rootScope.frontloaded = frontloaded
+	
+	$http.defaults.headers.delete = { 'Content-Type' : 'application/json' };
 });
 
 
@@ -52,7 +55,7 @@ app.controller('BucketsController',function($scope,httpi,language){
 			,url:'/api/buckets'
 			,data:{name:name}
 		}).success(function(bucket){
-			$scope.buckets.push(bucket)
+			$scope.buckets.unshift(bucket)
 			$scope.isLoading = false
 		})
 	}
@@ -73,6 +76,7 @@ app.controller('BucketsController',function($scope,httpi,language){
 	}
 
 	$scope.delete = function(bucket,index){
+		if(!confirm(language.bucketDelete)) return
 		httpi({
 			method:'DELETE'
 			,url:'/api/buckets/:id'
@@ -271,6 +275,7 @@ app.factory('hapi',function($rootScope,httpi){
 app.factory('language', function() {
   return {
   	bucketName:'What should we name your bucket?'
+  	,bucketDelete:'Are you sure? Delting buckets will also delete the data associated with them'
   }
 });
 

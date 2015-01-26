@@ -3,7 +3,7 @@ body{background-color: #f3f3f3}
 .navbar-brand{color:white !important; font-weight: bold;}
 .pagination a{padding:4px 10px !important;font-size: 10px;}
 .pagination{margin-bottom: 0}
-
+.panel-heading .btn{text-transform: none}
 .container{max-width: 970px;}
 .breadcrumb a{text-decoration: underline;}
 .breadcrumb{

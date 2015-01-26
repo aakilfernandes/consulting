@@ -10,7 +10,7 @@ class BucketsController extends \BaseController {
 	 */
 	public function index()
 	{
-		return Auth::user()->buckets;
+		return Auth::user()->buckets()->orderBy('created_at','DESC')->get();
 	}
 
 	/**

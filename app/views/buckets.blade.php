@@ -7,7 +7,7 @@
 <div class="container" ng-controller="BucketsController">
 	<h1>Buckets <button class="btn btn-primary" ng-click="new()">New</button></h1>
 	<div class="alert alert-info text-center" show-debounced="isLoading">Loading Buckets</div>
-	<div class="panel panel-default" ng-repeat="bucket in buckets | reverse" ng-cloak>
+	<div class="panel panel-default" ng-repeat="bucket in buckets" ng-cloak>
 		<div class="panel-heading"><div class="row">
 			<div class="col-xs-8">
 				<h4 class="panel-title">

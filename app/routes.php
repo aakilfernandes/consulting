@@ -76,6 +76,7 @@ Route::group(['before'=>'auth'],function(){
 		Route::post('/api/buckets', 'BucketsController@store');
 		Route::put('/api/buckets/{id}', 'BucketsController@update');
 		Route::delete('/api/buckets/{id}', 'BucketsController@destroy');
+		
 		Route::put('/api/buckets/{bucket_id}/profiles/{id}', 'ProfilesController@update');
 	});
 });
