@@ -3,6 +3,7 @@
 class Bucket extends \Eloquent {
 
 	protected $fillable = ['name'];
+	protected $appends = ['openProfilesCount'];
 
 	public function __construct(){
 		$this->key = substr(str_shuffle(MD5(microtime())), 0, 24);
@@ -41,6 +42,10 @@ class Bucket extends \Eloquent {
 			->select(DB::raw("$field as value"))
 			->groupBy($field)
 			->get();
+	}
+
+	public function getOpenProfilesCountAttribute(){
+		return $this->profiles()->where('status_id','=','default')->count();
 	}
 
 }

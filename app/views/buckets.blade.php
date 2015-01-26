@@ -14,7 +14,7 @@
 					<a ng-href="/buckets/@{{bucket.id}}/profiles">@{{bucket.name}}</a>
 					<a class="glyphicon glyphicon-edit text-muted" ng-click="editName(bucket)" style="top:-2px"></a>
 				</h4>
-				12 open error profiles
+				@{{bucket.openProfilesCount}} open error profile@{{bucket.openProfilesCount!=1?'s':''}}
 			</div>
 			<div class="col-xs-4 text-right">
 				<a ng-href="/buckets/@{{bucket.id}}/profiles" class="btn btn-xs btn-primary">Explore</a>
