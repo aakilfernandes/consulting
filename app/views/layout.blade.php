@@ -30,7 +30,7 @@
 	{{HTML::script('/components/angular-timeago/src/timeAgo.js')}}
 	{{HTML::script('/components/angular-simple-storage/dist/angular-simpleStorage.js')}}
 	{{HTML::script('/components/angular-underscore/angular-underscore.min.js')}}
-	{{HTML::script('/js/angulytics.js')}}
+	{{HTML::script('/components/angulytics/angulytics.js')}}
 	{{HTML::script('/js/frontloader.js')}}
 	{{HTML::script('/js/isoform.js')}}
 	{{HTML::script('/js/app.js')}}

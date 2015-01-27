@@ -1,0 +1,14 @@
+{
+  "name": "angulytics",
+  "homepage": "https://github.com/angulytics/angulytics",
+  "_release": "a092e50024",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a092e5002426706a0dbc91f726cb295d3e9dbb28"
+  },
+  "_source": "git://github.com/angulytics/angulytics.git",
+  "_target": "*",
+  "_originalSource": "angulytics",
+  "_direct": true
+}

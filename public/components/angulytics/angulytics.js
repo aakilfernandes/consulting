@@ -858,8 +858,13 @@ app.config(function($provide){
 
 	$provide.decorator("$exceptionHandler", function($log,angulytics) {
     	return function (exception, cause) {
-    		
+   		
         	$log.error(exception.stack)
+
+            if(!angulytics.endpoint || !angulytics.key){
+                $log.warn('Missing angulytics endpoint and/or key')
+                return;
+            }
 
         	var data = TraceKit.computeStackTrace(exception)
         	

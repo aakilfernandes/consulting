@@ -1,0 +1,28 @@
+<html>
+	<head>
+		
+	</head>
+	<body>
+		<div ng-app="app">
+			<div fail></div>
+		</div>
+		<script src="../bower_components/angular/angular.js"></script>
+		<script src="../angulytics.js"></script>
+		<script>
+			var app = angular.module('app',['angulytics'])
+
+			app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider){
+				angulyticsProvider.$get = function(){
+					this.endpoint = 'http://localhost:8000/endpoints/1.0/1'
+					this.key = '8f33fdc9de2e520c42f6cc5b'
+					return this
+				}
+			})
+
+			app.directive('fail',function(){
+				console.log(x)
+			})
+
+		</script>
+	</body>
+</html>
