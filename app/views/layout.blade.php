@@ -10,7 +10,12 @@
 		<div class="container">
 			<a class="navbar-brand">Angulytics</a>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+				@if(Auth::user())
+					<li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+				@else
+					<li><a href="/logout">Sign In</a></li>
+					<li><a href="/join">Join</a></li>
+				@endif
 			</ul>
 		</div>
 	</nav>

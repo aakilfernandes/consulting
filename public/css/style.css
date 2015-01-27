@@ -48,3 +48,6 @@ a.ti-link{text-decoration: none;}
 [route="buckets/{bucket_id}/profiles/{profile_id}"] .clients td{
 	height:48px;
 }
+form .table{
+	table-layout: fixed;
+}

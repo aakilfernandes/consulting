@@ -24,7 +24,7 @@ Route::get('/join', function(){
 	return View::make('join');	
 });
 
-Route::post('/endpoints/{id}','ErrorsController@store');
+Route::post('/endpoints/{version}/{id}','ErrorsController@store');
 
 Route::group(['before'=>'csrf'],function(){
 	Route::post('/login', 'AuthController@login');
