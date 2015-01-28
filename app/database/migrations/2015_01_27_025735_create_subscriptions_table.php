@@ -12,9 +12,12 @@ class CreateSubscriptionsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('subscriptions',function($table){
+		Schema::create('subscriptions',function($table){
 			$table->increments('id');
-			$table->integer('bucket_user_id')->unsigined();
+			$table->integer('user_id')->unsigned()->index();
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+			$table->integer('bucket_id')->unsigned()->index();
+			$table->foreign('bucket_id')->references('id')->on('buckets')->onDelete('cascade');
 			$table->string('name');
 		});
 	}
