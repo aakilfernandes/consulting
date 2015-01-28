@@ -38,7 +38,7 @@ class ErrorsController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function store($bucket_id)
+	public function store($version,$bucket_id)
 	{
 		if(!Input::has('dataJson'))
 			return Response::json('Missing dataJson',403);

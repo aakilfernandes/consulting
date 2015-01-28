@@ -23,12 +23,6 @@ class ProfilesController extends \BaseController {
 		}
 
 		switch(Input::get('sort')){
-			case 'highestPriority':
-				$query
-					->join('statuses', 'status_id', '=', 'statuses.id')
-					->orderBy('statuses.priority','DESC')
-					->get(['profiles.*','statuses.priority']);
-				break;
 			case 'recentlySeen':
 				$query
 					->join('errors', 'profiles.id', '=', 'errors.profile_id')

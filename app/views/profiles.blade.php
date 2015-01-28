@@ -17,7 +17,7 @@
 					<div class="row">
 						<div class="col-xs-6 col-sm-12">
 							<select class="form-control"
-								ng-model="params.filters.status_id"
+								ng-model="params.filters.status"
 								ng-options="statusFilter.id as statusFilter.label for statusFilter in statusFilters"
 							></select>
 						</div>
@@ -44,10 +44,10 @@
 						</div>
 					</div>
 					<div class="alert alert-info text-center" show-debounced="isLoading">Loading Profiles</div>
-					<div class="alert alert-warning text-center" ng-cloak ng-show="!isLoading && response.total===0">
+					<div class="alert alert-warning text-center" ng-cloak ng-show="!isLoading && profilesFiltered.length===0">
 						No Profiles
 					</div>
-					<div class="panel panel-default" ng-repeat="profile in profiles" ng-cloak profile="profile" ng-hide="params.filters.status_id && profile.status_id != params.filters.status_id">
+					<div class="panel panel-default" ng-repeat="profile in profiles | filterIf:{status:params.filters.status}" ng-cloak profile="profile">
 						<div class="panel-body">
 							<span class="label label-warning label-xs notification" alt="Errors Count" tooltip="errors count" >@{{profile.errorsCount}}</span>
 							<div class="row">
@@ -76,8 +76,9 @@
 										href="/buckets/@{{frontloaded.bucket.id}}/profiles/@{{profile.id}}"
 										>Delete</a>
 									<div style="height:5px"></div>
-									<select class="form-control input-sm" ng-model="profile.status_id"
-										ng-options="status.id as status.label for status in frontloaded.statuses | orderBy:'order' ">
+									<select class="form-control input-sm" ng-model="profile.status"
+										ng-options="id as label for (id,label) in frontloaded.constants.statuses | orderBy:'order' "
+										ng-change="updateProfile(profile)">
 									</select>
 								</div>
 							</div>

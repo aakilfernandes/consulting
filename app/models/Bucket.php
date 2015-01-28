@@ -45,7 +45,7 @@ class Bucket extends \Eloquent {
 	}
 
 	public function getOpenProfilesCountAttribute(){
-		return $this->profiles()->where('status_id','=','default')->count();
+		return $this->profiles()->where('status','=','open')->count();
 	}
 
 }

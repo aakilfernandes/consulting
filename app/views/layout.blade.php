@@ -21,7 +21,7 @@
 	</nav>
 	<textarea frontload="csrfToken">{{csrf_token()}}</textarea>
 	<textarea frontload="inputs" frontload-type="json">{{json_encode(Input::all())}}</textarea>
-	<textarea frontload="statuses" frontload-type="json">{{Status::orderBy('order','ASC')->get()}}</textarea>
+	<textarea frontload="constants" frontload-type="json">{{json_encode(Config::get('constants'));}}</textarea>
 	@yield('content')
 	{{HTML::script('/components/underscore/underscore-min.js')}}
 	{{HTML::script('/components/angular/angular.js')}}

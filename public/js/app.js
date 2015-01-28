@@ -10,7 +10,7 @@ var app = angular.module('app',[
 
 app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider){
 	angulyticsProvider.$get = function(){
-		this.endpoint = 'http://localhost:8000/endpoints/1'
+		this.endpoint = 'http://localhost:8000/endpoints/v1/1'
 		this.key = '8f33fdc9de2e520c42f6cc5b'
 		return this
 	}
@@ -87,10 +87,13 @@ app.controller('BucketsController',function($scope,httpi,language){
 
 })
 
-app.controller('ProfilesController',function($scope,httpi,$local){
+app.controller('ProfilesController',function($scope,httpi,$local,$filter){
+
 	$scope.profiles = []
 	
-	$scope.statusFilters = angular.copy($scope.frontloaded.statuses)
+	$scope.statusFilters = Object.keys($scope.frontloaded.constants.statuses).map(function(key){
+		return {id:key,label:$scope.frontloaded.constants.statuses[key]}
+	})
 	$scope.statusFilters.unshift({id:undefined,label:'Any Status'})
 
 	$scope.sorts = [
@@ -105,8 +108,8 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 	$scope.params = {
 		bucket_id: $scope.frontloaded.bucket.id
 		,filters: {
-			status_id: $local.get('profilesStatusFilter') ?
-				$local.get('profilesStatusFilter') : 'default'
+			status: $local.get('profilesStatusFilter') && $scope.frontloaded.constants.statuses[$local.get('profilesStatusFilter')] ?
+				$local.get('profilesStatusFilter') : 'open'
 		}
 		,sort:$local.get('profilesSort') ? $local.get('profilesSort') : 'recentlyCreated'
 		,pageSize:5
@@ -114,9 +117,14 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 
 	$scope.$watch('params',function(value,oldValue){
 		if(angular.equals(value,oldValue)) return
-		$local.set('profilesStatusFilter',$scope.params.filters.status_id)
+		$local.set('profilesStatusFilter',$scope.params.filters.status)
 		$local.set('profilesSort',$scope.params.sort)
 		loadProfiles()
+	},true)
+
+	$scope.$watch('profiles',function(profiles){
+		//console.log(profiles)
+		$scope.profilesFiltered = $filter('filterIf')(profiles,{status:$scope.params.filters.status});
 	},true)
 
 
@@ -135,30 +143,14 @@ app.controller('ProfilesController',function($scope,httpi,$local){
 		})
 	}
 
-})
-
-app.directive('profile',function(httpi){
-
-	return {
-		scope:{
-			profile:'=profile'
-			,params:'=params'
-		},link:function(scope,element,attributes){
-
-			scope.$watch('profile',function(profile,oldProfile){
-
-				if(angular.equals(profile,oldProfile)) return
-
-				httpi({
-					method:'PUT'
-					,url:'/api/buckets/:bucket_id/profiles/:id'
-					,data:angular.copy(profile)
-				})
-
-			},true)
-
-		}
+	$scope.updateProfile = function(profile){
+		httpi({
+			method:'PUT'
+			,url:'/api/buckets/:bucket_id/profiles/:id'
+			,data:angular.copy(profile)
+		})
 	}
+
 })
 
 app.directive('showStack',function($modal){
@@ -342,6 +334,19 @@ app.filter('fileName', function() {
     return urlParts[urlParts.length-1]
   };
 });
+
+app.filter('filterIf', function() {
+  return function(values,params) {
+
+  	Object.keys(params).forEach(function(key){
+  		if(!params[key]) delete params[key]
+  	})
+
+  	return _.where(values,params)
+
+  };
+});
+
 
 app.filter('withoutFileName', function() {
   return function(url) {

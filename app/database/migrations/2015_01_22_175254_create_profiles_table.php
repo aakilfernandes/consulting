@@ -20,17 +20,12 @@ class CreateProfilesTable extends Migration {
 				->references('id')
 				->on('buckets')
 				->onDelete('cascade');
-			$table->string('status_id')->default('default')->index();
-			$table
-				->foreign('status_id')
-				->references('id')
-				->on('statuses');
 			$table->integer('reference_id')->unsigned()->index()->nullable();
 			$table
 				->foreign('reference_id')
 				->references('id')
 				->on('references');
-			$table->boolean('isCollapsed')->default(1);
+			$table->string('status')->default('open');
 			$table->string('summary')->index();
 			$table->string('alias')->nullable();
 			$table->string('message');

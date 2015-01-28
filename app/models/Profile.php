@@ -1,9 +1,9 @@
 <?php
 
 class Profile extends \Eloquent {
-	protected $fillable = ['bucket_id','summary','message','name','status_id','isCollapsed'];
+	protected $fillable = ['bucket_id','summary','message','name','status'];
 
-	protected $appends = ['errorsCount','lastError','alias','documentationLink','clients','isCollapsed'];
+	protected $appends = ['errorsCount','lastError','alias','documentationLink','clients'];
 
 	public function __construct(){
 
@@ -24,14 +24,6 @@ class Profile extends \Eloquent {
 
 	public function reference(){
 		return $this->belongsTo('Reference');
-	}
-
-	public function status(){
-		return $this->belongsTo('Status');
-	}
-
-	public function getIsCollapsedAttribute(){
-		return (boolean) $this->attributes['isCollapsed'];
 	}
 
 	public function getAliasAttribute(){
