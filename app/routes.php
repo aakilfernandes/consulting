@@ -78,6 +78,7 @@ Route::group(['before'=>'auth'],function(){
 		Route::delete('/api/buckets/{id}', 'BucketsController@destroy');
 		
 		Route::put('/api/buckets/{bucket_id}/profiles/{id}', 'ProfilesController@update');
+		Route::put('/api/subscriptions/{id}', 'SubscriptionsController@update');
 	});
 });
 

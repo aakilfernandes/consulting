@@ -3,10 +3,17 @@
 class Bucket extends \Eloquent {
 
 	protected $fillable = ['name'];
-	protected $appends = ['openProfilesCount'];
+	protected $appends = ['openProfilesCount','subscription'];
 
 	public function __construct(){
 		$this->key = substr(str_shuffle(MD5(microtime())), 0, 24);
+
+		$this->saved(function($bucket){
+			$subscription = new Subscription;
+			$subscription->user_id = Auth::user()->id;
+			$subscription->bucket_id = $bucket->id;
+			$subscription->save();
+		});
 	}
 
 	public function users(){
@@ -19,6 +26,18 @@ class Bucket extends \Eloquent {
 
 	public function errors(){
 		return $this->hasMany('Error');
+	}
+
+	public function getIsInstalledAttribute(){
+		return (boolean) $this->attributes['isInstalled'];
+	}
+
+	public function getSubscriptionAttribute(){
+		if(!Auth::user()) return null;
+
+		return Subscription::where('bucket_id',$this->id)
+			->where('user_id',Auth::user()->id)
+			->first();
 	}
 
 	public function getErrorsFiltersOptionsAttribute(){

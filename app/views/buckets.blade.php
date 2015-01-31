@@ -6,18 +6,30 @@
 </textarea>
 <div class="container" ng-controller="BucketsController">
 	<h1>Buckets <button class="btn btn-primary" ng-click="new()">New</button></h1>
-	<div class="alert alert-info text-center" show-debounced="isLoading">Loading Buckets</div>
+	<p>A bucket contains all the data for a single app or website.</p>
+	<div class="alert alert-info" ng-cloak ng-show="buckets.length===0">
+		You don't have any buckets. You should create one.
+	</div>
+	<div show-debounced="isLoading" class="alert alert-info" ng-cloak>
+		Loading...
+	</div>
 	<div class="panel panel-default" ng-repeat="bucket in buckets" ng-cloak>
 		<div class="panel-heading"><div class="row">
 			<div class="col-xs-8">
 				<h4 class="panel-title">
 					<a ng-href="/buckets/@{{bucket.id}}/profiles">@{{bucket.name}}</a>
-					<a class="glyphicon glyphicon-edit text-muted" ng-click="editName(bucket)" style="top:-2px"></a>
+					<a class="ti ti-pencil" ng-click="editName(bucket)"
+						style="
+							margin-top: -2px;
+							position: absolute;
+							font-size: .7em;
+							"
+					></a>
 				</h4>
 				@{{bucket.openProfilesCount}} open error profile@{{bucket.openProfilesCount!=1?'s':''}}
 			</div>
 			<div class="col-xs-4 text-right">
-				<a ng-href="/buckets/@{{bucket.id}}/profiles" class="btn btn-xs btn-primary">Explore</a>
+				<a ng-href="/buckets/@{{bucket.id}}/profiles" class="btn btn-xs btn-primary" ng-click="verifyInstallation(bucket,$event)">Explore</a>
 				<button ng-click="delete(bucket,$index)" class="btn btn-xs btn-danger">Delete</button>
 			</div>
 		</div></div>
@@ -30,13 +42,30 @@
 				</tr>
 				<tr>
 					<td>Status</td>
-					<td>Not installed</td>
+					<td>
+						<span ng-show="!bucket.isInstalled">
+							<span class="ti-alert text-warning"></span>
+							Installation not verified
+						</span>
+						<span ng-show="bucket.isInstalled">
+							Installation verified
+						</span>
+					</td>
 				</tr>
 			</table>
-			<h4>Email Notifications</h4>
-			<label><input type="checkbox"> When new error profiles are created</label>
-			<br><label><input type="checkbox"> When error profile marked as closed registers a new error</label>
-			<br><label><input type="checkbox"> A daily summary</label>
+			<h4>Send me an email notification when: </h4>
+			<label>
+				<input type="checkbox"
+					ng-model="bucket.subscription.profileCreated"
+					ng-change="editSubscription(bucket.subscription)">
+				New error profiles are created
+			</label>
+			<br><label>
+				<input type="checkbox"
+					ng-model="bucket.subscription.profileReopened"
+					ng-change="editSubscription(bucket.subscription)">
+				Error profile marked as closed registers a new error
+			</label>
 		</div>
 	</div>
 </div>

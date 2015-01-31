@@ -2,6 +2,7 @@
 
 @section('content')
 	<textarea frontload="bucket" frontload-type="json">{{$bucket}}</textarea>
+	<textarea frontload="profiles" frontload-type="json">{{$bucket->profiles}}</textarea>
 
 	<div class="container">
 		<ol class="breadcrumb">
@@ -43,7 +44,7 @@
 							></div>
 						</div>
 					</div>
-					<div class="alert alert-info text-center" show-debounced="isLoading">Loading Profiles</div>
+					<div class="alert alert-info text-center" show-debounced="isLoading" ng-cloak>Loading Profiles</div>
 					<div class="alert alert-warning text-center" ng-cloak ng-show="!isLoading && profilesFiltered.length===0">
 						No Profiles
 					</div>

@@ -6,4 +6,5 @@ return [
 			,'closed'=>'Closed'
 			,'ignored'=>'Ignored'
 		]
+	,'subscriptions'=>['errorProfilesCreated','errorProfilesOpened','dailySummary']
 ];

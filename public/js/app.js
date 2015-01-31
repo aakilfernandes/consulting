@@ -37,15 +37,8 @@ app.run(function($rootScope,$http,frontloaded) {
 
 
 
-app.controller('BucketsController',function($scope,httpi,language){
-	$scope.isLoading = true
-	httpi({
-		method:'GET'
-		,url:'/api/buckets'
-	}).success(function(buckets){
-		$scope.buckets = buckets
-		$scope.isLoading = false
-	})
+app.controller('BucketsController',function($scope,httpi,language,frontloaded){
+	$scope.buckets = frontloaded.buckets
 
 	$scope.new = function(){
 		var name = window.prompt(language.bucketName);
@@ -85,11 +78,27 @@ app.controller('BucketsController',function($scope,httpi,language){
 		$scope.buckets.splice(index,1)
 	}
 
+	$scope.verifyInstallation = function(bucket,$event){
+		if(bucket.isInstalled) return
+
+		if(!confirm(language.bucketNotInstalled))
+			$event.preventDefault()
+	}
+
+	$scope.editSubscription = function(subscription){
+		httpi({
+			method:'PUT'
+			,url:'/api/subscriptions/:id'
+			,data:subscription
+		})
+	}
+
 })
 
 app.controller('ProfilesController',function($scope,httpi,$local,$filter){
 
 	$scope.profiles = []
+	$scope.isLoading = false
 	
 	$scope.statusFilters = Object.keys($scope.frontloaded.constants.statuses).map(function(key){
 		return {id:key,label:$scope.frontloaded.constants.statuses[key]}
@@ -127,8 +136,6 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter){
 		$scope.profilesFiltered = $filter('filterIf')(profiles,{status:$scope.params.filters.status});
 	},true)
 
-
-	loadProfiles()
 
 	function loadProfiles(){
 		$scope.isLoading = true
@@ -275,7 +282,8 @@ app.factory('hapi',function($rootScope,httpi){
 app.factory('language', function() {
   return {
   	bucketName:'What should we name your bucket?'
-  	,bucketDelete:'Are you sure? Delting buckets will also delete the data associated with them'
+  	,bucketDelete:'Are you sure? Delting this bucket will also delete the data associated with it'
+  	,bucketNotInstalled:"You haven't installed this bucket yet, so there won't be anything to explore. Continue anyways?"
   }
 });
 
@@ -362,9 +370,10 @@ app.directive('showDebounced',function($timeout){
 		scope:{
 			isShowing:'=showDebounced'
 		},link:function(scope,element){
+			element.css('display',scope.isShowing?'':'none')
 			var timeout
-			scope.$watch('isShowing',function(value){
-				
+			scope.$watch('isShowing',function(value,oldValue){
+				if(angular.equals(value,oldValue)) return
 
 				if(!value){
 					element.css('display','')

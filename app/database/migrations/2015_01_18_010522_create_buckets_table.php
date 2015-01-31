@@ -14,6 +14,7 @@ class CreateBucketsTable extends Migration {
 	{
 		Schema::create('buckets',function($table){
 			$table->increments('id');
+			$table->boolean('isInstalled')->default(0);
 			$table->string('name')->nullable();
 			$table->string('key');
 			$table->timestamps();

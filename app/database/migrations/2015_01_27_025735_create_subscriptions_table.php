@@ -18,7 +18,9 @@ class CreateSubscriptionsTable extends Migration {
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->integer('bucket_id')->unsigned()->index();
 			$table->foreign('bucket_id')->references('id')->on('buckets')->onDelete('cascade');
-			$table->string('name');
+			$table->boolean('profileCreated')->default(true);
+			$table->boolean('profileReopened')->default(true);
+			$table->timestamps();
 		});
 	}
 

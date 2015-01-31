@@ -13,7 +13,7 @@ body{background-color: #f3f3f3;color: #444;}
 	padding-bottom: 20px;
 }
 [ng-cloak],[frontload]{display: none}
-a.ti-link{text-decoration: none;}
+a.ti,a.glyphicon{text-decoration: none; cursor: pointer;}
 *:first-child{margin-top: 0}
 .modal-dialog{padding-top: 20px;}
 .breadcrumb{background-color: transparent;}
