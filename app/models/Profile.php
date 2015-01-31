@@ -47,13 +47,15 @@ class Profile extends \Eloquent {
 	public function sendEmails(){
 		$profile=$this;
 		$subscriptions = $this->bucket->subscriptions;
-		
+
 		foreach($subscriptions as $subscription)
-			Mail::send('emails.profile',['profile'=>$this],function($message) use($profile,$subscription){
-				$message
-					->to($subscription->user->email)
-					->subject('[New] '.$profile->alias);
-			});
+			Email::messages()->send([
+			    'subject' => '[New] '.$profile->alias
+			    ,'html' => View::make('emails.profile',['profile'=>$this])
+			    ,'from_email' => 'aakil@angulytics.com'
+			    ,'to' => array(['email'=>$subscription->user->email])
+				,'async'=>true    
+			]);
 	}
 
 	public function getArgumentsStringAttribute(){

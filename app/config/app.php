@@ -123,6 +123,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Way\Generators\GeneratorsServiceProvider',
 		'Passioncoder\SimpleCurl\ServiceProvider',
+		'Sairiz\Mandrill\MandrillServiceProvider',
 
 	),
 
@@ -193,7 +194,7 @@ return array(
 		'UseragentParser'   => 'UAParser\Parser',
 		'Isoform'           => 'Isoform\Isoform',
 		'Curl'              => 'Passioncoder\SimpleCurl\Facade',
-		'Crawler'			=> 'Symfony\Component\DomCrawler\Crawler'
+		'Crawler'			=> 'Symfony\Component\DomCrawler\Crawler',
 	),
 
 );
