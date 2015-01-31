@@ -10,8 +10,8 @@ var app = angular.module('app',[
 
 app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider){
 	angulyticsProvider.$get = function(){
-		this.endpoint = 'http://localhost:8000/endpoints/v1/1'
-		this.key = '8f33fdc9de2e520c42f6cc5b'
+		this.endpoint = 'http://localhost:8000/endpoints/v1/6'
+		this.key = 'e8525608795ea5a4c0354d38'
 		return this
 	}
 
@@ -92,6 +92,8 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded){
 			,data:subscription
 		})
 	}
+
+	console.log(x)
 
 })
 

@@ -4,18 +4,27 @@ class Error extends \Eloquent {
 	protected $fillable = ['message','name','url','useragent','stack'];
 	protected $appends = ['stack'];
 
-	public function __construct(){
-		$this->saving(function($error){
-			
+	public static function boot(){
+        parent::boot();
+
+		Error::saving(function($error){
+
 			$parsedUseragent = $error->parseUseragent();
 			$error->browser = $parsedUseragent->ua->family;
 			$error->os = $parsedUseragent->os->family;
 			$error->device = $parsedUseragent->device->family;
 
 			$error->summary = $error->determineSummary();
-			$error->profile_id = $error->determineProfileId();
+			
+			$profile = $error->determineProfile();
+			$error->profile_id = $profile->id;
 
-			$parsedUrl = parse_url($this->url);
+			if($profile->status=='closed'){
+				$profile->status = 'open';
+				$profile->save();
+			}
+
+			$parsedUrl = parse_url($error->url);
 			foreach([
 				'host'=>'urlHost'
 				,'path'=>'urlPath'
@@ -23,7 +32,7 @@ class Error extends \Eloquent {
 				,'fragment'=>'urlFragment'
 			] as $part => $field){
 				if(!isset($parsedUrl[$part])) continue;
-				$this->{$field} = $parsedUrl[$part];
+				$error->{$field} = $parsedUrl[$part];
 			}
 
 			return true;
@@ -78,17 +87,17 @@ class Error extends \Eloquent {
 		return $parser->parse($this->useragent);
 	}
 
-	public function determineProfileId(){
+	public function determineProfile(){
 		
 		$profile = $this->bucket->profiles()->where('summary','=',$this->summary)->first();
 		
-		if($profile) return $profile->id;
+		if($profile) return $profile;
 
 		$profile = new Profile;
 		$profile->fill($this->attributes);
 		$profile->save();
 
-		return $profile->id;
+		return $profile;
 	}
 
 }

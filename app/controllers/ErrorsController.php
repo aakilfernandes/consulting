@@ -59,6 +59,7 @@ class ErrorsController extends \BaseController {
 		if($data['_key'] !== $bucket->key)
 			return Response::json('Bad key',403);
 
+
 		$error = new Error;
 		$error->bucket_id = $bucket_id;
 		$error->fill($data);

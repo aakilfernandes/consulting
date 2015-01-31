@@ -5,14 +5,28 @@ class Profile extends \Eloquent {
 
 	protected $appends = ['errorsCount','lastError','alias','documentationLink','clients'];
 
-	public function __construct(){
 
-		$this->saving(function($profile){
+	public static function boot()
+    {
+        parent::boot();
+
+        Profile::creating(function($profile){
 			$profile->reference_id = $profile->determineReferenceId();
+			return true;
+		});
+
+		Profile::created(function($profile){
+			//$profile->sendEmails('profileCreated');
+			return true;
+		});
+
+		Profile::updating(function($profile){
+			if($profile->status == 'open' && $profile->getOriginal()['status'] == 'closed')
+				$profile->sendEmails('profileReopened');
 
 			return true;
 		});
-	}
+    }
 
 	public function bucket(){
 		return $this->belongsTo('Bucket');
@@ -27,7 +41,7 @@ class Profile extends \Eloquent {
 	}
 
 	public function getAliasAttribute(){
-		if($this->attributes['alias'])
+		if(isset($this->attributes['alias']))
 			return $this->attributes['alias'];
 		
 		if($this->reference){
@@ -44,15 +58,26 @@ class Profile extends \Eloquent {
 		return URL::to("/buckets/{$this->bucket_id}/profiles/{$this->id}");
 	}
 
-	public function sendEmails(){
+	public function sendEmails($type){
+		$this->flushEventListeners();
 		$profile=$this;
-		$subscriptions = $this->bucket->subscriptions;
+		$subscriptions = $this->bucket->subscriptions()->where($type,1)->get();
+
+		switch($type){
+			case 'profileCreated':
+				$tag = 'New';
+				break;
+			case 'profileReopened':
+				$tag = 'Re-Opened';
+				break;
+		}
 
 		foreach($subscriptions as $subscription)
 			Email::messages()->send([
-			    'subject' => '[New] '.$profile->alias
-			    ,'html' => View::make('emails.profile',['profile'=>$this])
+			    'subject' => "[$tag] {$profile->alias}"
+			    ,'html' => View::make('emails.profile',compact('profile','tag'))->render()
 			    ,'from_email' => 'aakil@angulytics.com'
+			    ,'from_name' => 'Angulytics'
 			    ,'to' => array(['email'=>$subscription->user->email])
 				,'async'=>true    
 			]);
