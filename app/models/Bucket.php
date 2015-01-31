@@ -28,6 +28,10 @@ class Bucket extends \Eloquent {
 		return $this->hasMany('Error');
 	}
 
+	public function subscriptions(){
+		return $this->hasMany('Subscription');
+	}
+
 	public function getIsInstalledAttribute(){
 		return (boolean) $this->attributes['isInstalled'];
 	}

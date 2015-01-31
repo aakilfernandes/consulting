@@ -7,7 +7,8 @@
 	"require": {
 		"laravel/framework": "4.2.*"
 		,"ua-parser/uap-php": "dev-master"
-		,"passioncoder/simplecurl": "dev-master"
+		,"passioncoder/simplecurl": "dev-master",
+		"guzzlehttp/guzzle": "~5.2"
 	},"require-dev": {
 	    "way/generators": "~2.0"
 	    ,"phpunit/phpunit":"4.0.*@dev"

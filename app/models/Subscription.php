@@ -5,6 +5,14 @@ class Subscription extends \Eloquent {
 
 	protected $appends = ['profileCreated','profileReopened'];
 
+	public function user(){
+		return $this->belongsTo('User');
+	}
+
+	public function bucket(){
+		return $this->belongsTo('Bucket');
+	}
+
 	public function getProfileCreatedAttribute(){
 		return (boolean) $this->attributes['profileCreated'];
 	}

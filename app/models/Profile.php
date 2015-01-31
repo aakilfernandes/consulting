@@ -40,6 +40,22 @@ class Profile extends \Eloquent {
 		return $this->name.': '.$this->message;
 	}
 
+	public function getUrlAttribute(){
+		return URL::to("/buckets/{$this->bucket_id}/profiles/{$this->id}");
+	}
+
+	public function sendEmails(){
+		$profile=$this;
+		$subscriptions = $this->bucket->subscriptions;
+		
+		foreach($subscriptions as $subscription)
+			Mail::send('emails.profile',['profile'=>$this],function($message) use($profile,$subscription){
+				$message
+					->to($subscription->user->email)
+					->subject('[New] '.$profile->alias);
+			});
+	}
+
 	public function getArgumentsStringAttribute(){
 		$parsedDocumentationUrl = parse_url($this->documentationLink);
 		
