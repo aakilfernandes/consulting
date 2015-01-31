@@ -8,7 +8,7 @@ class Bucket extends \Eloquent {
 	public function __construct(){
 		$this->key = substr(str_shuffle(MD5(microtime())), 0, 24);
 
-		$this->saved(function($bucket){
+		$this->created(function($bucket){
 			$subscription = new Subscription;
 			$subscription->user_id = Auth::user()->id;
 			$subscription->bucket_id = $bucket->id;
