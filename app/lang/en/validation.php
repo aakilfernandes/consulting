@@ -35,7 +35,7 @@ return array(
 	"digits"               => "The :attribute must be :digits digits.",
 	"digits_between"       => "The :attribute must be between :min and :max digits.",
 	"email"                => "The :attribute must be a valid email address.",
-	"exists"               => "The selected :attribute is invalid.",
+	"exists"               => "Email has not been registered yet.",
 	"image"                => "The :attribute must be an image.",
 	"in"                   => "The selected :attribute is invalid.",
 	"integer"              => "The :attribute must be an integer.",
@@ -62,7 +62,7 @@ return array(
 	"required_with_all"    => "The :attribute field is required when :values is present.",
 	"required_without"     => "The :attribute field is required when :values is not present.",
 	"required_without_all" => "The :attribute field is required when none of :values are present.",
-	"same"                 => "The :attribute and :other must match.",
+	"same"                 => "The :other and :attribute must match.",
 	"size"                 => array(
 		"numeric" => "The :attribute must be :size.",
 		"file"    => "The :attribute must be :size kilobytes.",

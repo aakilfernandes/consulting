@@ -1,5 +1,10 @@
 <?PHP
 
+function randomToken(){
+	$charLength = rand(12,24);
+	return substr(str_shuffle(MD5(microtime())), 0, $charLength);
+}
+
 function slugify($str) {
     $search = array('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
     $replace = array('s', 't', 's', 't', 's', 't', 's', 't', 'i', 'a', 'a', 'i', 'a', 'a', 'e', 'E');

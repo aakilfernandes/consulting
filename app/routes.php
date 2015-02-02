@@ -24,11 +24,18 @@ Route::get('/join', function(){
 	return View::make('join');	
 });
 
+Route::get('/reset',function(){
+	return View::make('reset');
+});
+
+Route::get('/reset-complete', 'AuthController@resetComplete');
+
 Route::post('/endpoints/{version}/{id}','ErrorsController@store');
 
 Route::group(['before'=>'csrf'],function(){
 	Route::post('/login', 'AuthController@login');
 	Route::post('/join', 'AuthController@join');
+	Route::post('/reset', 'AuthController@reset');
 });
 
 Route::group(['before'=>'auth'],function(){

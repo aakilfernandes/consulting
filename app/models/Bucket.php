@@ -6,7 +6,8 @@ class Bucket extends \Eloquent {
 	protected $appends = ['openProfilesCount','subscription'];
 
 	public function __construct(){
-		$this->key = substr(str_shuffle(MD5(microtime())), 0, 24);
+		
+		$this->key = randomToken();
 
 		$this->created(function($bucket){
 			$subscription = new Subscription;

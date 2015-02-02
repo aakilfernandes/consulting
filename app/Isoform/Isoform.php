@@ -3,9 +3,10 @@
 namespace Isoform;
 use \Illuminate\Support\Facades as Facades;
 
-class Isoform extends \Eloquent {
+class Isoform {
 
 	public static function ajaxValidationResponse(){
+		$namespace = Facades\Input::get('namespace');
 		$values = json_decode(Facades\Input::get('values'),true);
 		$fields = json_decode(Facades\Input::get('fields'),true);
 
@@ -27,48 +28,41 @@ class Isoform extends \Eloquent {
 			return Facades\Response::json($results,400);
 	}
 
-	public static function validateInputs($fieldNames){
-		$fields = Isoform::fields($fieldNames);
-		$values = Isoform::namespacedInputs($fieldNames);
-		return Validator::validate($values,$fields);
+	public static function getLastStringPart($string,$delimeter = '.'){
+		$stringParts = explode($delimeter,$string);
+		return array_pop($stringParts);
 	}
 
-	public static function namespacedInputs($fieldNames){
+	public static function getFieldNamesInNamespace($namespace){
+		$fields = Facades\Config::get("isoform.$namespace");
+		return array_keys($fields);
+	}
+
+	public static function validateInputs($fieldNames){
+		$namespace = Facades\Input::get('_isoformNamespace');
+		$fields = Isoform::fields($namespace,$fieldNames);
 		$values = Facades\Input::all();
-		foreach($fieldNames as $fieldName){
-			if(isset($values[$fieldName])) continue;
 
-			$fieldNameParts = explode('.',$fieldName);
-			$fieldNameLast = end($fieldNameParts);
-
-
-			if(!isset($values[$fieldNameLast])) continue;
-
-			$values[$fieldName] = $values[$fieldNameLast];
-			unset($values[$fieldNameLast]);
-		}
-		return $values;
+		return Validator::validate($values,$fields);
 	}
 
 	public static function redirect($url,$fieldNames,$messages){
 		return Facades\Redirect::to($url)
-			->with('isoformValues',Isoform::namespacedInputs($fieldNames))
+			->with('isoformValues',Facades\Input::all())
 			->with('isoformMessages',$messages);
 	}
 
-	public static function fields($fieldNames){
+	public static function fields($namespace,$fieldNames){
 		$fields = [];
 		foreach($fieldNames as $fieldName){
-			$rules = Facades\Config::get("isoform.$fieldName");
+			$rules = Facades\Config::get("isoform.$namespace.$fieldName");
 			if($rules)
 				$fields[$fieldName]=$rules;
 		}
 		return $fields;
 	}
 
-	public static function directive(){
-		$ids = func_get_args();
-		
+	public static function directive($namespace,$ids){	
 		if(Facades\Session::has('isoformMessages'))
 			$messages = Facades\Session::get('isoformMessages');
 		else 
@@ -80,9 +74,10 @@ class Isoform extends \Eloquent {
 			$values = new \stdClass;
 
 		$isoformSeed = [
-			'fields'=>Isoform::fields($ids)
+			'fields'=>Isoform::fields($namespace,$ids)
 			,'messages'=>$messages
 			,'values'=>$values
+			,'namespace'=>$ids
 		];
 
 		return 'isoform="'.htmlspecialchars(json_encode($isoformSeed)).'"';

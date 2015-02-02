@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
 	<h1>Login</h1>
-	<form {{Isoform::directive('login.email','login.password')}} method="post" action="">
+	<form {{Isoform::directive('login',['email','password'])}} method="post" action="">
 		@if(Session::has('isoformMessages'))
 		<noscript><div class="alert alert-danger"><ul>
 			@foreach(Session::get('isoformMessages') as $field=>$messages)
@@ -18,8 +18,8 @@
 			<tr>
 				<td>Email</td>
 				<td>
-					<input name="email" isoform-validate="login.email" class="form-control" type="email" required ng-model="email">
-					<div isoform-messages="login.email">
+					<input name="email" isoform-validate="email" class="form-control" type="email" required ng-model="email">
+					<div isoform-messages="email">
 						<p class="text-danger" ng-repeat="message in isoformMessages" ng-cloak>
 							@{{message}}
 						</p>
@@ -29,8 +29,8 @@
 			<tr>
 				<td>Password</td>
 				<td>
-					<input name="password" isoform-validate="login.password" class="form-control" type="password" ng-model="password">
-					<div isoform-messages="login.password">
+					<input name="password" isoform-validate="password" class="form-control" type="password" ng-model="password">
+					<div isoform-messages="password">
 						<p class="text-danger" ng-repeat="message in isoformMessages" ng-cloak>
 							@{{message}}
 						</p>
