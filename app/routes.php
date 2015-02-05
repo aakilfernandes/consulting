@@ -11,6 +11,10 @@
 |
 */
 
+Route::get('/', function(){
+	return View::make('landing');	
+});
+
 Route::get('/login', function(){
 	return View::make('login');	
 });
