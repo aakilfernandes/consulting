@@ -93,6 +93,9 @@ Route::group(['before'=>'auth'],function(){
 	Route::get('/api/buckets/{bucket_id}/profiles/{profile_id}/errors', 'ErrorsController@index');
 
 	Route::group(['before'=>'csrf'],function(){
+		Route::post('/user', 'UserController@update');
+		Route::post('/user/password', 'UserController@updatePassword');
+
 		Route::post('/api/buckets', 'BucketsController@store');
 		Route::put('/api/buckets/{id}', 'BucketsController@update');
 		Route::delete('/api/buckets/{id}', 'BucketsController@destroy');
@@ -100,7 +103,9 @@ Route::group(['before'=>'auth'],function(){
 		Route::put('/api/buckets/{bucket_id}/profiles/{id}', 'ProfilesController@update');
 		Route::put('/api/subscriptions/{id}', 'SubscriptionsController@update');
 
-		Route::post('/api/checkout', 'UsersController@checkout');
+		Route::post('/api/user/checkout', 'UserController@checkout');
+		Route::post('/api/user/cancel', 'UserController@cancel');
+		Route::post('/api/user/resume', 'UserController@resume');
 	});
 });
 

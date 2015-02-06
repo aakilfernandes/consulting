@@ -5,6 +5,7 @@
 	{{Auth::user()->buckets}}
 </textarea>
 <div class="container" ng-controller="BucketsController">
+	@include('tabs',['tabId'=>'buckets'])
 	<h1>Buckets <button class="btn btn-primary" ng-click="new()">New</button></h1>
 	<p>A bucket contains all the data for a single app or website.</p>
 	<div class="alert alert-info" ng-cloak ng-show="buckets.length===0">

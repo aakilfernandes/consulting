@@ -30,5 +30,16 @@ return [
 			'required'=>[]
 			,'same'=>['password']
 		]
+	],'user'=>[
+		'email'=>[
+			'required'=>[]
+			,'email'=>[]
+			,'mineOrUnique'=>['email']
+		]
+	],'password'=>[
+		'password'=>[]
+		,'password_confirmation'=>[
+			'same'=>['password']
+		]
 	]
 ];

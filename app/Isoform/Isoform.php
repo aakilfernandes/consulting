@@ -5,6 +5,11 @@ use \Illuminate\Support\Facades as Facades;
 
 class Isoform {
 
+	public function __construct($namespace){
+		$this->namespace = $namespace;
+		$this->fields = Facades\Config::get('isoform.'.$namespace);
+	}
+
 	public static function ajaxValidationResponse(){
 		$namespace = Facades\Input::get('namespace');
 		$values = json_decode(Facades\Input::get('values'),true);
@@ -38,7 +43,7 @@ class Isoform {
 		return array_keys($fields);
 	}
 
-	public static function validateInputs($fieldNames){
+	public function validateInputs(){
 		$namespace = Facades\Input::get('_isoformNamespace');
 		$fields = Isoform::fields($namespace,$fieldNames);
 		$values = Facades\Input::all();
@@ -46,10 +51,10 @@ class Isoform {
 		return Validator::validate($values,$fields);
 	}
 
-	public static function redirect($url,$fieldNames,$messages){
+	public static function redirect($namespace,$url,$fieldNames,$messages){
 		return Facades\Redirect::to($url)
-			->with('isoformValues',Facades\Input::all())
-			->with('isoformMessages',$messages);
+			->with('isoformValues'.$namespace,Facades\Input::all())
+			->with('isoformMessages'.$namespace,$messages);
 	}
 
 	public static function fields($namespace,$fieldNames){
@@ -63,13 +68,13 @@ class Isoform {
 	}
 
 	public static function directive($namespace,$ids){	
-		if(Facades\Session::has('isoformMessages'))
-			$messages = Facades\Session::get('isoformMessages');
+		if(Facades\Session::has('isoformMessages'.$namespace))
+			$messages = Facades\Session::get('isoformMessages'.$namespace);
 		else 
 			$messages = new \stdClass;
 
-		if(Facades\Session::has('isoformValues'))
-			$values = Facades\Session::get('isoformValues');
+		if(Facades\Session::has('isoformValues'.$namespace))
+			$values = Facades\Session::get('isoformValues'.$namespace);
 		else 
 			$values = new \stdClass;
 
@@ -83,11 +88,11 @@ class Isoform {
 		return 'isoform="'.htmlspecialchars(json_encode($isoformSeed)).'"';
 	}
 
-	public static function messages(){
-		if(!Facades\Session::get('isoformMessages'))
+	public static function messages($namespace){
+		if(!Facades\Session::get('isoformMessages'.$namespace))
 			return new \stdClass;
 		else
-			return Facades\Session::get('isoformMessages');
+			return Facades\Session::get('isoformMessages'.$namespace);
 	}
 
 }

@@ -59,6 +59,23 @@ $framework = $app['path.base'].
 
 require $framework.'/Illuminate/Foundation/start.php';
 
+
+/*
+|--------------------------------------------------------------------------
+| Custom stuff
+|--------------------------------------------------------------------------
+*/
+
+Validator::extend('mineOrUnique', function($attribute, $value, $parameters)
+{
+	$field = $parameters[0];
+	
+	if(Auth::user()->{$field}==$value)
+		return true;
+
+	return User::where($field,'=',$value)->count()==0;
+});
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

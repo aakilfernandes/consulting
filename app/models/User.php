@@ -40,6 +40,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Billa
 		return $this->subscribed();
 	}
 
+	public function getIsOnGracePeriodAttribute(){
+		return $this->onGracePeriod();
+	}
+
+	public function getHasEverSubscribedAttribute(){
+		return $this->everSubscribed();
+	}
+
 	public function getPlanAttribute(){
 		if(!$this->isSubscribed)
 			return Config::get('constants.plans')[Config::get('plans.defaultPlanId')];

@@ -18,4 +18,8 @@ return [
 	],'defaultPlanId'=>'hacker'
 	,'trialDays'=>14
 	,'stripeKey'=>'pk_test_XrJT5C9ipwgxQpcoERCVF0xY'
+	,'tabs'=>[
+		'buckets'=>'Buckets'
+		,'account'=>'Account'
+	]
 ];

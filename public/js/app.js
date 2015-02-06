@@ -35,7 +35,29 @@ app.run(function($rootScope,$http,frontloaded) {
 	$http.defaults.headers.delete = { 'Content-Type' : 'application/json' };
 });
 
+app.controller('AccountController',function($scope,httpi,language){
+	$scope.cancel = function(){
 
+		if(!confirm(language.accountCancel)) return
+
+		httpi({
+			method:'post'
+			,url:'/api/user/cancel'
+		}).success(function(){
+			window.location.reload()
+		})
+	}
+})
+
+
+
+app.controller('UserController',function($scope,frontloaded){
+	$scope.user = frontloaded.user
+})
+
+app.controller('PasswordController',function($scope,frontloaded){
+	$scope.user = frontloaded.user
+})
 
 app.controller('BucketsController',function($scope,httpi,language,frontloaded){
 	$scope.buckets = frontloaded.buckets
@@ -132,7 +154,6 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter){
 	},true)
 
 	$scope.$watch('profiles',function(profiles){
-		//console.log(profiles)
 		$scope.profilesFiltered = $filter('filterIf')(profiles,{status:$scope.params.filters.status});
 	},true)
 
@@ -284,6 +305,7 @@ app.factory('language', function() {
   	bucketName:'What should we name your bucket?'
   	,bucketDelete:'Are you sure? Delting this bucket will also delete the data associated with it'
   	,bucketNotInstalled:"You haven't installed this bucket yet, so there won't be anything to explore. Continue anyways?"
+  	,accountCancel:"Are you sure?"
   }
 });
 
@@ -392,16 +414,21 @@ app.directive('showDebounced',function($timeout){
 	}
 })
 
-app.directive('upgrade',function(frontloaded,httpi){
+app.directive('checkout',function(frontloaded,httpi){
 	return {
-		link:function(scope,element){
+		scope:{
+			url:'@checkout'
+		}
+		,link:function(scope,element){
 			var handler = StripeCheckout.configure({
 			    	key: frontloaded.constants.stripeKey
 			    	,token: function(token) {
 				    	httpi({
 				    		method:'post'
-				    		,url:'/api/checkout'
+				    		,url:scope.url
 				    		,data:token
+				    	}).success(function(){
+				    		window.location.reload()
 				    	})
 				    }
 			});
@@ -412,6 +439,7 @@ app.directive('upgrade',function(frontloaded,httpi){
 			    	name: 'Angulytics'
 			    	,email: frontloaded.user.email
 			    	,amount: 1000
+			    	,panelLabel: '{{amount}}/Month'
 			    	,allowRememberMe:false
 			    });
 			    e.preventDefault();

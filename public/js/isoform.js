@@ -43,10 +43,10 @@
 					,rules = isoform.fields[field]
 					,value = scope[attributes.ngModel] = isoform.values[field]
 
-
 				scope.$watch(attributes.ngModel,function(value,oldValue){
+					console.log(arguments)
 					if(value==oldValue) return
-					isoform.values[field] = value = scope[attributes.ngModel]
+					isoform.values[field] = value = scope.$eval(attributes.ngModel)
 				},true)
 
 				scope.$watch('isoform.response',function(value,oldValue){
