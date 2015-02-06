@@ -15,6 +15,7 @@ return [
 			,'savedErrorsPerProfile'=>100
 			,'emailsDailyMax'=>10
 		]
-	],'trialDays'=>14
+	],'defaultPlanId'=>'hacker'
+	,'trialDays'=>14
 	,'stripeKey'=>'pk_test_XrJT5C9ipwgxQpcoERCVF0xY'
 ];

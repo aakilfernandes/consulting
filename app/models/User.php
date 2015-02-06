@@ -14,6 +14,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Billa
 	protected $fillable = ['email','name','company','password'];
 	protected $hidden = ['password', 'remember_token'];
 	protected $dates = ['trial_ends_at', 'subscription_ends_at'];
+	protected $appends = ['plan'];
 
 	public function setPasswordAttribute($value){
 		$this->attributes['password'] = Hash::make($value);
@@ -33,6 +34,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Billa
 
 	public function bucket($id){
 		return $this->buckets()->whereBucketId($id)->first();
+	}
+
+	public function getIsSubscribedAttribute(){
+		return $this->subscribed();
+	}
+
+	public function getPlanAttribute(){
+		if(!$this->isSubscribed)
+			return Config::get('constants.plans')[Config::get('plans.defaultPlanId')];
+
+		$planName = $this->stripe_plan;
+		return Config::get('constants.plans')[$planName];
 	}
 
 }
