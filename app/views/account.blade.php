@@ -4,7 +4,7 @@
 <div class="container" ng-controller="AccountController">
 	@include('tabs',['tabId'=>'account'])
 	<h1>Account</h1>
-	<form ng-controller="UserController" {{Isoform::directive('user',['email','name','company'])}} method="post" action="/user">
+	<form id="user" ng-controller="UserController" isoform="{{Isoform::getSeed('user')}}" method="post" action="/user">
 		<h3>Details</h3>
 		<input type="hidden" name="_token" value="{{csrf_token()}}">
 		<table class="table">
@@ -39,7 +39,7 @@
 			</tr>
 		</table>		
 	</form>
-	<form ng-controller="PasswordController" {{Isoform::directive('password',['password','password_confirmation'])}} method="post" action="/user/password">
+	<form id="password" ng-controller="PasswordController" isoform="{{Isoform::getSeed('password')}}" method="post" action="/user/password">
 		<h3>Password </h3>
 		<input type="hidden" name="_token" value="{{csrf_token()}}">
 		<table class="table">

@@ -44,9 +44,8 @@
 					,value = scope[attributes.ngModel] = isoform.values[field]
 
 				scope.$watch(attributes.ngModel,function(value,oldValue){
-					console.log(arguments)
 					if(value==oldValue) return
-					isoform.values[field] = value = scope.$eval(attributes.ngModel)
+					isoform.values[field] = scope.$eval(attributes.ngModel)
 				},true)
 
 				scope.$watch('isoform.response',function(value,oldValue){
@@ -68,6 +67,7 @@
 		var Isoform = function(scope,isoformSeed){
 			this.url = '/isoform'
 			this.scope = scope
+			this.namespace = isoformSeed.namespace
 			this.fields = isoformSeed.fields
 			this.values = isoformSeed.values
 			this.messages = isoformSeed.messages
@@ -106,7 +106,7 @@
 				$http({
 				    url: '/isoform'
 				    ,method: "GET"
-				    ,params: {values:values,fields:fields}
+				    ,params: {namespace:isoform.namespace,values:values}
 				 	,timeout: isoform.request
 				}).then(httpHandler,httpHandler);
 

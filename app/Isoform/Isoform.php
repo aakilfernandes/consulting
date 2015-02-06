@@ -1,98 +1,109 @@
 <?PHP 
 
 namespace Isoform;
-use \Illuminate\Support\Facades as Facades;
+use \Illuminate\Support\Facades\Config;
+use \Illuminate\Support\Facades\Input;
+use \Illuminate\Support\Facades\Response;
+use \Illuminate\Support\Facades\Validator;
+use \Illuminate\Support\Facades\Redirect;
+use \Illuminate\Support\Facades\Session;
+use \stdClass;
 
 class Isoform {
 
 	public function __construct($namespace){
 		$this->namespace = $namespace;
-		$this->fields = Facades\Config::get('isoform.'.$namespace);
+		$this->fields = Config::get('isoform.'.$namespace);
+		$this->rulesStrings = $this->getRulesStrings();
+		$this->messages = new stdClass;
+		$this->values = new stdClass;
+	}
+
+	public static function getSeed($namespace){
+		$isoform = new Isoform($namespace);
+
+		if(Session::has("isoform.$namespace.messages"))
+			$isoform->messages = Session::get("isoform.$namespace.messages");
+
+		if(Session::has("isoform.$namespace.values"))
+			$isoform->values = Session::get("isoform.$namespace.values");
+
+		return htmlspecialchars((string) $isoform);
 	}
 
 	public static function ajaxValidationResponse(){
-		$namespace = Facades\Input::get('namespace');
-		$values = json_decode(Facades\Input::get('values'),true);
-		$fields = json_decode(Facades\Input::get('fields'),true);
 
-		$validator = Validator::validate($values,$fields);
+		$isoform = new Isoform(Input::get('namespace'));	
+		$values = json_decode(Input::get('values'),true);
+
+		$validator = $isoform->getValidator($values);
 		
-		$results = array_map(function(){
+		if($validator->fails())
+			return Response::json($validator->isoformMessages,400);
+
+		
+		$messages = array_map(function(){
 			return [];
 		}, $values);
 
+		return Response::json($messages,200);
+	}
+
+	public function getValidator($values){
+		$this->values = $values;
+
+		$validator = Validator::make($values,$this->rulesStrings);
+		$validator->isoformMessages = [];
+	
 		if($validator->fails()){
 			$messages = $validator->messages()->toArray();
+	
 			foreach($messages as $field=>$message)
-				$results[$field]=$message;
+				$validator->isoformMessages[$field]=$message;
+	
+			$this->messages = $validator->isoformMessages;
 		}
 
-		if($validator->passes())
-			return Facades\Response::json($results,200);
+		
+		
+
+		return $validator;
+	}
+
+	public function getRedirect($url){
+		return Redirect::to($url)
+			->with("isoform.{$this->namespace}.messages",$this->messages)
+			->with("isoform.{$this->namespace}.values",$this->values);
+	}
+
+	public function __toString(){
+		return json_encode([
+			'namespace'=>$this->namespace
+			,'fields'=>$this->fields
+			,'messages'=>$this->messages
+			,'values'=>$this->values
+			,'rulesStrings'=>$this->rulesStrings
+		]);
+	}
+
+	public function getRulesStrings(){
+		$rulesStrings = [];
+		foreach($this->fields as $field=>$rules)
+			$rulesStrings[$field]=$this->getRulesString($rules);
+		return $rulesStrings;
+	}
+
+	public function getRulesString(array $rules){
+		$ruleStrings = [];
+		foreach($rules as $rule=>$parameters)
+			$ruleStrings[] = $this->getRuleString($rule,$parameters);
+		return implode('|',$ruleStrings);
+	}
+
+	public function getRuleString($rule,array $parameters){
+		if(count($parameters)==0)
+			return $rule;
 		else
-			return Facades\Response::json($results,400);
+			return $rule.':'.implode(':',$parameters);
 	}
-
-	public static function getLastStringPart($string,$delimeter = '.'){
-		$stringParts = explode($delimeter,$string);
-		return array_pop($stringParts);
-	}
-
-	public static function getFieldNamesInNamespace($namespace){
-		$fields = Facades\Config::get("isoform.$namespace");
-		return array_keys($fields);
-	}
-
-	public function validateInputs(){
-		$namespace = Facades\Input::get('_isoformNamespace');
-		$fields = Isoform::fields($namespace,$fieldNames);
-		$values = Facades\Input::all();
-
-		return Validator::validate($values,$fields);
-	}
-
-	public static function redirect($namespace,$url,$fieldNames,$messages){
-		return Facades\Redirect::to($url)
-			->with('isoformValues'.$namespace,Facades\Input::all())
-			->with('isoformMessages'.$namespace,$messages);
-	}
-
-	public static function fields($namespace,$fieldNames){
-		$fields = [];
-		foreach($fieldNames as $fieldName){
-			$rules = Facades\Config::get("isoform.$namespace.$fieldName");
-			if($rules)
-				$fields[$fieldName]=$rules;
-		}
-		return $fields;
-	}
-
-	public static function directive($namespace,$ids){	
-		if(Facades\Session::has('isoformMessages'.$namespace))
-			$messages = Facades\Session::get('isoformMessages'.$namespace);
-		else 
-			$messages = new \stdClass;
-
-		if(Facades\Session::has('isoformValues'.$namespace))
-			$values = Facades\Session::get('isoformValues'.$namespace);
-		else 
-			$values = new \stdClass;
-
-		$isoformSeed = [
-			'fields'=>Isoform::fields($namespace,$ids)
-			,'messages'=>$messages
-			,'values'=>$values
-			,'namespace'=>$ids
-		];
-
-		return 'isoform="'.htmlspecialchars(json_encode($isoformSeed)).'"';
-	}
-
-	public static function messages($namespace){
-		if(!Facades\Session::get('isoformMessages'.$namespace))
-			return new \stdClass;
-		else
-			return Facades\Session::get('isoformMessages'.$namespace);
-	}
-
 }

@@ -1,9 +1,9 @@
 <?PHP 
-
+/*
 namespace Isoform;
 use \Illuminate\Support\Facades as Facades;
 
-class Validator{
+class Validator extends Illuminate\Validation\Validator{
 
 	public static function rulesStrings($fields){
 		$rulesStrings = [];

@@ -69,25 +69,24 @@ class UserController extends \BaseController {
 	{
 
 		$isoform = new Isoform('user');
-		$validation = $isoform->validateInputs();
-		if($validation->fails())
-			return $isoform->redirect('/account');
+		$validator = $isoform->getValidator(Input::all());
+
+		if($validator->fails())
+			return $isoform->getRedirect('/account#user');
 
 		Auth::user()->fill(Input::all());
 		Auth::user()->save();
-		return Redirect::to('/account');
+		return Redirect::to('/account#user');
 	}
 
 	public function updatePassword()
 	{
 
-		$fieldNames = Isoform::getFieldNamesInNamespace('password');
-		$validation = Isoform::validateInputs($fieldNames);	
-		if($validation->fails())
-			return Isoform::redirect(
-				'password','/account',$fieldNames,$validation->messages('password')
-			);
+		$isoform = new Isoform('password');
+		$validator = $isoform->getValidator(Input::all());
 
+		if($validator->fails())
+			return $isoform->getRedirect('/account#password');
 
 		Auth::user()->fill(Input::all());
 		Auth::user()->save();
