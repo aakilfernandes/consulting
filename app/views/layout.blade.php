@@ -22,7 +22,28 @@
 	<textarea frontload="csrfToken">{{csrf_token()}}</textarea>
 	<textarea frontload="inputs" frontload-type="json">{{json_encode(Input::all())}}</textarea>
 	<textarea frontload="constants" frontload-type="json">{{json_encode(Config::get('constants'));}}</textarea>
+	@if(Auth::user())
+		<textarea frontload="user" frontload-type="json">{{Auth::user()}}</textarea>
+	@endif
+	<div class="container">
+		@if(Auth::user() && !Auth::user()->subscribed())
+			@if(!Auth::user()->trialBeganAt)
+				<div class="alert alert-info">
+					You haven't installed Angulytics on any of your sites. Once you do, you'll have {{Config::get('constants.trialDays')}} days to <a class="btn btn-danger btn-xs" upgrade>upgrade your account</a>
+				</div>
+			@else
+				<div class="alert alert-danger">
+					@if(Auth::user()->trialDaysLeft<2)
+						You have less than 48 hours left in your trial. Upgrade soon!
+					@else
+						You have {{Auth::user()->trialDaysLeft}} left in your trial.
+					@endif
+				</div>
+			@endif
+		@endif
+	</div>
 	@yield('content')
+	<script src="https://checkout.stripe.com/checkout.js"></script>
 	{{HTML::script('/components/underscore/underscore-min.js')}}
 	{{HTML::script('/components/angular/angular.js')}}
 	{{HTML::script('/components/angular-bootstrap/ui-bootstrap-tpls.min.js')}}

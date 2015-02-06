@@ -10,6 +10,7 @@
 		,"passioncoder/simplecurl": "dev-master"
 		,"guzzlehttp/guzzle": "~5.2"
 		,"sairiz/mandrill": "dev-master"
+		,"laravel/cashier": "~2.0"
 	},"require-dev": {
 	    "way/generators": "~2.0"
 	    ,"phpunit/phpunit":"4.0.*@dev"

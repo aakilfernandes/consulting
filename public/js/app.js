@@ -93,8 +93,6 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded){
 		})
 	}
 
-	console.log(x)
-
 })
 
 app.controller('ProfilesController',function($scope,httpi,$local,$filter){
@@ -389,6 +387,34 @@ app.directive('showDebounced',function($timeout){
 				timeout = $timeout(function(){
 					element.css('display','none')
 				},1000)
+			})
+		}
+	}
+})
+
+app.directive('upgrade',function(frontloaded,httpi){
+	return {
+		link:function(scope,element){
+			var handler = StripeCheckout.configure({
+			    	key: frontloaded.constants.stripeKey
+			    	,token: function(token) {
+				    	httpi({
+				    		method:'post'
+				    		,url:'/api/checkout'
+				    		,data:token
+				    	})
+				    }
+			});
+
+
+			element.bind('click',function(e){
+				handler.open({
+			    	name: 'Angulytics'
+			    	,email: frontloaded.user.email
+			    	,amount: 1000
+			    	,allowRememberMe:false
+			    });
+			    e.preventDefault();
 			})
 		}
 	}

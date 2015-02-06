@@ -124,6 +124,7 @@ return array(
 		'Way\Generators\GeneratorsServiceProvider',
 		'Passioncoder\SimpleCurl\ServiceProvider',
 		'Sairiz\Mandrill\MandrillServiceProvider',
+		'Laravel\Cashier\CashierServiceProvider',
 
 	),
 

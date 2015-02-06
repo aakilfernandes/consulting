@@ -51,3 +51,5 @@ a.ti,a.glyphicon{text-decoration: none; cursor: pointer;}
 form .table{
 	table-layout: fixed;
 }
+
+.alert{text-align: center;}

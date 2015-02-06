@@ -15,26 +15,31 @@ Route::get('/', function(){
 	return View::make('landing');	
 });
 
-Route::get('/login', function(){
-	return View::make('login');	
-});
-
 Route::get('/logout', function(){
 	Auth::logout();
 	return Redirect::to('login');	
 });
 
-Route::get('/join', function(){
-	return View::make('join');	
+Route::group(['before'=>'guest'],function(){
+	Route::get('/join', function(){
+		return View::make('join');	
+	});
+
+	Route::get('/reset',function(){
+		return View::make('reset');
+	});
+
+	Route::get('/login', function(){
+		return View::make('login');	
+	});
 });
 
-Route::get('/reset',function(){
-	return View::make('reset');
-});
 
 Route::get('/reset-complete', 'AuthController@resetComplete');
 
 Route::post('/endpoints/{version}/{id}','ErrorsController@store');
+
+Route::post('stripe/webhook', 'Laravel\Cashier\WebhookController@handleWebhook');
 
 Route::group(['before'=>'csrf'],function(){
 	Route::post('/login', 'AuthController@login');
@@ -45,6 +50,10 @@ Route::group(['before'=>'csrf'],function(){
 Route::group(['before'=>'auth'],function(){
 	Route::get('/buckets',function(){
 		return View::make('buckets');
+	});
+
+	Route::get('/account',function(){
+		return View::make('account');
 	});
 
 	Route::get('/buckets/{id}/profiles',function($id){
@@ -90,6 +99,8 @@ Route::group(['before'=>'auth'],function(){
 		
 		Route::put('/api/buckets/{bucket_id}/profiles/{id}', 'ProfilesController@update');
 		Route::put('/api/subscriptions/{id}', 'SubscriptionsController@update');
+
+		Route::post('/api/checkout', 'UsersController@checkout');
 	});
 });
 
