@@ -67,7 +67,6 @@ class UserController extends \BaseController {
 	 */
 	public function update()
 	{
-
 		$isoform = new Isoform('user');
 		$validator = $isoform->getValidator(Input::all());
 
@@ -81,7 +80,6 @@ class UserController extends \BaseController {
 
 	public function updatePassword()
 	{
-
 		$isoform = new Isoform('password');
 		$validator = $isoform->getValidator(Input::all());
 

@@ -14,7 +14,9 @@ return [
 			'required'=>[]
 			,'email'=>[]
 			,'unique'=>['users,email']
-		],'password'=>[
+		],'name'=>[]
+		,'company'=>[]
+		,'password'=>[
 			'required'=>[]
 		],'password_confirmation'=>[
 			'required'=>[]

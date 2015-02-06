@@ -13,3 +13,4 @@
 
 
 Artisan::add(new ScrapeReferencesCommand);
+Artisan::add(new ClearViewsCommand);

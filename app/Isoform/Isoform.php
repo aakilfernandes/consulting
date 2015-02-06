@@ -15,8 +15,8 @@ class Isoform {
 		$this->namespace = $namespace;
 		$this->fields = Config::get('isoform.'.$namespace);
 		$this->rulesStrings = $this->getRulesStrings();
-		$this->messages = new stdClass;
-		$this->values = new stdClass;
+		$this->messages = [];
+		$this->values = [];
 	}
 
 	public static function getSeed($namespace){
@@ -40,39 +40,50 @@ class Isoform {
 		
 		if($validator->fails())
 			return Response::json($validator->isoformMessages,400);
-
 		
-		$messages = array_map(function(){
-			return [];
-		}, $values);
+		return Response::json($isoform->getBlankMessages(),200);
+	}
 
-		return Response::json($messages,200);
+	public function getBlankMessages($values = null){
+		if(!$values) 
+			$values = $this->values;
+
+		return array_map(function(){
+			return [];
+		}, $this->values);
 	}
 
 	public function getValidator($values){
 		$this->values = $values;
 
-		$validator = Validator::make($values,$this->rulesStrings);
+		$rulesStrings = $this->rulesStrings;
+		
+		foreach($rulesStrings as $field=>$ruleStrings)
+			if(!isset($values[$field])) unset($rulesStrings[$field]);
+
+		$validator = Validator::make($values, $rulesStrings);
 		$validator->isoformMessages = [];
 	
 		if($validator->fails()){
 			$messages = $validator->messages()->toArray();
 	
 			foreach($messages as $field=>$message)
-				$validator->isoformMessages[$field]=$message;
-	
-			$this->messages = $validator->isoformMessages;
-		}
+				$messages[$field]=$message;
 
-		
-		
+			$this->messages 
+				= $validator->isoformMessages
+				= array_merge($this->getBlankMessages(),$messages);
+		}
 
 		return $validator;
 	}
 
-	public function getRedirect($url){
+	public function getRedirect($url,$messages = []){
+
+		$messages = array_merge($this->messages,$messages);
+
 		return Redirect::to($url)
-			->with("isoform.{$this->namespace}.messages",$this->messages)
+			->with("isoform.{$this->namespace}.messages",$messages)
 			->with("isoform.{$this->namespace}.values",$this->values);
 	}
 
@@ -83,7 +94,7 @@ class Isoform {
 			,'messages'=>$this->messages
 			,'values'=>$this->values
 			,'rulesStrings'=>$this->rulesStrings
-		]);
+		],JSON_FORCE_OBJECT);
 	}
 
 	public function getRulesStrings(){

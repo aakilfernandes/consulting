@@ -50,7 +50,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Billa
 
 	public function getPlanAttribute(){
 		if(!$this->isSubscribed)
-			return Config::get('constants.plans')[Config::get('plans.defaultPlanId')];
+			return Config::get('constants.plans')[Config::get('constants.defaultPlanId')];
 
 		$planName = $this->stripe_plan;
 		return Config::get('constants.plans')[$planName];

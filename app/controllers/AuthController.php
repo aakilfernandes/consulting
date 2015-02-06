@@ -3,12 +3,11 @@
 class AuthController extends \BaseController {
 
 	public function join(){
-			$fieldNames = Isoform::getFieldNamesInNamespace('join');
-			$validation = Isoform::validateInputs($fieldNames);	
-			if($validation->fails())
-				return Isoform::redirect(
-					'/join',$fieldNames,$validation->messages()
-				);
+			$isoform = new Isoform('join');
+			$validator = $isoform->getValidator(Input::all());
+
+			if($validator->fails())
+				return $isoform->getRedirect('/join');
 
 			$user = new User;
 			$user->fill(Input::all());
@@ -18,12 +17,11 @@ class AuthController extends \BaseController {
 	}
 
 	public function login(){
-		$fieldNames = Isoform::getFieldNamesInNamespace('login');
-		$validation = Isoform::validateInputs($fieldNames);	
-		if($validation->fails())
-			return Isoform::redirect(
-				'/login',$fieldNames,$validation->messages()
-			);
+		$isoform = new Isoform('login');
+		$validator = $isoform->getValidator(Input::all());
+
+		if($validator->fails())
+			return $isoform->getRedirect('/login');
 
 		if(!Auth::attempt(
 			[
@@ -31,20 +29,17 @@ class AuthController extends \BaseController {
 				,'password'=>Input::get('password')
 			]
 		))
-			return Isoform::redirect(
-				'/login',$fieldNames,['password'=>['Password failed']]
-			);
+			return $isoform->getRedirect('/login',['password'=>['Password failed']]);
 
 		return Redirect::to('/buckets');
 	}
 
 	public function reset(){
-		$fieldNames = Isoform::getFieldNamesInNamespace('reset');
-		$validation = Isoform::validateInputs($fieldNames);	
-		if($validation->fails())
-			return Isoform::redirect(
-				'/reset',$fieldNames,$validation->messages()
-			);
+		$isoform = new Isoform('reset');
+		$validator = $isoform->getValidator(Input::all());
+
+		if($validator->fails())
+			return $isoform->getRedirect('/reset');
 
 		Reset::where('email',Input::get('email'))->delete();
 

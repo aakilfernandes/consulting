@@ -1,5 +1,6 @@
 <html route="{{Route::getCurrentRoute()->getPath()}}">
 <head>
+	<title>Angulytics | Angular JS Error Monitoring</title>
 	{{HTML::style('/components/bootstrap/dist/css/bootstrap.min.css')}}
 	{{HTML::style('/css/slim.css')}}
 	{{HTML::style('/fonts/themify-icons/themify-icons.min.css')}}

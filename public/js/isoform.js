@@ -34,12 +34,12 @@
 	})
 
 
-	isoformModule.directive('isoformValidate',function($http){
+	isoformModule.directive('isoformField',function($http){
 		return {
 			require:'ngModel'
 			,link:function(scope,element,attributes,ngModel){
 				var isoform = scope.isoform
-					,field = attributes['isoformValidate']
+					,field = attributes['isoformField']
 					,rules = isoform.fields[field]
 					,value = scope[attributes.ngModel] = isoform.values[field]
 
