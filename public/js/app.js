@@ -6,9 +6,10 @@ var app = angular.module('app',[
 	,'ui.bootstrap'
 	,'yaru22.angular-timeago'
 	,'simpleStorage'
+	,'angular-growl'
 ])
 
-app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider){
+app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider,growlProvider){
 	angulyticsProvider.$get = function(){
 		this.endpoint = 'http://localhost:8000/endpoints/v1/6'
 		this.key = 'e8525608795ea5a4c0354d38'
@@ -24,7 +25,9 @@ app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider){
 
 		return $delegate
 	})
-	
+
+	growlProvider.globalTimeToLive(5000);
+
 })
 
 app.run(function($rootScope,$http,frontloaded) {
@@ -59,21 +62,22 @@ app.controller('PasswordController',function($scope,frontloaded){
 	$scope.user = frontloaded.user
 })
 
-app.controller('BucketsController',function($scope,httpi,language,frontloaded){
+app.controller('BucketsController',function($scope,httpi,language,frontloaded,growl){
 	$scope.buckets = frontloaded.buckets
 
 	$scope.new = function(){
 		var name = window.prompt(language.bucketName);
 		if(name===null) return
 
-		$scope.isLoading = true
+		growl.addInfoMessage('Creating new bucket')
+
 		httpi({
 			method:'POST'
 			,url:'/api/buckets'
 			,data:{name:name}
 		}).success(function(bucket){
+			growl.addSuccessMessage('Bucket created')
 			$scope.buckets.unshift(bucket)
-			$scope.isLoading = false
 		})
 	}
 
@@ -81,21 +85,30 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded){
 		var name = window.prompt(language.bucketName)
 		if(name===null) return
 
+		growl.addInfoMessage('Editing bucket name')
+
 		bucket.name = name
 
 		httpi({
 			method:'PUT'
 			,url:'/api/buckets/:id'
 			,data:bucket
+		}).success(function(){
+			growl.addSuccessMessage('Bucket name edited')
 		})
 	}
 
 	$scope.delete = function(bucket,index){
 		if(!confirm(language.bucketDelete)) return
+
+		growl.addInfoMessage('Deleting bucket')
+
 		httpi({
 			method:'DELETE'
 			,url:'/api/buckets/:id'
 			,data:bucket
+		}).success(function(){
+			growl.addSuccessMessage('Bucket deleted')
 		})
 		$scope.buckets.splice(index,1)
 	}
@@ -117,11 +130,10 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded){
 
 })
 
-app.controller('ProfilesController',function($scope,httpi,$local,$filter){
+app.controller('ProfilesController',function($scope,httpi,$local,$filter,notify){
 
 	$scope.profiles = []
-	$scope.isLoading = false
-	
+		
 	$scope.statusFilters = Object.keys($scope.frontloaded.constants.statuses).map(function(key){
 		return {id:key,label:$scope.frontloaded.constants.statuses[key]}
 	})
@@ -159,7 +171,7 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter){
 
 
 	function loadProfiles(){
-		$scope.isLoading = true
+		notify('Loading profiles')
 		httpi({
 			method:'get'
 			,url:'/api/buckets/:bucket_id/profiles'
@@ -167,7 +179,7 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter){
 		}).success(function(response){
 			$scope.response = response
 			$scope.profiles = response.data
-			$scope.isLoading = false
+			notify.success('Profiles loaded')
 		})
 	}
 

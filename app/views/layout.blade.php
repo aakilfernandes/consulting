@@ -4,6 +4,7 @@
 	{{HTML::style('/components/bootstrap/dist/css/bootstrap.min.css')}}
 	{{HTML::style('/css/slim.css')}}
 	{{HTML::style('/fonts/themify-icons/themify-icons.min.css')}}
+	{{HTML::style('/components/angular-growl/build/angular-growl.min.js')}}
 	{{HTML::style('/css/style.css')}}
 </head>
 <body ng-app="app">
@@ -40,12 +41,11 @@
 	{{HTML::script('/components/angular-timeago/src/timeAgo.js')}}
 	{{HTML::script('/components/angular-simple-storage/dist/angular-simpleStorage.js')}}
 	{{HTML::script('/components/angular-underscore/angular-underscore.min.js')}}
+	{{HTML::script('/components/angular-growl/build/angular-growl.min.js')}}
 	{{HTML::script('/components/angulytics/angulytics.js')}}
 	{{HTML::script('/js/frontloader.js')}}
 	{{HTML::script('/js/isoform.js')}}
 	{{HTML::script('/js/app.js')}}
-	<div blocker ng-show="isBlocker">
-		
-	</div>
+	<div growl></div>
 </body>
 </html>

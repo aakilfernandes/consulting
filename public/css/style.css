@@ -53,3 +53,9 @@ form .table{
 }
 
 .alert{text-align: center;}
+.growl{
+	position: fixed;
+	bottom: 0px;
+	right: 11px;
+	width: 250px;
+}
