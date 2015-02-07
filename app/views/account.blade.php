@@ -46,7 +46,7 @@
 				<td>Password</td>
 				<td>
 					<input name="password" isoform-field="password" class="form-control" type="password" ng-model="password">
-					<p class="text-danger" ng-repeat="message in isoform.messages.password">
+					<p class="text-danger" ng-repeat="message in isoform.messages.password" ng-cloak>
 						@{{message}}
 					</p>
 				</td>
@@ -55,7 +55,7 @@
 				<td>Password <small class="text-muted">(confirm)</small></td>
 				<td>
 					<input name="password_confirmation" isoform-field="password_confirmation" class="form-control" type="password" ng-model="password_confirmation">
-					<p class="text-danger" ng-repeat="message in isoform.messages.password_confirmation">
+					<p class="text-danger" ng-repeat="message in isoform.messages.password_confirmation" ng-cloak>
 						@{{message}}
 					</p>
 				</td>

@@ -72,7 +72,7 @@
 			this.url = '/isoform'
 
 			//amount of time to wait before sending an ajax validation request
-			this.throttle = 200
+			this.throttle = 500
 			
 			//should isoform clear the current validation messages as soon as the input changes?
 			this.shouldClearMessagesOnChange = true
