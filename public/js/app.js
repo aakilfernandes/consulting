@@ -9,7 +9,7 @@ var app = angular.module('app',[
 	,'angular-growl'
 ])
 
-app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider,growlProvider){
+app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider,growlProvider,IsoformProvider){
 	angulyticsProvider.$get = function(){
 		this.endpoint = 'http://localhost:8000/endpoints/v1/6'
 		this.key = 'e8525608795ea5a4c0354d38'
@@ -26,16 +26,33 @@ app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider,g
 		return $delegate
 	})
 
-	growlProvider.globalTimeToLive(5000);
+	growlProvider.globalTimeToLive(2000);
+	growlProvider.onlyUniqueMessages(false);
 
 })
 
-app.run(function($rootScope,$http,frontloaded) {
-	$rootScope._ = _
-	$rootScope._ = angular
+app.run(function($rootScope,$http,frontloaded,Isoform,growl) {
+
 	$rootScope.frontloaded = frontloaded
-	
 	$http.defaults.headers.delete = { 'Content-Type' : 'application/json' };
+
+	Isoform.prototype.doBeforeAjaxValidation = function(){
+		growl.addInfoMessage('Validating inputs')
+	}
+
+	Isoform.prototype.doAfterAjaxValidation = function(response){
+		console.log(response)
+
+		var errorsCount = 0
+			,isoform = this
+
+		Object.keys(response.data).forEach(function(field){
+			errorsCount+=response.data[field].length
+		})
+
+		if(errorsCount==0)
+			growl.addSuccessMessage('Looks good so far')
+	}
 });
 
 app.controller('AccountController',function($scope,httpi,language){
@@ -130,7 +147,7 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded,gr
 
 })
 
-app.controller('ProfilesController',function($scope,httpi,$local,$filter,notify){
+app.controller('ProfilesController',function($scope,httpi,$local,$filter,growl){
 
 	$scope.profiles = []
 		
@@ -151,10 +168,9 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter,notify)
 	$scope.params = {
 		bucket_id: $scope.frontloaded.bucket.id
 		,filters: {
-			status: $local.get('profilesStatusFilter') && $scope.frontloaded.constants.statuses[$local.get('profilesStatusFilter')] ?
-				$local.get('profilesStatusFilter') : 'open'
+			status: 'open'
 		}
-		,sort:$local.get('profilesSort') ? $local.get('profilesSort') : 'recentlyCreated'
+		,sort: 'recentlyCreated'
 		,pageSize:5
 	}
 
@@ -171,7 +187,7 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter,notify)
 
 
 	function loadProfiles(){
-		notify('Loading profiles')
+		growl.addInfoMessage('Loading error profiles')
 		httpi({
 			method:'get'
 			,url:'/api/buckets/:bucket_id/profiles'
@@ -179,7 +195,7 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter,notify)
 		}).success(function(response){
 			$scope.response = response
 			$scope.profiles = response.data
-			notify.success('Profiles loaded')
+			growl.addSuccessMessage('Error profiles loaded')
 		})
 	}
 
@@ -191,9 +207,11 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter,notify)
 		})
 	}
 
+	loadProfiles()
+
 })
 
-app.directive('showStack',function($modal){
+app.directive('showStack',function($modal,growl){
 	return {
 		scope:{
 			stack:'=showStack'
@@ -201,6 +219,8 @@ app.directive('showStack',function($modal){
 		link: function(scope, element, attributes, ngModel) {
 
 			element.on('click',function () {
+
+				growl.addInfoMessage('Loading stack trace')
 
 			    var modalInstance = $modal.open({
 			    	templateUrl: '/templates/stackModal.html',
@@ -221,7 +241,7 @@ app.controller('StackModalController', function($scope,$modalInstance,stack){
   	};
 })
 
-app.controller('ErrorsController',function($scope,httpi,$local){
+app.controller('ErrorsController',function($scope,httpi,$local,growl){
 
 	$scope.errors = []
 
@@ -241,6 +261,7 @@ app.controller('ErrorsController',function($scope,httpi,$local){
 	},true)
 
 	function loadErrors(){
+		growl.addInfoMessage('Loading errors')
 		$scope.isLoading = true
 		$scope.errors = []
 		httpi({
@@ -251,6 +272,7 @@ app.controller('ErrorsController',function($scope,httpi,$local){
 			$scope.errors = response.data
 			$scope.errorsCount = response.total
 			$scope.isLoading = false
+			growl.addSuccessMessage('Errors loaded')
 		})
 	}
 
@@ -426,20 +448,28 @@ app.directive('showDebounced',function($timeout){
 	}
 })
 
-app.directive('checkout',function(frontloaded,httpi){
+app.directive('checkout',function(frontloaded,httpi,growl){
 	return {
 		scope:{
 			url:'@checkout'
+			,growlStart:'@?growlStart'
+			,growlSuccess:'@?growlSuccess'
 		}
 		,link:function(scope,element){
 			var handler = StripeCheckout.configure({
 			    	key: frontloaded.constants.stripeKey
 			    	,token: function(token) {
+			    		if(scope.growlStart)
+			    			growl.addInfoMessage(scope.growlStart)
+
 				    	httpi({
 				    		method:'post'
 				    		,url:scope.url
 				    		,data:token
 				    	}).success(function(){
+				    		if(scope.growlSuccess)
+				    			growl.addSuccessMessage(scope.growlSuccess)
+
 				    		window.location.reload()
 				    	})
 				    }

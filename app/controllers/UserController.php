@@ -103,7 +103,7 @@ class UserController extends \BaseController {
 		//
 	}
 
-	public function checkout(){
+	public function upgrade(){
 		if(!Input::has('id'))
 			App::error(400,'Missing id');
 

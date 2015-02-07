@@ -10,7 +10,7 @@
 						var isoformSeed = JSON.parse(attributes.isoform)
 						scope.isoform = new Isoform(scope,isoformSeed)
 						scope.$watch('isoform.values',function(value,oldValue){
-							if(value==oldValue) return
+							if(angular.equals(value,oldValue)) return
 							scope.isoform.validate()
 						},true)
 					}
@@ -45,6 +45,8 @@
 
 				scope.$watch(attributes.ngModel,function(value,oldValue){
 					if(value==oldValue) return
+					if(scope.isoform.shouldClearMessagesOnChange)
+						scope.isoform.messages[field] = []
 					isoform.values[field] = scope.$eval(attributes.ngModel)
 				},true)
 
@@ -65,19 +67,31 @@
 	isoformModule.factory('Isoform',function($http,$q,$timeout,$rootScope){
 
 		var Isoform = function(scope,isoformSeed){
+			
+			//where is your ajax validation endpoint
 			this.url = '/isoform'
-			this.scope = scope
+
+			//amount of time to wait before sending an ajax validation request
+			this.throttle = 200
+			
+			//should isoform clear the current validation messages as soon as the input changes?
+			this.shouldClearMessagesOnChange = true
+
+
+			this.scope = scope			
 			this.namespace = isoformSeed.namespace
 			this.fields = isoformSeed.fields
 			this.values = isoformSeed.values
 			this.messages = isoformSeed.messages
 			this.request = null
 			this.timeout = null
-			this.throttle = 500
 			this.response = null
-
 		}
 
+		Isoform.prototype.applyIfExists = function(functionName,arguments){
+			if(this[functionName])
+				return this[functionName].apply(this,arguments)
+		}
 
 		Isoform.prototype.validate = function(isSubmit){
 
@@ -103,6 +117,9 @@
 
 				var values = angular.copy(isoform.values)
 
+				if(isoform.applyIfExists('doBeforeAjaxValidation') === false)
+					return
+
 				$http({
 				    url: '/isoform'
 				    ,method: "GET"
@@ -111,11 +128,10 @@
 				}).then(httpHandler,httpHandler);
 
 				function httpHandler(response){
-					isoform.scope.isoform.messages = response.data
-					isoform.scope.$broadcast('isoform.response',{
-						values:values
-						,messages:response.data
-					})
+					if(!isoform.applyIfExists('doAfterAjaxValidation',[response]))
+						return false
+
+					isoform.messages = response.data
 				}
 
 				isoform.timeout = null

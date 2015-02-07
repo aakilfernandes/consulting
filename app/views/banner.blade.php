@@ -1,7 +1,7 @@
 @if(!Auth::user()->hasEverSubscribed)
 	@if(!Auth::user()->trialBeganAt)
 		<div class="alert alert-info">
-			You haven't installed Angulytics on any of your sites. Once you do, you'll have {{Config::get('constants.trialDays')}} days to <a class="btn btn-danger btn-xs" checkout="/api/user/upgrade">upgrade your account</a>
+			You haven't installed Angulytics on any of your sites. Once you do, you'll have {{Config::get('constants.trialDays')}} days to <a class="btn btn-danger btn-xs" checkout="/api/user/upgrade" growl-start="Upgrading" growl-success="Upgrade complete">upgrade your account</a>
 		</div>
 	@else
 		<div class="alert alert-danger">

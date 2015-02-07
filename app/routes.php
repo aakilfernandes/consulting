@@ -103,7 +103,7 @@ Route::group(['before'=>'auth'],function(){
 		Route::put('/api/buckets/{bucket_id}/profiles/{id}', 'ProfilesController@update');
 		Route::put('/api/subscriptions/{id}', 'SubscriptionsController@update');
 
-		Route::post('/api/user/checkout', 'UserController@checkout');
+		Route::post('/api/user/upgrade', 'UserController@upgrade');
 		Route::post('/api/user/cancel', 'UserController@cancel');
 		Route::post('/api/user/resume', 'UserController@resume');
 	});
