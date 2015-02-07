@@ -39,9 +39,12 @@ return [
 			,'mineOrUnique'=>['email']
 		]
 	],'password'=>[
-		'password'=>[]
+		'password'=>[
+			'required'=>[]
+		]
 		,'password_confirmation'=>[
-			'same'=>['password']
+			'required'=>[]
+			,'same'=>['password']
 		]
 	]
 ];

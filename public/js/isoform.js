@@ -128,7 +128,7 @@
 				}).then(httpHandler,httpHandler);
 
 				function httpHandler(response){
-					if(!isoform.applyIfExists('doAfterAjaxValidation',[response]))
+					if(isoform.applyIfExists('doAfterAjaxValidation',[response])===false)
 						return false
 
 					isoform.messages = response.data

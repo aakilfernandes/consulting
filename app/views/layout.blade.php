@@ -27,6 +27,9 @@
 	@if(Auth::user())
 		<textarea frontload="user" frontload-type="json">{{Auth::user()}}</textarea>
 	@endif
+	@if(Session::get('growlMessages'))
+		<textarea frontload="growlMessages" frontload-type="json">{{json_encode(Session::get('growlMessages'))}}</textarea>
+	@endif
 	<div class="container">
 		@if(Auth::user())
 			@include('banner')

@@ -36,13 +36,24 @@ app.run(function($rootScope,$http,frontloaded,Isoform,growl) {
 	$rootScope.frontloaded = frontloaded
 	$http.defaults.headers.delete = { 'Content-Type' : 'application/json' };
 
+	growl.add = function(type,message){
+		type = type.charAt(0).toUpperCase() + type.slice(1)
+
+		growl['add'+type+'Message'](message)
+	}
+
+	$rootScope.$watch('frontloaded.growlMessages',function(value,oldValue){
+		if(!value) return
+		value.forEach(function(args){
+			growl.add.apply(growl,args)
+		})
+	})
+
 	Isoform.prototype.doBeforeAjaxValidation = function(){
-		growl.addInfoMessage('Validating inputs')
+		growl.add('info','Validating inputs')
 	}
 
 	Isoform.prototype.doAfterAjaxValidation = function(response){
-		console.log(response)
-
 		var errorsCount = 0
 			,isoform = this
 
@@ -51,7 +62,7 @@ app.run(function($rootScope,$http,frontloaded,Isoform,growl) {
 		})
 
 		if(errorsCount==0)
-			growl.addSuccessMessage('Looks good so far')
+			growl.add('success','Looks good so far')
 	}
 });
 
@@ -86,14 +97,14 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded,gr
 		var name = window.prompt(language.bucketName);
 		if(name===null) return
 
-		growl.addInfoMessage('Creating new bucket')
+		growl.add('info','Creating new bucket')
 
 		httpi({
 			method:'POST'
 			,url:'/api/buckets'
 			,data:{name:name}
 		}).success(function(bucket){
-			growl.addSuccessMessage('Bucket created')
+			growl.add('success','Bucket created')
 			$scope.buckets.unshift(bucket)
 		})
 	}
@@ -102,7 +113,7 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded,gr
 		var name = window.prompt(language.bucketName)
 		if(name===null) return
 
-		growl.addInfoMessage('Editing bucket name')
+		growl.add('info','Editing bucket name')
 
 		bucket.name = name
 
@@ -111,21 +122,21 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded,gr
 			,url:'/api/buckets/:id'
 			,data:bucket
 		}).success(function(){
-			growl.addSuccessMessage('Bucket name edited')
+			growl.add('success','Bucket name edited')
 		})
 	}
 
 	$scope.delete = function(bucket,index){
 		if(!confirm(language.bucketDelete)) return
 
-		growl.addInfoMessage('Deleting bucket')
+		growl.add('info','Deleting bucket')
 
 		httpi({
 			method:'DELETE'
 			,url:'/api/buckets/:id'
 			,data:bucket
 		}).success(function(){
-			growl.addSuccessMessage('Bucket deleted')
+			growl.add('success','Bucket deleted')
 		})
 		$scope.buckets.splice(index,1)
 	}
@@ -187,7 +198,7 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter,growl){
 
 
 	function loadProfiles(){
-		growl.addInfoMessage('Loading error profiles')
+		growl.add('info','Loading error profiles')
 		httpi({
 			method:'get'
 			,url:'/api/buckets/:bucket_id/profiles'
@@ -195,7 +206,7 @@ app.controller('ProfilesController',function($scope,httpi,$local,$filter,growl){
 		}).success(function(response){
 			$scope.response = response
 			$scope.profiles = response.data
-			growl.addSuccessMessage('Error profiles loaded')
+			growl.add('success','Error profiles loaded')
 		})
 	}
 
@@ -220,7 +231,7 @@ app.directive('showStack',function($modal,growl){
 
 			element.on('click',function () {
 
-				growl.addInfoMessage('Loading stack trace')
+				growl.add('info','Loading stack trace')
 
 			    var modalInstance = $modal.open({
 			    	templateUrl: '/templates/stackModal.html',
@@ -261,7 +272,7 @@ app.controller('ErrorsController',function($scope,httpi,$local,growl){
 	},true)
 
 	function loadErrors(){
-		growl.addInfoMessage('Loading errors')
+		growl.add('info','Loading errors')
 		$scope.isLoading = true
 		$scope.errors = []
 		httpi({
@@ -272,7 +283,7 @@ app.controller('ErrorsController',function($scope,httpi,$local,growl){
 			$scope.errors = response.data
 			$scope.errorsCount = response.total
 			$scope.isLoading = false
-			growl.addSuccessMessage('Errors loaded')
+			growl.add('success','Errors loaded')
 		})
 	}
 
@@ -460,7 +471,7 @@ app.directive('checkout',function(frontloaded,httpi,growl){
 			    	key: frontloaded.constants.stripeKey
 			    	,token: function(token) {
 			    		if(scope.growlStart)
-			    			growl.addInfoMessage(scope.growlStart)
+			    			growl.add('info',scope.growlStart)
 
 				    	httpi({
 				    		method:'post'
@@ -468,7 +479,7 @@ app.directive('checkout',function(frontloaded,httpi,growl){
 				    		,data:token
 				    	}).success(function(){
 				    		if(scope.growlSuccess)
-				    			growl.addSuccessMessage(scope.growlSuccess)
+				    			growl.add('success',scope.growlSuccess)
 
 				    		window.location.reload()
 				    	})

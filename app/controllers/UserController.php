@@ -71,11 +71,12 @@ class UserController extends \BaseController {
 		$validator = $isoform->getValidator(Input::all());
 
 		if($validator->fails())
-			return $isoform->getRedirect('/account#user');
+			return $isoform->getRedirect('/account#user')
+				->with('growlMessages',[['error','User update failed']]);;
 
 		Auth::user()->fill(Input::all());
 		Auth::user()->save();
-		return Redirect::to('/account#user');
+		return Redirect::to('/account#user')->with('growlMessages',[['success','Details updated']]);
 	}
 
 	public function updatePassword()
@@ -84,11 +85,12 @@ class UserController extends \BaseController {
 		$validator = $isoform->getValidator(Input::all());
 
 		if($validator->fails())
-			return $isoform->getRedirect('/account#password');
+			return $isoform->getRedirect('/account#password')
+				->with('growlMessages',[['error','Password update failed']]);
 
 		Auth::user()->fill(Input::all());
 		Auth::user()->save();
-		return Redirect::to('/account');
+		return Redirect::to('/account#password')->with('growlMessages',[['success','Password updated']]);
 	}
 
 
