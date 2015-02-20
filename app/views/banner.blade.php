@@ -16,12 +16,12 @@
 	@if(Auth::user()->subscription_ends_at->diffInDays()>=2)
 		<div class="alert alert-danger">
 			Your subscription will end in {{Auth::user()->subscription_ends_at->diffInDays()}} days.
-			<a class="btn btn-danger btn-xs" checkout="/api/user/resume">Resume Subscription</a>
+			<a class="btn btn-danger btn-xs" checkout="/api/user/resume">Resume Plan</a>
 		</div>
 	@else
 		<div class="alert alert-danger">
 			Your subscription will end in {{Auth::user()->subscription_ends_at->diffInHours()}} hours.
-			<a class="btn btn-danger btn-xs" checkout="/api/user/resume">Resume Subscription</a>
+			<a class="btn btn-danger btn-xs" checkout="/api/user/resume">Resume Plan</a>
 		</div>
 	@endif
 @endif

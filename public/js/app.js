@@ -149,10 +149,13 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded,gr
 	}
 
 	$scope.editSubscription = function(subscription){
+		growl.add('info','Updating subscription')
 		httpi({
 			method:'PUT'
 			,url:'/api/subscriptions/:id'
 			,data:subscription
+		}).success(function(){
+			growl.add('success','Subscription updated')
 		})
 	}
 

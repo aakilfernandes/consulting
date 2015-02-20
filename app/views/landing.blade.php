@@ -9,7 +9,10 @@
 	      <div class="container">
 	        <div class="row">
 	          <div class="navbar-header">
-	            <button type="button" data-toggle="collapse" data-target="#navbar-collapse-1" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="#" class="navbar-brand">Angulytics</a>
+	            <button type="button" data-toggle="collapse" data-target="#navbar-collapse-1" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="#" class="navbar-brand">
+	            	<img src="/img/logo.png" style="height:1.2em;margin-top:-.2em">
+	            	Angulytics
+	            </a>
 	          </div>
 	          <div id="navbar-collapse-1" class="collapse navbar-collapse">
 	            <ul class="nav navbar-nav navbar-right">

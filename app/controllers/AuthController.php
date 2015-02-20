@@ -7,13 +7,13 @@ class AuthController extends \BaseController {
 			$validator = $isoform->getValidator(Input::all());
 
 			if($validator->fails())
-				return $isoform->getRedirect('/join');
+				return $isoform->getRedirect('/join')->with('growlMessages',[['error','Signup failed']]);
 
 			$user = new User;
 			$user->fill(Input::all());
 			$user->save();
 			Auth::login($user);
-			return Redirect::to('/buckets');
+			return Redirect::to('/buckets')->with('growlMessages',[['success','Welcome to Angulytics!']]);
 	}
 
 	public function login(){
@@ -21,17 +21,16 @@ class AuthController extends \BaseController {
 		$validator = $isoform->getValidator(Input::all());
 
 		if($validator->fails())
-			return $isoform->getRedirect('/login');
+			return $isoform->getRedirect('/login')->with('growlMessages',[['error','Login failed']]);
+		
+		$user = User::where('email','=',Input::get('email'))->first();
 
-		if(!Auth::attempt(
-			[
-				'email'=>Input::get('email')
-				,'password'=>Input::get('password')
-			]
-		))
-			return $isoform->getRedirect('/login',['password'=>['Password failed']]);
+		if(!$user || !$user->checkPassword(Input::get('password')))
+			return $isoform->getRedirect('/login')->with('growlMessages',[['error','Login failed']]);
 
-		return Redirect::to('/buckets');
+		Auth::login($user);
+
+		return Redirect::to('buckets')->with('growlMessages',[['success','Login successful']]);
 	}
 
 	public function reset(){
@@ -39,7 +38,7 @@ class AuthController extends \BaseController {
 		$validator = $isoform->getValidator(Input::all());
 
 		if($validator->fails())
-			return $isoform->getRedirect('/reset');
+			return $isoform->getRedirect('/reset')->with('growlMessages',[['error','Reset failed']]);
 
 		Reset::where('email',Input::get('email'))->delete();
 
