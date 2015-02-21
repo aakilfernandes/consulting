@@ -9,7 +9,7 @@ return [
 	,'subscriptions'=>['errorProfilesCreated','errorProfilesOpened','dailySummary']
 	,'plans'=>[
 		'hacker'=>[
-			'amount'=>1000
+			'amount'=>1200
 			,'name'=>'Hacker'
 			,'savedProfiles'=>100
 			,'savedErrorsPerProfile'=>100

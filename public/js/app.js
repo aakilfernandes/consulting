@@ -494,7 +494,7 @@ app.directive('checkout',function(frontloaded,httpi,growl){
 				handler.open({
 			    	name: 'Angulytics'
 			    	,email: frontloaded.user.email
-			    	,amount: 1000
+			    	,amount: frontloaded.constants.plans['hacker'].amount
 			    	,panelLabel: '{{amount}}/Month'
 			    	,allowRememberMe:false
 			    });

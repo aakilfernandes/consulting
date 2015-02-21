@@ -10,7 +10,7 @@
 <body ng-app="app">
 	<nav class="navbar navbar-default navbar-static-top navbar-inverse">
 		<div class="container">
-			<a class="navbar-brand">Angulytics</a>
+			<a class="navbar-brand" href="/">Angulytics</a>
 			<ul class="nav navbar-nav navbar-right">
 				@if(Auth::user())
 					<li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>

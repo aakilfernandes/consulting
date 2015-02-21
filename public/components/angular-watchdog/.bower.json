@@ -1,0 +1,30 @@
+{
+  "name": "angular-watchdog",
+  "main": "dist/angular-watchdog.js",
+  "homepage": "https://github.com/angulytics/angular-watchdog",
+  "authors": [
+    "Aakil Fernandes <aakilfernandes@gmail.com>"
+  ],
+  "description": "angular error logger",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.x"
+  },
+  "_release": "3538d54ec4",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "3538d54ec45aa6b9075c8ad5192699dd536c768f"
+  },
+  "_source": "git://github.com/angulytics/angular-watchdog.git",
+  "_target": "*",
+  "_originalSource": "angular-watchdog",
+  "_direct": true
+}
