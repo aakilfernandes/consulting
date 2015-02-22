@@ -38,7 +38,7 @@ class ErrorsController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function store($version,$bucket_id)
+	public function store($bucket_id,$key)
 	{
 		if(!Input::has('dataJson'))
 			return Response::json('Missing dataJson',403);
@@ -48,7 +48,7 @@ class ErrorsController extends \BaseController {
 		if(!$data)
 			return Response::json('Unparsable dataJson',403);
 
-		if(!$data['_key'])
+		if(!$key)
 			return Response::json('Missing key',403);
 
 		$bucket = Bucket::find($bucket_id);
@@ -56,7 +56,7 @@ class ErrorsController extends \BaseController {
 		if(!$bucket)
 			return Response::json('Bucket not found',404);
 
-		if($data['_key'] !== $bucket->key)
+		if($key!== $bucket->key)
 			return Response::json('Bad key',403);
 
 

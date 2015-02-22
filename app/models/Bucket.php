@@ -3,7 +3,7 @@
 class Bucket extends \Eloquent {
 
 	protected $fillable = ['name'];
-	protected $appends = ['openProfilesCount','subscription'];
+	protected $appends = ['openProfilesCount','subscription','watchdogEndpoint'];
 
 	public function __construct(){
 		
@@ -70,6 +70,11 @@ class Bucket extends \Eloquent {
 
 	public function getOpenProfilesCountAttribute(){
 		return $this->profiles()->where('status','=','open')->count();
+	}
+
+	public function getWatchdogEndpointAttribute(){
+		return 
+			"https://watchdog.angulytics.com/watchdog/{$this->id}/{$this->key}";
 	}
 
 }

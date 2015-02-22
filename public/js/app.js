@@ -2,18 +2,16 @@ var app = angular.module('app',[
 	'isoform'
 	,'frontloader'
 	,'httpi'
-	,'angulytics'
+	,'watchdog'
 	,'ui.bootstrap'
 	,'yaru22.angular-timeago'
 	,'simpleStorage'
 	,'angular-growl'
 ])
 
-app.config(function(angulyticsProvider,$provide,$compileProvider,$httpProvider,growlProvider,IsoformProvider){
-	angulyticsProvider.$get = function(){
-		this.endpoint = 'http://localhost:8000/endpoints/v1/6'
-		this.key = 'e8525608795ea5a4c0354d38'
-		return this
+app.config(function(watchdogProvider,$provide,$compileProvider,$httpProvider,growlProvider,IsoformProvider){
+	watchdogProvider.options = {
+		endpoint:'https://watchdog.angulytics.com/watchdog/28/a41ed4983efe1c9fb5813'
 	}
 
 	$provide.decorator('$http',function($delegate,frontloaded){

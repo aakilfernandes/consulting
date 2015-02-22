@@ -37,7 +37,7 @@ Route::group(['before'=>'guest'],function(){
 
 Route::get('/reset-complete', 'AuthController@resetComplete');
 
-Route::post('/endpoints/{version}/{id}','ErrorsController@store');
+Route::post('/watchdog/{id}/{key}','ErrorsController@store');
 
 Route::post('stripe/webhook', 'Laravel\Cashier\WebhookController@handleWebhook');
 

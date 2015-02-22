@@ -30,30 +30,15 @@
 				@{{bucket.openProfilesCount}} open error profile@{{bucket.openProfilesCount!=1?'s':''}}
 			</div>
 			<div class="col-xs-4 text-right">
-				<a ng-href="/buckets/@{{bucket.id}}/profiles" class="btn btn-xs btn-primary" ng-click="verifyInstallation(bucket,$event)">Explore</a>
+				<a ng-href="/buckets/@{{bucket.id}}/profiles" class="btn btn-xs btn-primary">Explore</a>
 				<button ng-click="delete(bucket,$index)" class="btn btn-xs btn-danger">Delete</button>
 			</div>
 		</div></div>
 		<div class="panel-body">
-			<h4>Installation</h4>
-			<table class="table">
-				<tr>
-					<td>Endpoint</td>
-					<td>https://angulytics.com/endpoints/@{{bucket.id}}/@{{bucket.key}}</td>
-				</tr>
-				<tr>
-					<td>Status</td>
-					<td>
-						<span ng-show="!bucket.isInstalled">
-							<span class="ti-alert text-warning"></span>
-							Installation not verified
-						</span>
-						<span ng-show="bucket.isInstalled">
-							Installation verified
-						</span>
-					</td>
-				</tr>
-			</table>
+			<h4>Watchdog Installation</h4>
+			<p><code>@{{bucket.watchdogEndpoint}}</code></p>
+			<p>Angulytics' official client library is called Angular Watchdog. You can read more about Angular Watchdog and how to install it here.</p>
+			<hr>
 			<h4>Send me an email notification when: </h4>
 			<label>
 				<input type="checkbox"
