@@ -5,7 +5,7 @@ return [
 		'email'=>[
 			'required'=>[]
 			,'email'=>[]
-			,'exists'=>['consultants,email']
+			,'exists'=>['users,email']
 		],'password'=>[
 			'required'=>[]
 		]
@@ -13,7 +13,7 @@ return [
 		'email'=>[
 			'required'=>[]
 			,'email'=>[]
-			,'unique'=>['consultants,email']
+			,'unique'=>['users,email']
 		],'name'=>[
 			'required'=>[]
 		],'hourlyMin'=>[
@@ -22,6 +22,7 @@ return [
 			,'between'=>[100,500]
 		],'country_id'=>[
 			'required'=>[]
+			//,'exists'=>['countries','id']
 		],'zip'=>[
 			'required'=>[]
 		]
@@ -34,7 +35,7 @@ return [
 	],'reset'=>[
 		'email'=>[
 			'required'=>[]
-			,'exists'=>['consultants,email']
+			,'exists'=>['users,email']
 		],'password'=>[
 			'required'=>[]
 		],'passwordConfirmation'=>[

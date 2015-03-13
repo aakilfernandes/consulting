@@ -85,9 +85,16 @@ app.controller('JoinController',function($scope,$timeout){
 	$timeout(function(){
 		$scope.isoform.isGrowlSupressed = true
 	})
-	$scope.country = 'US'
-	$scope.isAvailable = true
-	$scope.isNotifiedOfRequests = true
+	
+	$scope.$watch('country_id',function(){
+		console.log(arguments)
+	})
+
+	if($scope.isAvailable===undefined)
+		$scope.isAvailable = true
+	
+	if($scope.isNotifiedOfRequests===undefined)
+		$scope.isNotifiedOfRequests = true
 })
 
 

@@ -9,10 +9,10 @@ class AuthController extends \BaseController {
 			if($validator->fails())
 				return $isoform->getRedirect('/join')->with('growlMessages',[['error','Signup failed']]);
 
-			$consultant = new Consultant;
-			$consultant->fill(Input::all());
-			$consultant->save();
-			Auth::login($consultant);
+			$user = new User;
+			$user->fill(Input::all());
+			$user->save();
+			Auth::login($user);
 			return Redirect::to('/buckets')->with('growlMessages',[['success','Welcome to Angulytics!']]);
 	}
 
@@ -23,12 +23,12 @@ class AuthController extends \BaseController {
 		if($validator->fails())
 			return $isoform->getRedirect('/login')->with('growlMessages',[['error','Login failed']]);
 		
-		$consultant = Consultant::where('email','=',Input::get('email'))->first();
+		$user = User::where('email','=',Input::get('email'))->first();
 
-		if(!$consultant || !$consultant->checkPassword(Input::get('password')))
+		if(!$user || !$user->checkPassword(Input::get('password')))
 			return $isoform->getRedirect('/login')->with('growlMessages',[['error','Login failed']]);
 
-		Auth::login($consultant);
+		Auth::login($user);
 
 		return Redirect::to('buckets')->with('growlMessages',[['success','Login successful']]);
 	}
@@ -60,9 +60,9 @@ class AuthController extends \BaseController {
 			->where('token',Input::get('token'))
 			->first();
 
-		$consultant = Consultant::where('email',Input::get('email'))->first();
+		$user = User::where('email',Input::get('email'))->first();
 
-		if(!$reset || !$consultant)
+		if(!$reset || !$user)
 			return View::make('simple',[
 				'title'=>'Bad token/email combination'
 				,'message'=>"Something went wrong. Try to <a href='/reset'>reset</a> again."
@@ -84,8 +84,8 @@ class AuthController extends \BaseController {
 				,'message'=>"That token is more than $hoursLimit hours old. Try to <a href='/reset'>reset</a> again."
 			]);
 
-		$consultant->hashedPassword = $reset->password;
-		$consultant->save();
+		$user->hashedPassword = $reset->password;
+		$user->save();
 
 		$reset->delete();
 

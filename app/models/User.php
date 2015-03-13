@@ -11,7 +11,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Billa
 
 	use UserTrait, RemindableTrait, BillableTrait;
 
-	protected $fillable = ['email','name','company','password'];
+	protected $fillable = [
+		'email'
+		,'name'
+		,'isEmailPublic'
+		,'title'
+		,'isAvailable'
+		,'isRemote'
+		,'country_id'
+		,'zip'
+		,'isNotifiedOfRequests'
+		,'isNotifiedOfRequestsEvenIfLowball'
+		,'password'
+	];
 	protected $hidden = ['password', 'remember_token'];
 	protected $dates = ['trial_ends_at', 'subscription_ends_at'];
 	protected $appends = ['plan'];

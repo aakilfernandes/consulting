@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-<textarea frontload="countries" frontload-type="json">{{Country::orderBy('name','DESC')->get()}}</textarea>
+<textarea frontload="countries" frontload-type="json">{{Country::orderBy('name','ASC')->get()}}</textarea>
 <div class="container" ng-controller="JoinController">
 	<h1>Join</h1>
 	<p>The on-boarding process should take about 5 minutes. If you're too busy to do it now, I'd be happy to <a>text you a reminder</a> in a few days.</p>
@@ -32,6 +32,7 @@
 					{{getHtmlForIsoformMessages('email')}}
 					<hr class="hr-small">
 					<label>
+						<input type='hidden' value='' name='isEmailPublic'>
 						<input type="checkbox" name="isEmailPublic" ng-model="isEmailPublic">
 						Show my email on my profile
 					</label>
@@ -65,10 +66,12 @@
 				</td>
 				<td>
 					<label>
+						<input type='hidden' name='isAvailable' value="off">
 						<input type="checkbox" name="isAvailable" ng-model="isAvailable">
 						I am currently available for new projects
 					</label>
 					<label>
+						<input type='hidden' name='isRemote' value="off">
 						<input type="checkbox" name="isRemote" ng-model="isRemote">
 						I am only interested in remote jobs
 					</label>
@@ -78,11 +81,13 @@
 				<td>Notifications</td>
 				<td>
 					<label>
+						<input type='hidden' name='isNotifiedOfRequests' value="off">
 						<input type="checkbox" name="isNotifiedOfRequests" ng-model="isNotifiedOfRequests">
 						Email me when someone sends me a request
 					</label>
 					<label>
-						<input type="checkbox" name="isNotifiedOfRequests" ng-model="isNotifiedOfRequestsEvenIfLowball">
+						<input type='hidden' name='isNotifiedOfRequestsEvenIfLowball' value="off">
+						<input type="checkbox" name="isNotifiedOfRequestsEvenIfLowball" ng-model="isNotifiedOfRequestsEvenIfLowball">
 						Email me even if their maximum hourly rate is below my minimum hourly rate
 					</label>
 				</td>
@@ -90,8 +95,9 @@
 			<tr>
 				<td>Country/Region</td>
 				<td>
-					<select class="form-control" ng-options="country.id as country.name for country in frontloaded.countries" ng-model="country_id" name="country_id">
+					<select class="form-control" ng-options="country.id as country.name for country in frontloaded.countries track by country.id" ng-model="country_id" name="country_id">
 					</select>
+					{{getHtmlForIsoformMessages('country_id')}}
 				</td>				
 			</tr>
 			<tr>

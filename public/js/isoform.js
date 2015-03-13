@@ -35,16 +35,15 @@
 				if(!scope.isoform)
 					return
 				else if(!attributes.ngModel)
-					return $log.warn('Isoform: ngModel is missing')
+					return $log.warn('Isoform: ngModel is missing on',attributes.name)
 				else
 					var isoform = scope.isoform
 						,field = attributes['name']
 
-				console.log(field,attributes.ngModel,isoform.values[field])
-
 				if(isoform.values[field]){
-					if(attributes.type == 'checkbox')
-						scope[attributes.ngModel] = !!isoform.values[field]
+					if(attributes.type == 'checkbox'){
+						scope[attributes.ngModel] = (isoform.values[field]==='on')
+					}
 					else
 						scope[attributes.ngModel] = isoform.values[field]
 				}else if(isoform.values[field] === undefined && scope.$eval(attributes.ngModel)!==undefined )
