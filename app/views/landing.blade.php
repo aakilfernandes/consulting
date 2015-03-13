@@ -5,7 +5,7 @@
 ?>
 <html>
 	<head>
-		<title>Angulytics - Error reporting for Angular apps</title>
+		<title>Consulting</title>
 		{{HTML::style('/css/landing.css')}}
 		{{HTML::style('/components/fontawesome/css/font-awesome.min.css')}}
 	</head>
@@ -16,7 +16,7 @@
 	          <div class="navbar-header">
 	            <button type="button" data-toggle="collapse" data-target="#navbar-collapse-1" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="#" class="navbar-brand">
 	            	<img src="/img/logo.png" style="height:1.2em;margin-top:-.2em">
-	            	Angulytics
+	            	Consulting
 	            </a>
 	          </div>
 	          <div id="navbar-collapse-1" class="collapse navbar-collapse">

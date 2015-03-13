@@ -5,7 +5,7 @@ return [
 		'email'=>[
 			'required'=>[]
 			,'email'=>[]
-			,'exists'=>['users,email']
+			,'exists'=>['consultants,email']
 		],'password'=>[
 			'required'=>[]
 		]
@@ -13,22 +13,31 @@ return [
 		'email'=>[
 			'required'=>[]
 			,'email'=>[]
-			,'unique'=>['users,email']
-		],'name'=>[]
-		,'company'=>[]
+			,'unique'=>['consultants,email']
+		],'name'=>[
+			'required'=>[]
+		],'hourlyMin'=>[
+			'required'=>[]
+			,'integer'=>[]
+			,'between'=>[100,500]
+		],'country_id'=>[
+			'required'=>[]
+		],'zip'=>[
+			'required'=>[]
+		]
 		,'password'=>[
 			'required'=>[]
-		],'password_confirmation'=>[
+		],'passwordConfirmation'=>[
 			'required'=>[]
 			,'same'=>['password']
-		]
+		]	
 	],'reset'=>[
 		'email'=>[
 			'required'=>[]
-			,'exists'=>['users,email']
+			,'exists'=>['consultants,email']
 		],'password'=>[
 			'required'=>[]
-		],'password_confirmation'=>[
+		],'passwordConfirmation'=>[
 			'required'=>[]
 			,'same'=>['password']
 		]
@@ -42,7 +51,7 @@ return [
 		'password'=>[
 			'required'=>[]
 		]
-		,'password_confirmation'=>[
+		,'passwordConfirmation'=>[
 			'required'=>[]
 			,'same'=>['password']
 		]

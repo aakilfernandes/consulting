@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateResetsTable extends Migration {
+class CreateCountriesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,13 +12,12 @@ class CreateResetsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('resets',function($table){
-			$table->increments('id');
-			$table->string('email')->unique();
-			$table->string('token');
-			$table->string('password');
-			$table->timestamps();
+		Schema::create('countries',function($table){
+			$table->string('id')->unique();
+			$table->string('name');
 		});
+
+		Artisan::call('app:seed-countries');
 	}
 
 	/**
@@ -28,7 +27,7 @@ class CreateResetsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('resets');
+		Schema::drop('countries');
 	}
 
 }

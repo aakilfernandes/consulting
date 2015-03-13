@@ -1,8 +1,10 @@
 @extends('layout')
 
 @section('content')
-<div class="container">
+<textarea frontload="countries" frontload-type="json">{{Country::orderBy('name','DESC')->get()}}</textarea>
+<div class="container" ng-controller="JoinController">
 	<h1>Join</h1>
+	<p>The on-boarding process should take about 5 minutes. If you're too busy to do it now, I'd be happy to <a>text you a reminder</a> in a few days.</p>
 	<form isoform="{{Isoform::getSeed('join')}}" method="post" action="">
 		@if(Session::has('isoformMessages'))
 		<noscript><div class="alert alert-danger"><ul>
@@ -14,44 +16,103 @@
 		</ul></div></noscript>
 		@endif
 		<input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+		<h3>Basics</h3>
 		<table class="table">
-			<tr>
-				<td>Email</td>
-				<td>
-					<input name="email" isoform-field="email" class="form-control" type="email" required ng-model="email">
-					<p class="text-danger" ng-repeat="message in isoform.messages.email" ng-cloak>
-						@{{message}}
-					</p>
-				</td>
-			</tr>
 			<tr>
 				<td>Name</td>
 				<td>
-					<input name="name" class="form-control" ng-model="name" isoform-field="name">
+					<input name="name" class="form-control" ng-model="name" placeholder="John Doe">
+					{{getHtmlForIsoformMessages('name')}}
 				</td>
 			</tr>
 			<tr>
-				<td>Company</td>
+				<td>Email</td>
 				<td>
-					<input name="company" class="form-control" type="company" ng-model="company" isoform-field="company">
+					<input name="email" class="form-control"  ng-model="email" placeholder="john.doe@gmail.com">
+					{{getHtmlForIsoformMessages('email')}}
+					<hr class="hr-small">
+					<label>
+						<input type="checkbox" name="isEmailPublic" ng-model="isEmailPublic">
+						Show my email on my profile
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Tagline <small class="text-muted">(optional)</small>
+				</td>
+				<td>
+					<input name="tagline" class="form-control" ng-model="tagline" placeholder="Frontend Developer">
+					{{getHtmlForIsoformMessages('tagline')}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Minimum Hourly Rate <small class="text-muted">(this won't be made public)</small>
+				</td>
+				<td>
+					<div class="input-group">
+					  <span class="input-group-addon">$</span>
+					  <input name="hourlyMin" class="form-control" ng-model="hourlyMin">
+					  <span class="input-group-addon">.00</span>
+					</div>
+					{{getHtmlForIsoformMessages('hourlyMin')}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Availability
+				</td>
+				<td>
+					<label>
+						<input type="checkbox" name="isAvailable" ng-model="isAvailable">
+						I am currently available for new projects
+					</label>
+					<label>
+						<input type="checkbox" name="isRemote" ng-model="isRemote">
+						I am only interested in remote jobs
+					</label>
+				</td>				
+			</tr>
+			<tr>
+				<td>Notifications</td>
+				<td>
+					<label>
+						<input type="checkbox" name="isNotifiedOfRequests" ng-model="isNotifiedOfRequests">
+						Email me when someone sends me a request
+					</label>
+					<label>
+						<input type="checkbox" name="isNotifiedOfRequests" ng-model="isNotifiedOfRequestsEvenIfLowball">
+						Email me even if their maximum hourly rate is below my minimum hourly rate
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td>Country/Region</td>
+				<td>
+					<select class="form-control" ng-options="country.id as country.name for country in frontloaded.countries" ng-model="country_id" name="country_id">
+					</select>
+				</td>				
+			</tr>
+			<tr>
+				<td>Zip/Postal Code</td>
+				<td>
+					<input name="zip" class="form-control" ng-model="zip">
+					{{getHtmlForIsoformMessages('zip')}}
 				</td>
 			</tr>
 			<tr>
 				<td>Password</td>
 				<td>
-					<input name="password" isoform-field="password" class="form-control" type="password" ng-model="password">
-					<p class="text-danger" ng-repeat="message in isoform.messages.password" ng-cloak>
-						@{{message}}
-					</p>
+					<input name="password" class="form-control" type="password" ng-model="password">
+					{{getHtmlForIsoformMessages('password')}}
 				</td>
 			</tr>
 			<tr>
 				<td>Password <small class="text-muted">(confirm)</small></td>
 				<td>
-					<input name="password_confirmation" isoform-field="password_confirmation" class="form-control" type="password" ng-model="password_confirmation">
-					<p class="text-danger" ng-repeat="message in isoform.messages.password_confirmation" ng-cloak>
-						@{{message}}
-					</p>
+					<input name="passwordConfirmation" class="form-control" type="password" ng-model="passwordConfirmation">
+					{{getHtmlForIsoformMessages('passwordConfirmation')}}
 				</td>
 			</tr>
 

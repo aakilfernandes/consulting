@@ -1,6 +1,6 @@
 <html route="{{Route::getCurrentRoute()->getPath()}}">
 <head>
-	<title>Angulytics | Angular JS Error Monitoring</title>
+	<title>Consulting</title>
 	{{HTML::style('/components/bootstrap/dist/css/bootstrap.min.css')}}
 	{{HTML::style('/css/slim.css')}}
 	{{HTML::style('/fonts/themify-icons/themify-icons.min.css')}}
@@ -9,7 +9,7 @@
 <body ng-app="app">
 	<nav class="navbar navbar-default navbar-static-top navbar-inverse">
 		<div class="container">
-			<a class="navbar-brand" href="/">Angulytics</a>
+			<a class="navbar-brand" href="/">Consulting</a>
 			<ul class="nav navbar-nav navbar-right">
 				@if(Auth::user())
 					<li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>

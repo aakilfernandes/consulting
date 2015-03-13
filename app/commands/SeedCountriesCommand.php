@@ -4,28 +4,21 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class ClearViewsCommand extends Command {
+class SeedCountriesCommand extends Command {
 
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'views:clear';
+	protected $name = 'app:seed-countries';
 
 	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Clear views folder';
-
-	/**
-	 * The file system instance.
-	 *
-	 * @var \Illuminate\Filesystem\Filesystem
-	 */
-	protected $files;
+	protected $description = 'Command description.';
 
 	/**
 	 * Create a new command instance.
@@ -35,7 +28,6 @@ class ClearViewsCommand extends Command {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->files = new \Illuminate\Filesystem\Filesystem;
 	}
 
 	/**
@@ -45,13 +37,17 @@ class ClearViewsCommand extends Command {
 	 */
 	public function fire()
 	{
+		DB::table('countries')->truncate();
 
-		foreach ($this->files->files(storage_path().'/views') as $file)
-		{
-			$this->files->delete($file);
+		$countriesJson = file_get_contents(base_path().'/data/countries.json');
+		$countries = json_decode($countriesJson);
+
+		foreach($countries as $country){
+			$countryModel = new Country;
+			$countryModel->id = $country->code;
+			$countryModel->name = $country->name;
+			$countryModel->save();
 		}
-
-		$this->info('Views deleted from cache');
 	}
 
 	/**

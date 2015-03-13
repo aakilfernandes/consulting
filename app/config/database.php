@@ -55,7 +55,7 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => '104.236.227.109',
-			'database'  => 'angulytics',
+			'database'  => 'consulting',
 			'username'  => 'forge',
 			'password'  => getenv('DB_PASSWORD'),
 			'charset'   => 'utf8',

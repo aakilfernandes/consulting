@@ -1,4 +1,6 @@
 body{background-color: #f3f3f3;color: #444;}
+label{font-weight: normal;font-size: 14px;display: block;}
+.hr-small{margin:5px 0;}
 .navbar{background-color: #1c2b36 !important;}
 .navbar-brand{color:white !important; font-weight: bold;}
 .pagination a{padding:4px 10px !important;font-size: 10px;}

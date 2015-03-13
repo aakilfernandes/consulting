@@ -36,7 +36,7 @@ class Isoform {
 		$isoform = new Isoform(Input::get('namespace'));	
 		$values = json_decode(Input::get('values'),true);
 
-		$validator = $isoform->getValidator($values);
+		$validator = $isoform->getValidator($values,false);
 		
 		if($validator->fails())
 			return Response::json($validator->isoformMessages,400);
@@ -53,22 +53,24 @@ class Isoform {
 		}, $this->values);
 	}
 
-	public function getValidator($values){
+	public function getValidator($values,$doForceRequired = true){
 		$this->values = $values;
 
 		$rulesStrings = $this->rulesStrings;
-		
-		foreach($rulesStrings as $field=>$ruleStrings)
-			if(!isset($values[$field])) unset($rulesStrings[$field]);
+
+		if(!$doForceRequired)		
+			foreach($rulesStrings as $field=>$ruleStrings)
+				if(!isset($values[$field])) unset($rulesStrings[$field]);
 
 		$validator = Validator::make($values, $rulesStrings);
 		$validator->isoformMessages = [];
-	
+
 		if($validator->fails()){
 			$messages = $validator->messages()->toArray();
 	
 			foreach($messages as $field=>$message)
 				$messages[$field]=$message;
+
 
 			$this->messages 
 				= $validator->isoformMessages
@@ -76,6 +78,10 @@ class Isoform {
 		}
 
 		return $validator;
+	}
+
+	public function getAjaxErrorResponse(){
+		return response($this->messages,400);
 	}
 
 	public function getRedirect($url,$messages = []){
@@ -115,6 +121,6 @@ class Isoform {
 		if(count($parameters)==0)
 			return $rule;
 		else
-			return $rule.':'.implode(':',$parameters);
+			return $rule.':'.implode(',',$parameters);
 	}
 }

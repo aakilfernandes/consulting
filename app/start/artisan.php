@@ -12,5 +12,4 @@
 */
 
 
-Artisan::add(new ScrapeReferencesCommand);
-Artisan::add(new ClearViewsCommand);
+Artisan::add(new SeedCountriesCommand);

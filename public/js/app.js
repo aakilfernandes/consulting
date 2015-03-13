@@ -2,18 +2,14 @@ var app = angular.module('app',[
 	'isoform'
 	,'frontloader'
 	,'httpi'
-	,'watchdog'
 	,'ui.bootstrap'
 	,'yaru22.angular-timeago'
-	,'simpleStorage'
 	,'angular-growl'
-])
+]).run(function($rootScope,frontloaded){
+	$rootScope.frontloaded = frontloaded
+})
 
-app.config(function(watchdogProvider,$provide,$compileProvider,$httpProvider,growlProvider,IsoformProvider){
-	watchdogProvider.options = {
-		endpoint:'https://watchdog.angulytics.com/watchdog/28/a41ed4983efe1c9fb5813'
-	}
-
+app.config(function($provide,$compileProvider,$httpProvider,growlProvider,IsoformProvider){
 	$provide.decorator('$http',function($delegate,frontloaded){
 		$delegate.defaults.transformRequest.push(function(dataJson){
 			var data = dataJson ? angular.fromJson(dataJson) : {}
@@ -48,19 +44,26 @@ app.run(function($rootScope,$http,frontloaded,Isoform,growl) {
 	})
 
 	Isoform.prototype.doBeforeAjaxValidation = function(){
+		if(this.isGrowlSupressed)
+			return
+
 		growl.add('info','Validating inputs')
 	}
 
 	Isoform.prototype.doAfterAjaxValidation = function(response){
-		var errorsCount = 0
-			,isoform = this
+
+		if(this.isGrowlSupressed)
+			return
+
+		if(Object.keys(response.data).length==0)
+			growl.add('success','Looks good so far')
 
 		Object.keys(response.data).forEach(function(field){
-			errorsCount+=response.data[field].length
+			if(response.data[field].length>0)
+				response.data[field].forEach(function(message){
+					growl.add('error',message)
+				})
 		})
-
-		if(errorsCount==0)
-			growl.add('success','Looks good so far')
 	}
 });
 
@@ -78,6 +81,14 @@ app.controller('AccountController',function($scope,httpi,language){
 	}
 })
 
+app.controller('JoinController',function($scope,$timeout){
+	$timeout(function(){
+		$scope.isoform.isGrowlSupressed = true
+	})
+	$scope.country = 'US'
+	$scope.isAvailable = true
+	$scope.isNotifiedOfRequests = true
+})
 
 
 app.controller('UserController',function($scope,frontloaded){

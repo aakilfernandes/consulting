@@ -2,46 +2,53 @@
 
 	var isoformModule = angular.module('isoform', [])
 
-	isoformModule.directive('isoform',function(Isoform){
+	isoformModule.factory('isoforms',function(){
+		return {};
+	})
+
+	isoformModule.directive('isoform',function(Isoform,isoforms){
 		return {
 			compile:function(){
 				return {
 					pre:function(scope,element,attributes){
 						var isoformSeed = JSON.parse(attributes.isoform)
 						scope.isoform = new Isoform(scope,isoformSeed)
+						isoforms[scope.isoform.namespace] = scope.isoform
 						scope.$watch('isoform.values',function(value,oldValue){
 							if(angular.equals(value,oldValue)) return
 							scope.isoform.validate()
 						},true)
 					}
 				}
-			}
-		}
-	})
-
-	isoformModule.directive('isoformMessages',function(){
-		return {
-			scope:true
-			,link:function(scope,element,attributes){
-				scope.isoformMessages=[]
-				scope.$watch('isoform.messages',function(messages){
-					if(messages[attributes.isoformMessages])
-						scope.isoformMessages = messages[attributes.isoformMessages]
-				})
-
+			},controller:function(){
+				
 			}
 		}
 	})
 
 
-	isoformModule.directive('isoformField',function($http){
+	isoformModule.directive('name',function($http,$log){
 		return {
-			require:'ngModel'
+			require:['?^isoform','?ngModel']
 			,link:function(scope,element,attributes,ngModel){
 				var isoform = scope.isoform
-					,field = attributes['isoformField']
-					,rules = isoform.fields[field]
-					,value = scope[attributes.ngModel] = isoform.values[field]
+				if(!scope.isoform)
+					return
+				else if(!attributes.ngModel)
+					return $log.warn('Isoform: ngModel is missing')
+				else
+					var isoform = scope.isoform
+						,field = attributes['name']
+
+				console.log(field,attributes.ngModel,isoform.values[field])
+
+				if(isoform.values[field]){
+					if(attributes.type == 'checkbox')
+						scope[attributes.ngModel] = !!isoform.values[field]
+					else
+						scope[attributes.ngModel] = isoform.values[field]
+				}else if(isoform.values[field] === undefined && scope.$eval(attributes.ngModel)!==undefined )
+					isoform.values[field] = scope.$eval(attributes.ngModel)
 
 				scope.$watch(attributes.ngModel,function(value,oldValue){
 					if(value==oldValue) return
@@ -144,5 +151,21 @@
 		return Isoform
 
 	})
+
+	function byString(o, s) {
+		//http://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
+	    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+	    s = s.replace(/^\./, '');           // strip a leading dot
+	    var a = s.split('.');
+	    while (a.length) {
+	        var n = a.shift();
+	        if (n in o) {
+	            o = o[n];
+	        } else {
+	            return;
+	        }
+	    }
+	    return o;
+	}
 
 }())
