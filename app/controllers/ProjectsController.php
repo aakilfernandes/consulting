@@ -78,7 +78,15 @@ class ProjectsController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+
+		$isoform = new Isoform('project');
+		$validator = $isoform->getValidator(Input::all());
+
+		if($validator->fails())
+			return $isoform->getAjaxErrorResponse();
+
+		Auth::user()->projects()->find($id)->fill(Input::all())->save();
+		return Auth::user()->projects;
 	}
 
 

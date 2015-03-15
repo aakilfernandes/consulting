@@ -205,12 +205,14 @@ app.controller('ProfileController',function($scope,$modal,httpi,frontloaded){
   		})
 	}
 
-	$scope.openProjectModal = function(){
+	$scope.openProjectModal = function(project){
 		$modal.open({
 	      templateUrl: '/angular/templates/projectModal',
 	      size: 'md',
 	      resolve: {
-	        
+	    	project:function(){
+	    		return project
+	    	}
 	      },controller:ProjectModalController
 	    }).result.then(function(projects){
 	    	if(projects)
@@ -265,7 +267,17 @@ function SkillModalController($scope, $modalInstance, $http, skill){
 
 }
 
-function ProjectModalController($scope, $modalInstance, $http){
+function ProjectModalController($scope, $modalInstance, $http, project){
+
+	if(project){
+		$scope.project = project
+		$scope.isEditing = true
+		angular.extend($scope,project)
+		var url = '/api/projects/'+project.id
+	}else{
+		$scope.level = 5
+		var url = '/api/projects'
+	}
 
   	$scope.cancel = function(){
   		$modalInstance.dismiss('cancel');
@@ -276,12 +288,10 @@ function ProjectModalController($scope, $modalInstance, $http){
   		$http({
   			method:'POST'
   			,data:$scope.isoform.values
-  			,url:'/api/projects'
+  			,url:url
   		}).success(function(projects){
-  			console.log(projects)
 			$modalInstance.close(projects)
   		}).error(function(response,code){
-  			console.log(response)
 			$scope.isoform.messages = response
 		})
   	}

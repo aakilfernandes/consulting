@@ -34,7 +34,7 @@
 		<h3>Projects <button class="btn btn-primary btn-sm" ng-click="openProjectModal()">New</button></h3>
 		<div ng-repeat="project in user.projects">
 			<span class="icons">
-				<span class="glyphicon glyphicon-pencil text-muted" ng-click="editProject(project)"></span>
+				<span class="glyphicon glyphicon-pencil text-muted" ng-click="openProjectModal(project)"></span>
 				<span class="text-danger glyphicon glyphicon-remove-sign" ng-click="deleteProject(project,$index)"></span>
 			</span>
 			<a class="project-title" ng-href="@{{project.url}}" target="_blank">@{{project.name}} <span class="glyphicon glyphicon-link"></span></a>
