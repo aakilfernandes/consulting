@@ -53,7 +53,7 @@
 					if(value==oldValue) return
 					if(scope.isoform.shouldClearMessagesOnChange)
 						scope.isoform.messages[field] = []
-					isoform.values[field] = scope.$eval(attributes.ngModel)
+					isoform.values[field] = value
 				},true)
 
 				scope.$watch('isoform.response',function(value,oldValue){

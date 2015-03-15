@@ -24,16 +24,11 @@
 	<textarea frontload="inputs" frontload-type="json">{{json_encode(Input::all())}}</textarea>
 	<textarea frontload="constants" frontload-type="json">{{json_encode(Config::get('constants'));}}</textarea>
 	@if(Auth::user())
-		<textarea frontload="user" frontload-type="json">{{Auth::user()}}</textarea>
+		<textarea frontload="me" frontload-type="json">{{Auth::user()}}</textarea>
 	@endif
 	@if(Session::get('growlMessages'))
 		<textarea frontload="growlMessages" frontload-type="json">{{json_encode(Session::get('growlMessages'))}}</textarea>
 	@endif
-	<div class="container">
-		@if(Auth::user())
-			@include('banner')
-		@endif
-	</div>
 	@yield('content')
 	<script src="https://checkout.stripe.com/checkout.js"></script>
 	{{HTML::script('/components/underscore/underscore-min.js')}}

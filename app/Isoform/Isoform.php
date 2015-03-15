@@ -81,7 +81,11 @@ class Isoform {
 	}
 
 	public function getAjaxErrorResponse(){
-		return response($this->messages,400);
+		return Response::json($this->messages,400);
+	}
+
+	public function getCustomErrorResponse($messages){
+		return Response::json($messages,400);
 	}
 
 	public function getRedirect($url,$messages = []){

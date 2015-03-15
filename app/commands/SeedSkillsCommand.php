@@ -4,14 +4,14 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class SeedCountriesCommand extends Command {
+class SeedSkillsCommand extends Command {
 
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'app:seed-countries';
+	protected $name = 'app:seed-skills';
 
 	/**
 	 * The console command description.
@@ -37,17 +37,17 @@ class SeedCountriesCommand extends Command {
 	 */
 	public function fire()
 	{
-		//DB::table('countries')->truncate();
+		//DB::table('skills')->truncate();
 
-		$countriesJson = file_get_contents(base_path().'/data/countries.json');
-		$countries = json_decode($countriesJson);
+		$skillsList = file_get_contents(base_path().'/data/skills.csv');
+		$skills = explode("\r\n", $skillsList);;
 
-		foreach($countries as $country){
-			$countryModel = new Country;
-			$countryModel->id = $country->code;
-			$countryModel->name = $country->name;
-			$countryModel->save();
+		foreach($skills as $skill){
+			$skillModel = new Skill;
+			$skillModel->name = $skill;
+			$skillModel->save();
 		}
+
 	}
 
 	/**

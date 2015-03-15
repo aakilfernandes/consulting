@@ -5,9 +5,7 @@ var app = angular.module('app',[
 	,'ui.bootstrap'
 	,'yaru22.angular-timeago'
 	,'angular-growl'
-]).run(function($rootScope,frontloaded){
-	$rootScope.frontloaded = frontloaded
-})
+])
 
 app.config(function($provide,$compileProvider,$httpProvider,growlProvider,IsoformProvider){
 	$provide.decorator('$http',function($delegate,frontloaded){
@@ -28,6 +26,8 @@ app.config(function($provide,$compileProvider,$httpProvider,growlProvider,Isofor
 app.run(function($rootScope,$http,frontloaded,Isoform,growl) {
 
 	$rootScope.frontloaded = frontloaded
+	$rootScope._ = _
+
 	$http.defaults.headers.delete = { 'Content-Type' : 'application/json' };
 
 	growl.add = function(type,message){
@@ -44,6 +44,8 @@ app.run(function($rootScope,$http,frontloaded,Isoform,growl) {
 	})
 
 	Isoform.prototype.doBeforeAjaxValidation = function(){
+		return
+
 		if(this.isGrowlSupressed)
 			return
 
@@ -51,6 +53,7 @@ app.run(function($rootScope,$http,frontloaded,Isoform,growl) {
 	}
 
 	Isoform.prototype.doAfterAjaxValidation = function(response){
+		return
 
 		if(this.isGrowlSupressed)
 			return
@@ -86,10 +89,6 @@ app.controller('JoinController',function($scope,$timeout){
 		$scope.isoform.isGrowlSupressed = true
 	})
 	
-	$scope.$watch('country_id',function(){
-		console.log(arguments)
-	})
-
 	if($scope.isAvailable===undefined)
 		$scope.isAvailable = true
 	
@@ -177,69 +176,117 @@ app.controller('BucketsController',function($scope,httpi,language,frontloaded,gr
 
 })
 
-app.controller('ProfilesController',function($scope,httpi,$local,$filter,growl){
+app.controller('ProfileController',function($scope,$modal,httpi,frontloaded){
 
-	$scope.profiles = []
-		
-	$scope.statusFilters = Object.keys($scope.frontloaded.constants.statuses).map(function(key){
-		return {id:key,label:$scope.frontloaded.constants.statuses[key]}
-	})
-	$scope.statusFilters.unshift({id:undefined,label:'Any Status'})
+	$scope.user = angular.copy(frontloaded.user)
 
-	$scope.sorts = [
-		{id:'oldest',label:'Oldest'}
-		,{id:'recentlySeen',label:'Recently Seen'}
-		,{id:'recentlyCreated',label:'Recently Created'}
-		,{id:'mostErrors',label:'Highest Errors Count'}
-	]
-
-	var filters = $local.get('profilesFilters') ? $local.get('profilesFilters') : {}
-
-	$scope.params = {
-		bucket_id: $scope.frontloaded.bucket.id
-		,filters: {
-			status: 'open'
-		}
-		,sort: 'recentlyCreated'
-		,pageSize:5
+	$scope.openSkillModal = function(skill){
+		$modal.open({
+	      templateUrl: '/angular/templates/skillModal',
+	      size: 'md',
+	      resolve: {
+	        skill:function(){
+	        	return skill
+	        }
+	      },controller:SkillModalController
+	    }).result.then(function(skills){
+	    	if(skills)
+	    		$scope.user.skills = skills
+	    })
 	}
 
-	$scope.$watch('params',function(value,oldValue){
-		if(angular.equals(value,oldValue)) return
-		$local.set('profilesStatusFilter',$scope.params.filters.status)
-		$local.set('profilesSort',$scope.params.sort)
-		loadProfiles()
-	},true)
+	$scope.deleteSkill = function(skill,index){
+		$scope.user.skills.splice(index,1)
 
-	$scope.$watch('profiles',function(profiles){
-		$scope.profilesFiltered = $filter('filterIf')(profiles,{status:$scope.params.filters.status});
-	},true)
-
-
-	function loadProfiles(){
-		growl.add('info','Loading error profiles')
 		httpi({
-			method:'get'
-			,url:'/api/buckets/:bucket_id/profiles'
-			,params:angular.copy($scope.params)
-		}).success(function(response){
-			$scope.response = response
-			$scope.profiles = response.data
-			growl.add('success','Error profiles loaded')
-		})
+  			method:'DELETE'
+  			,data:skill
+  			,url:'/api/skills/:id'
+  		})
 	}
 
-	$scope.updateProfile = function(profile){
+	$scope.openProjectModal = function(){
+		$modal.open({
+	      templateUrl: '/angular/templates/projectModal',
+	      size: 'md',
+	      resolve: {
+	        
+	      },controller:ProjectModalController
+	    }).result.then(function(projects){
+	    	if(projects)
+	    		$scope.user.projects = projects
+	    })
+	}
+
+	$scope.deleteProject = function(project,index){
+		$scope.user.projects.splice(index,1)
+
 		httpi({
-			method:'PUT'
-			,url:'/api/buckets/:bucket_id/profiles/:id'
-			,data:angular.copy(profile)
-		})
+  			method:'DELETE'
+  			,data:project
+  			,url:'/api/projects/:id'
+  		})
 	}
-
-	loadProfiles()
 
 })
+
+function SkillModalController($scope, $modalInstance, $http, skill){
+
+	if(skill){
+		$scope.skill = skill
+		$scope.isEditing = true
+		angular.extend($scope,skill)
+		angular.extend($scope,skill.pivot)
+	}else{
+		$scope.level = 5
+	}
+
+  	$scope.cancel = function(){
+  		$modalInstance.dismiss('cancel');
+  	}
+
+  	$scope.submit = function(){
+
+  		if($scope.isEditing)
+  			url = '/api/skills/'+skill.pivot.skill_id
+  		else
+  			url = '/api/skills/'
+
+  		$http({
+  			method:'POST'
+  			,data:$scope.isoform.values
+  			,url:url
+  		}).success(function(skills){
+  			$modalInstance.close(skills)
+  		}).error(function(response,code){
+			$scope.isoform.messages = response
+		})
+  	}
+
+}
+
+function ProjectModalController($scope, $modalInstance, $http){
+
+  	$scope.cancel = function(){
+  		$modalInstance.dismiss('cancel');
+  	}
+
+  	$scope.submit = function(){
+
+  		$http({
+  			method:'POST'
+  			,data:$scope.isoform.values
+  			,url:'/api/projects'
+  		}).success(function(projects){
+  			console.log(projects)
+			$modalInstance.close(projects)
+  		}).error(function(response,code){
+  			console.log(response)
+			$scope.isoform.messages = response
+		})
+  	}
+
+}
 
 app.directive('showStack',function($modal,growl){
 	return {

@@ -4,18 +4,17 @@ use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
-use Laravel\Cashier\BillableTrait;
-use Laravel\Cashier\BillableInterface;
 
-class User extends Eloquent implements UserInterface, RemindableInterface, BillableInterface {
+class User extends Eloquent implements UserInterface, RemindableInterface {
 
-	use UserTrait, RemindableTrait, BillableTrait;
+	use UserTrait, RemindableTrait;
 
 	protected $fillable = [
 		'email'
 		,'name'
 		,'isEmailPublic'
 		,'title'
+		,'hourlyMin'
 		,'isAvailable'
 		,'isRemote'
 		,'country_id'
@@ -25,11 +24,59 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Billa
 		,'password'
 	];
 	protected $hidden = ['password', 'remember_token'];
-	protected $dates = ['trial_ends_at', 'subscription_ends_at'];
-	protected $appends = ['plan'];
+
+	public function withRelationships(){
+		return User::with('skills','projects')->find($this->id);
+	}
+
+	public function skills(){
+		return $this->belongsToMany('Skill')->withPivot('level');
+	}
+
+	public function projects(){
+		return $this->hasMany('Project');
+	}
+
+	public function addSkill($attributes,$id=null){
+		$skill = Skill::whereName($attributes['name'])->first();
+
+		$pivotFields = [
+			'level'=>$attributes['level']
+		];
+		
+		if($id)
+			$pivotFields['id']=$id;
+
+		if($skill){
+			$this->skills()->save($skill,$pivotFields);
+			return;
+		}
+
+		$skill = new Skill;
+		$skill->fill($attributes);
+		$skill->save();
+
+		$this->skills()->save($skill,$pivotFields);
+	}
+
+	public function getProfileUrlAttribute(){
+		return URL::to('/')."/p/{$this->id}/{$this->slug}";
+	}
+
+	public function getGravatarUrlAttribute(){
+		return "http://www.gravatar.com/avatar/".md5($this->email).'?s=100';
+	}
+
+	public function getSlugAttribute(){
+		return slugify($this->name);
+	}
 
 	public function setPasswordAttribute($value){
 		$this->attributes['password'] = Hash::make($value);
+	}
+
+	public function setCountryIdAttribute($value){
+		$this->attributes['country_id'] = 'US';
 	}
 
 	public function setHashedPasswordAttribute($value){
@@ -40,32 +87,24 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Billa
 		return Hash::check($password,$this->password);
 	}
 
-	public function buckets(){
-		return $this->belongsToMany('Bucket');
+	public function setIsEmailPublicAttribute($value){
+		$this->attributes['isEmailPublic'] = !!$value;
 	}
 
-	public function bucket($id){
-		return $this->buckets()->whereBucketId($id)->first();
+	public function setIsAvailableAttribute($value){
+		$this->attributes['isAvailable'] = !!$value;
 	}
 
-	public function getIsSubscribedAttribute(){
-		return $this->subscribed();
+	public function setIsRemoteAttribute($value){
+		$this->attributes['isRemote'] = !!$value;
 	}
 
-	public function getIsOnGracePeriodAttribute(){
-		return $this->onGracePeriod();
+	public function setIsNotifiedOfRequestsAttribute($value){
+		$this->attributes['isNotifiedOfRequests'] = !!$value;
 	}
 
-	public function getHasEverSubscribedAttribute(){
-		return $this->everSubscribed();
-	}
-
-	public function getPlanAttribute(){
-		if(!$this->isSubscribed)
-			return Config::get('constants.plans')[Config::get('constants.defaultPlanId')];
-
-		$planName = $this->stripe_plan;
-		return Config::get('constants.plans')[$planName];
+	public function setIsNotifiedOfRequestsEvenIfLowballAttribute($value){
+		$this->attributes['isNotifiedOfRequestsEvenIfLowball'] = !!$value;
 	}
 
 }

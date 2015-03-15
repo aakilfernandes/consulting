@@ -122,10 +122,6 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Way\Generators\GeneratorsServiceProvider',
-		'Passioncoder\SimpleCurl\ServiceProvider',
-		'Sairiz\Mandrill\MandrillServiceProvider',
-		'Laravel\Cashier\CashierServiceProvider',
-
 	),
 
 	/*
@@ -194,8 +190,6 @@ return array(
 		'View'              => 'Illuminate\Support\Facades\View',
 		'UseragentParser'   => 'UAParser\Parser',
 		'Isoform'           => 'Isoform\Isoform',
-		'Curl'              => 'Passioncoder\SimpleCurl\Facade',
-		'Crawler'			=> 'Symfony\Component\DomCrawler\Crawler',
 	),
 
 );

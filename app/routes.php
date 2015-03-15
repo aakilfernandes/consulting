@@ -37,10 +37,6 @@ Route::group(['before'=>'guest'],function(){
 
 Route::get('/reset-complete', 'AuthController@resetComplete');
 
-Route::post('/watchdog/{id}/{key}','ErrorsController@store');
-
-Route::post('stripe/webhook', 'Laravel\Cashier\WebhookController@handleWebhook');
-
 Route::group(['before'=>'csrf'],function(){
 	Route::post('/login', 'AuthController@login');
 	Route::post('/join', 'AuthController@join');
@@ -48,68 +44,28 @@ Route::group(['before'=>'csrf'],function(){
 });
 
 Route::group(['before'=>'auth'],function(){
-	Route::get('/buckets',function(){
-		return View::make('buckets');
+	Route::get('profile', function(){
+		return View::make('profile',['user'=>Auth::user()->withRelationships()]);	
 	});
 
-	Route::get('/account',function(){
-		return View::make('account');
+	Route::get('/angular/templates/skillModal', function(){
+		return View::make('skillModal',['skills'=>Skill::take(10)->get()]);	
 	});
 
-	Route::get('/buckets/{id}/profiles',function($id){
-		$bucket = Auth::user()->bucket($id);
-		if(!$bucket) App::abort(404,'Bucket not found');
-		return View::make('profiles',compact('bucket'));
+	Route::get('/angular/templates/projectModal', function(){
+		return View::make('projectModal');	
 	});
 
-	Route::get('/buckets/{bucket_id}/profiles/{profile_id}',function($bucket_id,$profile_id){
-		$bucket = Auth::user()->bucket($bucket_id);
-		if(!$bucket) App::abort(404,'profile not found');
-
-		$profile = $bucket->profiles()->find($profile_id);
-		if(!$profile) App::abort(404,'profile not found');
-
-		return View::make('profile',compact('bucket','profile'));
-	});
-
-	Route::get('/buckets/{bucket_id}/profiles/{profile_id}/referenceLink',function($bucket_id,$profile_id){
-		$bucket = Auth::user()->bucket($bucket_id)->profiles()->find($profile_id);
-		
-		if(!$profile) App::abort(404,'Profile not found');
-		if(!$profile->documentation) App::abort(404,'Profile has no documentation');
-
-		return Redirect::to($profile->documentation);		
-	});
-
-	Route::get('/buckets/{bucket_id}/profile/{profile_id}/errors',function($bucket_id,$profile_id){
-		$errors = Auth::user()->buckets()->find($bucket_id)->profiles()->find($profile_id)->errors;
-		if(!$errors) App::abort(404,'Errors not found');
-		return View::make('errors',compact('errors'));
-	});
-
-	Route::get('/api/buckets','BucketsController@index');
-	Route::get('/api/buckets/{id}','BucketsController@show');
-	Route::get('/api/buckets/{bucket_id}/profiles', 'ProfilesController@index');
-	Route::get('/api/buckets/{bucket_id}/profiles/{profile_id}/errors', 'ErrorsController@index');
-
-	Route::group(['before'=>'csrf'],function(){
-		Route::post('/user', 'UserController@update');
-		Route::post('/user/password', 'UserController@updatePassword');
-
-		Route::post('/api/buckets', 'BucketsController@store');
-		Route::put('/api/buckets/{id}', 'BucketsController@update');
-		Route::delete('/api/buckets/{id}', 'BucketsController@destroy');
-		
-		Route::put('/api/buckets/{bucket_id}/profiles/{id}', 'ProfilesController@update');
-		Route::put('/api/subscriptions/{id}', 'SubscriptionsController@update');
-
-		Route::post('/api/user/upgrade', 'UserController@upgrade');
-		Route::post('/api/user/cancel', 'UserController@cancel');
-		Route::post('/api/user/resume', 'UserController@resume');
-	});
 });
 
-Route::get('isoform', function()
-{
+Route::group(['before'=>['csrf','auth']],function(){
+	Route::post('/api/skills', 'SkillsController@store');
+	Route::post('/api/skills/{id}', 'SkillsController@update');
+	Route::delete('/api/skills/{id}', 'SkillsController@destroy');
+	Route::post('/api/projects', 'ProjectsController@store');
+	Route::delete('/api/projects/{id}', 'ProjectsController@destroy');
+});
+
+Route::get('isoform', function(){
 	return Isoform::ajaxValidationResponse();
 });

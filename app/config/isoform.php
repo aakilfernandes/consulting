@@ -56,5 +56,18 @@ return [
 			'required'=>[]
 			,'same'=>['password']
 		]
+	],'skill'=>[
+		'name'=>[
+			'required'=>[]
+		],'level'=>[
+			'required'=>[]
+		]
+	],'project'=>[
+		'name'=>[
+			'required'=>[]
+		],'url'=>[
+			'url'=>[]
+		]
+		,'blurb'=>[]
 	]
 ];

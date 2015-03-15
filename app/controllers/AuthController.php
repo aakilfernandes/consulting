@@ -13,7 +13,7 @@ class AuthController extends \BaseController {
 			$user->fill(Input::all());
 			$user->save();
 			Auth::login($user);
-			return Redirect::to('/buckets')->with('growlMessages',[['success','Welcome to Angulytics!']]);
+			return Redirect::to('/profile')->with('growlMessages',[['success','Welcome to Angulytics!']]);
 	}
 
 	public function login(){
@@ -30,7 +30,7 @@ class AuthController extends \BaseController {
 
 		Auth::login($user);
 
-		return Redirect::to('buckets')->with('growlMessages',[['success','Login successful']]);
+		return Redirect::to('profile')->with('growlMessages',[['success','Login successful']]);
 	}
 
 	public function reset(){

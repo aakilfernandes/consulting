@@ -18,8 +18,12 @@ return [
 	],'defaultPlanId'=>'hacker'
 	,'trialDays'=>14
 	,'stripeKey'=>'pk_test_XrJT5C9ipwgxQpcoERCVF0xY'
-	,'tabs'=>[
-		'buckets'=>'Buckets'
-		,'account'=>'Account'
+	,'levels'=>['min'=>1,'max'=>10]
+	,'levelNames'=>[
+		1=>'Novice'
+		,2=>'Seasoned'
+		,3=>'Veteran'
+		,4=>'Expert'
+		,3=>'Master'
 	]
 ];

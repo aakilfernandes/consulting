@@ -13,3 +13,4 @@
 
 
 Artisan::add(new SeedCountriesCommand);
+Artisan::add(new SeedSkillsCommand);

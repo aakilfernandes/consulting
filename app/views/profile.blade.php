@@ -1,73 +1,45 @@
 @extends('layout')
 
 @section('content')
-	<textarea frontload="bucket" frontload-type="json">{{$bucket}}</textarea>
-	<textarea frontload="profile" frontload-type="json">{{$profile}}</textarea>
-	<div class="container">
-		<ol class="breadcrumb">
-		  	<li><a href="/">Home</a></li>
-		  	<li><a href="/buckets">Buckets</a></li>
-		  	<li>{{$bucket->name}}</li>
-		  	<li><a href="/buckets/{{$bucket->id}}/profiles">Profiles</a></li>
-		  	<li class="active">{{$profile->alias}}</li>
-		</ol>
-		<h2>{{$profile->alias}}</h2>
-		<div class="row" ng-controller="ErrorsController">
-			<div class="col-sm-5">
-				<table class="table clients">
-					<tr>
-						<th>Browser</th>
-						<th>OS</th>
-						<th>Device</th>
-						<th></th>
-						<th><button class="btn btn-xs btn-primary"
-							ng-show="frontloaded.profile.clients.length>1 && (params.filters.browser || params.filters.os || params.filters.device)"
-							ng-click="filterByClient({})"
-						>View All</button></th>
-					</tr>
-					<tr class="client" ng-repeat="client in frontloaded.profile.clients" ng-cloak>
-						<td>@{{client.browser}}</td>
-						<td>@{{client.os}}</td>
-						<td>@{{client.device}}</td>
-						<td>@{{client.errorsCount}}</td>
-						<td><button class="btn btn-xs btn-primary"
-							ng-show="frontloaded.profile.clients.length>1 && (
-								params.filters.browser != client.browser
-								|| params.filters.os != client.os
-								|| params.filters.device != client.device
-							)"
-							ng-click="filterByClient(client)"
-						>Filter</button></td>
-					</tr>
-				</table>
-			</div>
-			<div class="col-sm-7">
-				<div class="panel" ng-show="errorsCount>params.pageSize" ng-cloak>
-					<div class="panel-heading text-center">
-						<div pagination  class="" ng-cloak
-							total-items="errorsCount"
-							max-size="7"
-							ng-model="params.page"
-							previous-text="Prev"
-							boundary-links="true"
-							items-per-page="params.pageSize"
-						></div>
-					</div>
-				</div>
-				<div class="panel panel-default" ng-repeat="error in errors" ng-cloak>
-					<div class="panel-body">
-						<div class="row">
-							<div class="col col-xs-4" timestamp="error.created_at"></div>
-							<div class="col col-xs-5">
-								<b>@{{error.browser}}</b>, <b>@{{error.os}}</b>, <b>@{{error.device}}</b>							
-							</div>
-							<div class="col col-xs-3 text-right">
-								<button class="btn btn-primary btn-xs" show-stack="error.stack">Show Stack</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+<textarea frontload="user" frontload-type="json">{{$user}}</textarea>
+<div class="container" ng-controller="ProfileController">
+	<table>
+		<tr>
+			<td style="width:120px">
+				<img src="{{$user->gravatarUrl}}">
+			</td>
+			<td>
+				<h1 ng-bind="user.name">{{$user->name}}</h1>
+				<h2 ng-bind="user.title" ng-if="user.title">{{$user->title}}</h2>
+			</td>
+		</tr>
+	</table>
+	<hr>
+	<div ng-cloak>
+		<h3>Technologies/Skills <button class="btn btn-primary btn-sm" ng-click="openSkillModal()">New</button></h3>
+		<table>
+			<tr ng-repeat="skill in user.skills">
+				<td><b>@{{skill.name}}</b></td>
+				<td>
+					<span ng-repeat="level in _.range(frontloaded.constants.levels.max)">
+						<span class="glyphicon glyphicon-star @{{level>=skill.pivot.level?'text-muted':''}}"></span>
+					</span>
+					<span class="icons">
+						<span class="glyphicon glyphicon-pencil text-muted" ng-click="openSkillModal(skill)"></span>
+						<span class="text-danger glyphicon glyphicon-remove-sign" ng-click="deleteSkill(skill,$index)"></span>
+					</span>
+				</td>
+			</tr>
+		</table>
+		<h3>Projects <button class="btn btn-primary btn-sm" ng-click="openProjectModal()">New</button></h3>
+		<div ng-repeat="project in user.projects">
+			<span class="icons">
+				<span class="glyphicon glyphicon-pencil text-muted" ng-click="editProject(project)"></span>
+				<span class="text-danger glyphicon glyphicon-remove-sign" ng-click="deleteProject(project,$index)"></span>
+			</span>
+			<a class="project-title" ng-href="@{{project.url}}" target="_blank">@{{project.name}} <span class="glyphicon glyphicon-link"></span></a>
+			<p>@{{project.blurb}}</p>
 		</div>
 	</div>
+</div>
 @stop
