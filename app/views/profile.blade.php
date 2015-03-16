@@ -12,10 +12,10 @@
 	@endif
 	<div class="row">
 		<div class="col-sm-7">
-			<table>
+		<table class="table">
 				<tr>
 					<td style="width:120px">
-						<img src="{{$user->gravatarUrl}}">
+						<img src="{{$user->gravatarUrl}}" class="img-thumbnail">
 					</td>
 					<td>
 						<h1 ng-bind="user.name">{{$user->name}}</h1>
@@ -56,7 +56,7 @@
 			  <div class="panel-body">
 			    <button class="btn btn-danger btn-lg request-button" ng-click="openMessageModal()" ng-disabled="frontloaded.isEditable">Send {{$user->firstName}} a Message</button>
 			  </div>
-			  <div class="panel-footer text-center">No signup requred</div>
+			  <div class="panel-footer text-center">no signup or payment requred</div>
 			</div>
 		</div>
 	</div>
