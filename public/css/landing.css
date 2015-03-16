@@ -5462,25 +5462,19 @@ h1, h2, h3 {
 
 /*==========  page  ==========*/
 .header {
-  background-color: #fff;
-  border-bottom: 1px solid #eeeeee;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2); }
 
-.main-content {
-  padding: 50px 0 0; }
-
 .banner {
-  background-color: #5b90bf;
-  background-color: #1c2b36;
+  background-color: #333;
   color: #fff;
   color: rgba(255, 255, 255, 0.8);
   text-align: center;
-  padding: 50px 0 0; }
+  padding: 50px 0; }
   .banner h2 {
     color:white;
     font-size: 36px;
     line-height: 60px;
-    margin-bottom: 12px; }
+    margin: 0; }
   .banner .btn-download {
     margin-bottom: 30px; }
   .banner .preview-img {
@@ -5585,5 +5579,4 @@ h1, h2, h3 {
   padding: 30px 0;
   font-size: 12px; }
 
-
-#pricing
+.navbar{margin-bottom: 0}

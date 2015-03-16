@@ -92,8 +92,9 @@ class UserController extends \BaseController {
 		if($validator->fails())
 			return $isoform->getAjaxErrorResponse();
 
-		Auth::user()->fill($isoform->values);
-		Auth::user()->save();
+		Auth::user()->update($isoform->values);
+
+		return Auth::user();
 	}
 
 

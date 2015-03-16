@@ -1,7 +1,8 @@
 <?PHP
 
 return [
-	'statuses' =>[
+	'brand'=>'10xDevs'
+	,'statuses' =>[
 			'open'=>'Open'
 			,'closed'=>'Closed'
 			,'ignored'=>'Ignored'
