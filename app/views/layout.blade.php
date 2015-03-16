@@ -16,7 +16,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Consulting
+				<a class="navbar-brand" href="/">Consulting
 				</a>
 			</div>
 			<div collapse="!isNavOpen" class="collapse navbar-collapse">
