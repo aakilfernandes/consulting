@@ -64,6 +64,10 @@ Route::group(['before'=>'csrf'],function(){
 
 Route::group(['before'=>'auth'],function(){
 
+	Route::get('/profile',function(){
+		return Redirect::to(Auth::user()->profileUrl);
+	});
+
 	Route::get('/messages',function(){
 		return View::make('messages');
 	});

@@ -25,5 +25,8 @@ return [
 		,3=>'Veteran'
 		,4=>'Expert'
 		,3=>'Master'
+	],'tabs'=>[
+		'profile'=>'Profile'
+		,'messages'=>'Messages'
 	]
 ];
