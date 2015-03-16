@@ -99,6 +99,17 @@ app.controller('JoinController',function($scope,$timeout){
 		$scope.usesGravatar = true
 })
 
+app.directive('autofocus', ['$timeout', function($timeout) {
+  	return {
+    	restrict: 'A',
+	    link : function($scope, $element) {
+	      	$timeout(function() {
+	       		$element[0].focus();
+	      	});
+	    }
+  	}
+}]);
+
 
 app.controller('UserController',function($scope,frontloaded){
 	$scope.user = frontloaded.user
@@ -247,7 +258,7 @@ app.controller('ProfileController',function($scope,$modal,httpi,frontloaded){
 
 })
 
-function MessageModalController($scope,$http,$modalInstance,user){
+function MessageModalController($scope,$http,$modalInstance,user,growl){
 
 	$scope.user = user
 
@@ -256,13 +267,14 @@ function MessageModalController($scope,$http,$modalInstance,user){
   	}
 
   	$scope.submit = function(){
-  		
+
   		$http({
   			method:'POST'
   			,data:$scope.isoform.values
   			,url:'/api/user/'+user.id+'/messages'
-  		}).success(function(skills){
-  			$modalInstance.close(skills)
+  		}).success(function(){
+  			$modalInstance.close()
+  			growl.add('success','Message sent!')
   		}).error(function(response,code){
 			$scope.isoform.messages = response
 		})

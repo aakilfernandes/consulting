@@ -4,7 +4,7 @@
 <div class="modal-body">
     <form isoform="{{Isoform::getSeed('message')}}" ng-submit="submit($event)">
         Your Name
-        <input class="form-control" name="name" ng-model="name">
+        <input class="form-control" name="name" ng-model="name" autofocus>
         {{getHtmlForIsoformMessages('name')}}
         <hr>
         Your Company
