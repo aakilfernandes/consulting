@@ -37,12 +37,12 @@ class SkillsController extends \BaseController {
 		if($validator->fails())
 			return $isoform->getAjaxErrorResponse();
 
-		if(Auth::user()->skills()->whereName(Input::get('name'))->count())
+		if(Auth::user()->skills()->whereName($isoform->values)->count())
 			return $isoform->getCustomErrorResponse([
 				'name'=>["You've already added that skill"]
 			]);
 
-		Auth::user()->addSkill(Input::all());
+		Auth::user()->addSkill($isoform->values);
 
 		return Auth::user()->skills;
 	}
@@ -87,7 +87,7 @@ class SkillsController extends \BaseController {
 			return $isoform->getAjaxErrorResponse();
 
 		Auth::user()->skills()->detach($id);
-	Auth::user()->addSkill(Input::all(),$id);
+		Auth::user()->addSkill($isoform->values,$id);
 
 		return Auth::user()->skills;
 	}

@@ -49,7 +49,7 @@
 	<textarea frontload="inputs" frontload-type="json">{{json_encode(Input::all())}}</textarea>
 	<textarea frontload="constants" frontload-type="json">{{json_encode(Config::get('constants'));}}</textarea>
 	@if(Auth::user())
-		<textarea frontload="me" frontload-type="json">{{Auth::user()}}</textarea>
+		<textarea frontload="me" frontload-type="json">{{Auth::user()->withHidden()}}</textarea>
 	@endif
 	@if(Session::get('growlMessages'))
 		<textarea frontload="growlMessages" frontload-type="json">{{json_encode(Session::get('growlMessages'))}}</textarea>

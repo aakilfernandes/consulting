@@ -13,7 +13,6 @@ return [
 		'email'=>[
 			'required'=>[]
 			,'email'=>[]
-			,'unique'=>['users,email']
 		],'name'=>[
 			'required'=>[]
 		],'title'=>[]
@@ -47,7 +46,18 @@ return [
 		'email'=>[
 			'required'=>[]
 			,'email'=>[]
-			,'mineOrUnique'=>['email']
+		],'name'=>[
+			'required'=>[]
+		],'title'=>[]
+		,'hourlyMin'=>[
+			'required'=>[]
+			,'integer'=>[]
+			,'between'=>[100,500]
+		],'country_id'=>[
+			'required'=>[]
+			//,'exists'=>['countries','id']
+		],'zip'=>[
+			'required'=>[]
 		]
 	],'password'=>[
 		'password'=>[

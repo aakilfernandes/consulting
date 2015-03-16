@@ -13,6 +13,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'email'
 		,'name'
 		,'isEmailPublic'
+		,'usesGravatar'
 		,'title'
 		,'hourlyMin'
 		,'isAvailable'
@@ -25,9 +26,47 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	];
 	protected $hidden = ['hourlyMin','password', 'remember_token'];
 	protected $appends = ['firstName'];
+	protected $booleans = [
+		'isAvailable'
+		,'usesGravatar'
+		,'isAvailable'
+		,'isRemote'
+		,'isNotifiedOfRequests'
+		,'isNotifiedOfRequestsEvenIfLowball'
+	];
+
+	public function attributesToArray(){
+		$attributes =  parent::attributesToArray();
+		
+		foreach ($attributes as $key=>$value)
+			if(in_array($key, $this->booleans))
+				$attributes[$key] = !! $value;
+
+		return $attributes;
+	}
+
+	public function setAttribute($key, $value){
+	    if(in_array($key, $this->booleans))
+	        $this->attributes[$key] = !!$value;
+		else
+	        parent::setAttribute($key, $value);
+	}
+
+	public function getAttribute($key){
+		if(in_array($key,$this->booleans))
+			throw new Exception($key);
+		else
+			return parent::getAttribute($key);
+	}
+
 
 	public function withRelationships(){
 		return User::with('skills','projects')->find($this->id);
+	}
+
+	public function withHidden(){
+		$this->hidden = [];
+		return $this;
 	}
 
 	public function skills(){
@@ -99,26 +138,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function checkPassword($password){
 		return Hash::check($password,$this->password);
-	}
-
-	public function setIsEmailPublicAttribute($value){
-		$this->attributes['isEmailPublic'] = !!$value;
-	}
-
-	public function setIsAvailableAttribute($value){
-		$this->attributes['isAvailable'] = !!$value;
-	}
-
-	public function setIsRemoteAttribute($value){
-		$this->attributes['isRemote'] = !!$value;
-	}
-
-	public function setIsNotifiedOfRequestsAttribute($value){
-		$this->attributes['isNotifiedOfRequests'] = !!$value;
-	}
-
-	public function setIsNotifiedOfRequestsEvenIfLowballAttribute($value){
-		$this->attributes['isNotifiedOfRequestsEvenIfLowball'] = !!$value;
 	}
 
 }

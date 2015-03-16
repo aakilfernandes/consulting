@@ -72,6 +72,10 @@ Route::group(['before'=>'auth'],function(){
 		return View::make('messages');
 	});
 
+	Route::get('/settings',function(){
+		return View::make('settings');
+	});
+
 	Route::get('/angular/templates/skillModal', function(){
 		return View::make('skillModal',['skills'=>Skill::take(10)->get()]);	
 	});
@@ -79,7 +83,6 @@ Route::group(['before'=>'auth'],function(){
 	Route::get('/angular/templates/projectModal', function(){
 		return View::make('projectModal');	
 	});
-
 
 	Route::get('/api/messages','MessagesController@index');
 });
@@ -92,6 +95,8 @@ Route::group(['before'=>['csrf','auth']],function(){
 	Route::post('/api/projects', 'ProjectsController@store');
 	Route::post('/api/projects/{id}', 'ProjectsController@update');
 	Route::delete('/api/projects/{id}', 'ProjectsController@destroy');
+
+	Route::post('/api/user','UserController@update');
 });
 
 Route::get('isoform', function(){

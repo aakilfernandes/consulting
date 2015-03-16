@@ -71,12 +71,17 @@ class UserController extends \BaseController {
 		$validator = $isoform->getValidator(Input::all());
 
 		if($validator->fails())
-			return $isoform->getRedirect('/account#user')
-				->with('growlMessages',[['error','User update failed']]);;
+			return $isoform->getAjaxErrorResponse();
 
-		Auth::user()->fill(Input::all());
-		Auth::user()->save();
-		return Redirect::to('/account#user')->with('growlMessages',[['success','Details updated']]);
+		$sameEmailUser = User::whereEmail(Input::get('email'))->first();
+		if($sameEmailUser && $sameEmailUser->id!=Auth::user()->id)
+			return $isoform->getCustomErrorResponse([
+				'email'=>'Another user has taken that email'
+			]);
+
+		Auth::user()->update($isoform->values);
+
+		return Auth::user();
 	}
 
 	public function updatePassword()
@@ -85,12 +90,10 @@ class UserController extends \BaseController {
 		$validator = $isoform->getValidator(Input::all());
 
 		if($validator->fails())
-			return $isoform->getRedirect('/account#password')
-				->with('growlMessages',[['error','Password update failed']]);
+			return $isoform->getAjaxErrorResponse();
 
-		Auth::user()->fill(Input::all());
+		Auth::user()->fill($isoform->values);
 		Auth::user()->save();
-		return Redirect::to('/account#password')->with('growlMessages',[['success','Password updated']]);
 	}
 
 
@@ -114,7 +117,7 @@ class UserController extends \BaseController {
 			return $isoform->getAjaxErrorResponse();
 
 		$message = new Message;
-		$message->fill(Input::all());
+		$message->fill($isoform->values);
 
 		User::find($id)->messages()->save($message);
 	}
