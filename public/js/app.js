@@ -70,18 +70,30 @@ app.run(function($rootScope,$http,frontloaded,Isoform,growl) {
 	}
 });
 
-app.controller('AccountController',function($scope,httpi,language){
-	$scope.cancel = function(){
+app.controller('MessagesController',function($scope,$http){
+	
+	$scope.messages = []
+	$scope.isLoading = true
 
-		if(!confirm(language.accountCancel)) return
+	var page = 1
 
-		httpi({
-			method:'post'
-			,url:'/api/user/cancel'
-		}).success(function(){
-			window.location.reload()
+	$scope.loadMore = function(){
+		$scope.isLoading = true
+		$http({
+			method:'GET'
+			,url:'/api/messages'
+			,params:{
+				page:page
+			}
+		}).success(function(response){
+			$scope.isLoading = false
+			$scope.response = response
+			$scope.messages = $scope.messages.concat(response.data)
+			page++
 		})
 	}
+
+	$scope.loadMore()
 })
 
 app.controller('JoinController',function($scope,$timeout){
@@ -110,85 +122,6 @@ app.directive('autofocus', ['$timeout', function($timeout) {
   	}
 }]);
 
-
-app.controller('UserController',function($scope,frontloaded){
-	$scope.user = frontloaded.user
-})
-
-app.controller('PasswordController',function($scope,frontloaded){
-	$scope.user = frontloaded.user
-})
-
-app.controller('BucketsController',function($scope,httpi,language,frontloaded,growl){
-	$scope.buckets = frontloaded.buckets
-
-	$scope.new = function(){
-		var name = window.prompt(language.bucketName);
-		if(name===null) return
-
-		growl.add('info','Creating new bucket')
-
-		httpi({
-			method:'POST'
-			,url:'/api/buckets'
-			,data:{name:name}
-		}).success(function(bucket){
-			growl.add('success','Bucket created')
-			$scope.buckets.unshift(bucket)
-		})
-	}
-
-	$scope.editName = function(bucket,index){
-		var name = window.prompt(language.bucketName)
-		if(name===null) return
-
-		growl.add('info','Editing bucket name')
-
-		bucket.name = name
-
-		httpi({
-			method:'PUT'
-			,url:'/api/buckets/:id'
-			,data:bucket
-		}).success(function(){
-			growl.add('success','Bucket name edited')
-		})
-	}
-
-	$scope.delete = function(bucket,index){
-		if(!confirm(language.bucketDelete)) return
-
-		growl.add('info','Deleting bucket')
-
-		httpi({
-			method:'DELETE'
-			,url:'/api/buckets/:id'
-			,data:bucket
-		}).success(function(){
-			growl.add('success','Bucket deleted')
-		})
-		$scope.buckets.splice(index,1)
-	}
-
-	$scope.verifyInstallation = function(bucket,$event){
-		if(bucket.isInstalled) return
-
-		if(!confirm(language.bucketNotInstalled))
-			$event.preventDefault()
-	}
-
-	$scope.editSubscription = function(subscription){
-		growl.add('info','Updating subscription')
-		httpi({
-			method:'PUT'
-			,url:'/api/subscriptions/:id'
-			,data:subscription
-		}).success(function(){
-			growl.add('success','Subscription updated')
-		})
-	}
-
-})
 
 app.controller('ProfileController',function($scope,$modal,httpi,frontloaded){
 

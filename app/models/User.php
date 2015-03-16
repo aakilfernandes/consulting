@@ -23,7 +23,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		,'isNotifiedOfRequestsEvenIfLowball'
 		,'password'
 	];
-	protected $hidden = ['password', 'remember_token'];
+	protected $hidden = ['hourlyMin','password', 'remember_token'];
 	protected $appends = ['firstName'];
 
 	public function withRelationships(){

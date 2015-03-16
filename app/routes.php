@@ -37,6 +37,25 @@ Route::group(['before'=>'guest'],function(){
 
 Route::get('/reset-complete', 'AuthController@resetComplete');
 
+Route::get('/p/{id}/{urlKey}/{slug}', function($id){
+
+	$isEditable = 
+		Auth::user()
+		&& Auth::user()->id == $id
+		&& !Input::has('isPublicPreview');
+
+	$user = User::find($id);
+
+	return View::make('profile',[
+		'user'=>$user->withRelationships()
+		,'isEditable'=>$isEditable
+	]);	
+});
+
+Route::get('/angular/templates/messageModal', function(){
+	return View::make('messageModal');	
+});
+
 Route::group(['before'=>'csrf'],function(){
 	Route::post('/login', 'AuthController@login');
 	Route::post('/join', 'AuthController@join');
@@ -45,17 +64,8 @@ Route::group(['before'=>'csrf'],function(){
 
 Route::group(['before'=>'auth'],function(){
 
-	Route::get('/p/{id}/{urlKey}/{slug}', function($id){
-
-		$isEditable = 
-			Auth::user()
-			&& Auth::user()->id == $id
-			&& !Input::has('isPublicPreview');
-
-		return View::make('profile',[
-			'user'=>Auth::user()->withRelationships()
-			,'isEditable'=>$isEditable
-		]);	
+	Route::get('/messages',function(){
+		return View::make('messages');
 	});
 
 	Route::get('/angular/templates/skillModal', function(){
@@ -66,10 +76,8 @@ Route::group(['before'=>'auth'],function(){
 		return View::make('projectModal');	
 	});
 
-	Route::get('/angular/templates/messageModal', function(){
-		return View::make('messageModal');	
-	});
 
+	Route::get('/api/messages','MessagesController@index');
 });
 
 Route::group(['before'=>['csrf','auth']],function(){
