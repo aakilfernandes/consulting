@@ -54,7 +54,7 @@
 		<div class="col-sm-5">
 			<div class="panel panel-default">
 			  <div class="panel-body">
-			    <button class="btn btn-danger btn-lg request-button" ng-click="openMessageModal()">Send {{$user->firstName}} a Message</button>
+			    <button class="btn btn-danger btn-lg request-button" ng-click="openMessageModal()" ng-disabled="frontloaded.isEditable">Send {{$user->firstName}} a Message</button>
 			  </div>
 			  <div class="panel-footer text-center">No signup requred</div>
 			</div>
