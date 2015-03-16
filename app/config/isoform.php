@@ -16,7 +16,8 @@ return [
 			,'unique'=>['users,email']
 		],'name'=>[
 			'required'=>[]
-		],'hourlyMin'=>[
+		],'title'=>[]
+		,'hourlyMin'=>[
 			'required'=>[]
 			,'integer'=>[]
 			,'between'=>[100,500]
@@ -69,5 +70,20 @@ return [
 			'url'=>[]
 		]
 		,'blurb'=>[]
+	],'message'=>[
+		'name'=>[
+			'required'=>[]
+		],'company'=>[
+			'required'=>[]
+		],'email'=>[
+			'required'=>[]
+			,'email'=>[]
+		],'hourlyMax'=>[
+			'required'=>[]
+			,'integer'=>[]
+			,'min'=>[100]
+		],'info'=>[
+			'required'=>[]
+		]
 	]
 ];

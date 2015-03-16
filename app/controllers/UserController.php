@@ -105,29 +105,18 @@ class UserController extends \BaseController {
 		//
 	}
 
-	public function upgrade(){
-		if(!Input::has('id'))
-			App::error(400,'Missing id');
+	public function sendMessage($id){
+		
+		$isoform = new Isoform('message');
+		$validator = $isoform->getValidator(Input::all());
 
-		Auth::user()->subscription('hacker')->create(Input::get('id'));
-	}
+		if($validator->fails())
+			return $isoform->getAjaxErrorResponse();
 
-	public function cancel(){
-		if(!Auth::user()->isSubscribed)
-			App::error(403,'You are not currently subscribed to any plans');
+		$message = new Message;
+		$message->fill(Input::all());
 
-		Auth::user()->subscription()->cancel();
-	}
-
-	public function resume(){
-		if(!Input::has('id'))
-			App::error(400,'Missing id');
-
-		if(!Auth::user()->isOnGracePeriod)
-			App::error(403,'You are not currently on a grace period');
-
-		Auth::user()->subscription(Auth::user()->stripe_plan)->resume(Input::get('id'));
+		User::find($id)->messages()->save($message);
 	}
 }
 
-User::setStripeKey(getenv('STRIPE'));

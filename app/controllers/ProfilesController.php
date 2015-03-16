@@ -120,7 +120,7 @@ class ProfilesController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		Auth::user()->profiles()->find($id)->delete();
+		//
 	}
 
 

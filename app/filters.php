@@ -67,7 +67,7 @@ Route::filter('auth.basic', function()
 
 Route::filter('guest', function()
 {
-	if (Auth::check()) return Redirect::to('/buckets');
+	if (Auth::check()) return Redirect::to(Auth::user()->profileUrl);
 });
 
 /*

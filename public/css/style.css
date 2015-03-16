@@ -38,25 +38,6 @@ a.ti,a.glyphicon{text-decoration: none; cursor: pointer;}
 	table-layout: fixed;
 }
 
-.panel-body{position: relative;}
-
-.notification{
-	position: absolute;
-	right: -12px;
-	top: -12px;
-}
-
-[route="buckets/{bucket_id}/profiles/{profile_id}"] .clients{table-layout:fixed;}
-
-[route="buckets/{bucket_id}/profiles/{profile_id}"] .client{
-	font-size: 12px;
-}
-[route="buckets/{bucket_id}/profiles/{profile_id}"] .clients .btn{
-	width: 100%;
-}
-[route="buckets/{bucket_id}/profiles/{profile_id}"] .clients td{
-	height:48px;
-}
 form .table{
 	table-layout: fixed;
 }
@@ -81,3 +62,5 @@ form .table{
 	font-size: 16px;
 	font-weight: bold;
 }
+
+.request-button{width:100%;}

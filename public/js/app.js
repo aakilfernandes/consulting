@@ -94,6 +94,9 @@ app.controller('JoinController',function($scope,$timeout){
 	
 	if($scope.isNotifiedOfRequests===undefined)
 		$scope.isNotifiedOfRequests = true
+
+	if($scope.usesGravatar===undefined)
+		$scope.usesGravatar = true
 })
 
 
@@ -230,7 +233,41 @@ app.controller('ProfileController',function($scope,$modal,httpi,frontloaded){
   		})
 	}
 
+	$scope.openMessageModal = function(){
+		$modal.open({
+	      templateUrl: '/angular/templates/messageModal',
+	      size: 'md',
+	      resolve: {
+	    	user:function(){
+	    		return $scope.user
+	    	}
+	      },controller:MessageModalController
+	    }).result.then()
+	}
+
 })
+
+function MessageModalController($scope,$http,$modalInstance,user){
+
+	$scope.user = user
+
+	$scope.cancel = function(){
+  		$modalInstance.dismiss('cancel');
+  	}
+
+  	$scope.submit = function(){
+  		
+  		$http({
+  			method:'POST'
+  			,data:$scope.isoform.values
+  			,url:'/api/user/'+user.id+'/messages'
+  		}).success(function(skills){
+  			$modalInstance.close(skills)
+  		}).error(function(response,code){
+			$scope.isoform.messages = response
+		})
+  	}
+}
 
 function SkillModalController($scope, $modalInstance, $http, skill){
 

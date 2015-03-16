@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration {
 			$table->string('name');
 			$table->string('email')->unique();
 			$table->boolean('isEmailPublic')->default(0);
+			$table->boolean('usesGravatar')->default(1);
 			$table->string('title')->nullable();
 			$table->integer('hourlyMin')->unsigned()->default(100);
 
@@ -32,6 +33,8 @@ class CreateUsersTable extends Migration {
 			$table->boolean('isNotifiedOfNewFeatures')->default(0);
 			
 			$table->string('password');
+
+			$table->integer('urlKey')->unsigned();
 			$table->timestamps();
 			$table->rememberToken();
 		});

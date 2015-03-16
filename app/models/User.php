@@ -24,6 +24,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		,'password'
 	];
 	protected $hidden = ['password', 'remember_token'];
+	protected $appends = ['firstName'];
 
 	public function withRelationships(){
 		return User::with('skills','projects')->find($this->id);
@@ -37,13 +38,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->hasMany('Project');
 	}
 
+	public function messages(){
+		return $this->hasMany('Message');
+	}
+
+
 	public function addSkill($attributes,$id=null){
 		$skill = Skill::whereName($attributes['name'])->first();
 
 		$pivotFields = [
 			'level'=>$attributes['level']
 		];
-		
+
 		if($id)
 			$pivotFields['id']=$id;
 
@@ -59,8 +65,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		$this->skills()->save($skill,$pivotFields);
 	}
 
+	public function getFirstNameAttribute(){
+		return explode(' ',$this->name)[0];
+	}
+
 	public function getProfileUrlAttribute(){
-		return URL::to('/')."/p/{$this->id}/{$this->slug}";
+		return URL::to('/')."/p/{$this->id}/{$this->urlKey}/{$this->slug}";
+	}
+
+	public function getPublicPreviewUrlAttribute(){
+		return $this->profileUrl.'?isPublicPreview=1';
 	}
 
 	public function getGravatarUrlAttribute(){
@@ -108,3 +122,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 }
+
+User::saving(function($user){
+	$user->urlKey = rand(1,10000);
+});

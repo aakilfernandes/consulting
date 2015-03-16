@@ -36,15 +36,20 @@
 						<input type="checkbox" name="isEmailPublic" ng-model="isEmailPublic">
 						Show my email on my profile
 					</label>
+					<label>
+						<input type='hidden' value='' name='usesGravatar'>
+						<input type="checkbox" name="usesGravatar" ng-model="usesGravatar">
+						Use the gravatar associated with this email
+					</label>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					Tagline <small class="text-muted">(optional)</small>
+					Title <small class="text-muted">(optional)</small>
 				</td>
 				<td>
-					<input name="tagline" class="form-control" ng-model="tagline" placeholder="Frontend Developer">
-					{{getHtmlForIsoformMessages('tagline')}}
+					<input name="title" class="form-control" ng-model="title" placeholder="Frontend Developer">
+					{{getHtmlForIsoformMessages('title')}}
 				</td>
 			</tr>
 			<tr>

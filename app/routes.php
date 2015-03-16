@@ -44,8 +44,18 @@ Route::group(['before'=>'csrf'],function(){
 });
 
 Route::group(['before'=>'auth'],function(){
-	Route::get('profile', function(){
-		return View::make('profile',['user'=>Auth::user()->withRelationships()]);	
+
+	Route::get('/p/{id}/{urlKey}/{slug}', function($id){
+
+		$isEditable = 
+			Auth::user()
+			&& Auth::user()->id == $id
+			&& !Input::has('isPublicPreview');
+
+		return View::make('profile',[
+			'user'=>Auth::user()->withRelationships()
+			,'isEditable'=>$isEditable
+		]);	
 	});
 
 	Route::get('/angular/templates/skillModal', function(){
@@ -56,9 +66,14 @@ Route::group(['before'=>'auth'],function(){
 		return View::make('projectModal');	
 	});
 
+	Route::get('/angular/templates/messageModal', function(){
+		return View::make('messageModal');	
+	});
+
 });
 
 Route::group(['before'=>['csrf','auth']],function(){
+	Route::post('/api/user/{id}/messages', 'UserController@sendMessage');
 	Route::post('/api/skills', 'SkillsController@store');
 	Route::post('/api/skills/{id}', 'SkillsController@update');
 	Route::delete('/api/skills/{id}', 'SkillsController@destroy');
