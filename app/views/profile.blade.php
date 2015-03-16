@@ -6,7 +6,7 @@
 <div class="container" ng-controller="ProfileController">
 	@if($isEditable)
 		<div class="alert alert-info">
-			Want to see how the rest of the world sees this page? Click here
+			Want to see how the rest of the world sees this page?
 			<a href="{{$user->publicPreviewUrl}}">Click here</a>
 		</div>
 	@endif
