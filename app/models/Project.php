@@ -7,3 +7,7 @@ class Project extends \Eloquent {
 		$this->belongsTo('User');
 	}
 }
+
+Project::creating(function($project){
+	$project->order = Auth::user()->projects()->count();
+});

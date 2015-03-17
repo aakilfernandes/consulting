@@ -124,7 +124,3 @@ class ProjectsController extends \BaseController {
 
 
 }
-
-Project::saving(function($project){
-	$project->order = Auth::user()->projects()->count();
-});

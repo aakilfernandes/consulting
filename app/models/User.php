@@ -170,6 +170,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 }
 
-User::saving(function($user){
+User::creating(function($user){
 	$user->urlKey = rand(1,10000);
 });
