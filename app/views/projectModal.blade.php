@@ -4,10 +4,14 @@
 <div class="modal-body">
     <form isoform="{{Isoform::getSeed('project')}}" ng-submit="submit($event)">
         Project Name
-        <input class="form-control" name="name" ng-model="name" list="skillsList" placeholder="Name of Your Project" autofocus>
+        <input class="form-control" name="name" ng-model="name" placeholder="Name of Your Project" autofocus>
         {{getHtmlForIsoformMessages('name')}}
         <hr>
-        Project URL <small class="text-muted">(optional)</small>
+        Your Role
+        <input class="form-control" name="role" ng-model="role" placeholder="Lead Developer">
+        {{getHtmlForIsoformMessages('role')}}
+        <hr>
+        URL <small class="text-muted">(optional)</small>
         <input class="form-control" name="url" ng-model="url" list="skillsList" placeholder="http://yourproject.com">
         {{getHtmlForIsoformMessages('url')}}
         <hr>

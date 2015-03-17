@@ -78,6 +78,8 @@ return [
 	],'project'=>[
 		'name'=>[
 			'required'=>[]
+		],'role'=>[
+			'required'=>[]
 		],'url'=>[
 			'url'=>[]
 		]
