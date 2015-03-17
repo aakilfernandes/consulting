@@ -77,7 +77,10 @@ Route::group(['before'=>'auth'],function(){
 	});
 
 	Route::get('/angular/templates/skillModal', function(){
-		return View::make('skillModal',['skills'=>Skill::take(10)->get()]);	
+		return View::make('skillModal',[
+			'skillsDatalist'=>
+				File::get(base_path().'/data/skills.datalist')
+		]);	
 	});
 
 	Route::get('/angular/templates/projectModal', function(){

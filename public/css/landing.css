@@ -5579,4 +5579,4 @@ h1, h2, h3 {
   padding: 30px 0;
   font-size: 12px; }
 
-.navbar{margin-bottom: 0}
+.navbar{margin-bottom: 0;border-radius: 0}

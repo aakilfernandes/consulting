@@ -6,9 +6,7 @@
     <form isoform="{{Isoform::getSeed('skill')}}" ng-submit="submit($event)">
         <input class="form-control" name="name" ng-model="name" list="skillsList" placeholder="javascript" autofocus autocomplete="off">
         <datalist id="skillsList">
-        	@foreach($skills as $skill)
-        		<option value="{{$skill->name}}">
-        	@endforeach
+        	{{$skillsDatalist}}
         </datalist>
         {{getHtmlForIsoformMessages('name')}}
         <hr>

@@ -13,7 +13,7 @@ var app = angular.module('app',[
 .controller('JoinController',JoinController)
 .controller('UserController',UserController)
 .controller('PasswordController',PasswordController)
-.controller('autofocus',autofocusDirective)
+.directive('autofocus',autofocusDirective)
 
 function configApp($provide,$compileProvider,$httpProvider,growlProvider,IsoformProvider){
 	$provide.decorator('$http',function($delegate,frontloaded){

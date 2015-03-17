@@ -31,9 +31,18 @@
 			</table>
 			<hr>
 			<div ng-cloak>
+				<h3>Projects <button ng-show="frontloaded.isEditable" class="btn btn-primary btn-sm" ng-click="openProjectModal()">New</button></h3>
+				<div ng-repeat="project in user.projects">
+					<span class="icons" ng-show="frontloaded.isEditable">
+						<span class="glyphicon glyphicon-pencil text-muted" ng-click="openProjectModal(project)"></span>
+						<span class="text-danger glyphicon glyphicon-remove-sign" ng-click="deleteProject(project,$index)"></span>
+					</span>
+					<a class="project-title" ng-href="@{{project.url}}" target="_blank">@{{project.name}} <span class="glyphicon glyphicon-globe"></span></a>
+					<p>@{{project.blurb}}</p>
+				</div>
 				<h3>Technologies/Skills <button ng-show="frontloaded.isEditable" class="btn btn-primary btn-sm" ng-click="openSkillModal()">New</button></h3>
 				<table>
-					<tr ng-repeat="skill in user.skills">
+					<tr ng-repeat="skill in user.skills | orderBy:'name'">
 						<td><b>@{{skill.name}}</b></td>
 						<td>
 							<span ng-repeat="level in _.range(frontloaded.constants.levels.max)">
@@ -46,15 +55,6 @@
 						</td>
 					</tr>
 				</table>
-				<h3>Projects <button ng-show="frontloaded.isEditable" class="btn btn-primary btn-sm" ng-click="openProjectModal()">New</button></h3>
-				<div ng-repeat="project in user.projects">
-					<span class="icons" ng-show="frontloaded.isEditable">
-						<span class="glyphicon glyphicon-pencil text-muted" ng-click="openProjectModal(project)"></span>
-						<span class="text-danger glyphicon glyphicon-remove-sign" ng-click="deleteProject(project,$index)"></span>
-					</span>
-					<a class="project-title" ng-href="@{{project.url}}" target="_blank">@{{project.name}} <span class="glyphicon glyphicon-link"></span></a>
-					<p>@{{project.blurb}}</p>
-				</div>
 			</div>
 		</div>
 		<div class="col-sm-4">
