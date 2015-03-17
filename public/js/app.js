@@ -173,6 +173,17 @@ function ProfileController($scope,$modal,httpi,frontloaded){
 	    }).result.then()
 	}
 
+	$scope.bumpProject = function(project,direction){
+
+		httpi({
+  			method:'POST'
+  			,data:{id:project.id,direction:direction}
+  			,url:'/api/projects/:id/bump'
+  		}).success(function(projects){
+  			$scope.user.projects = projects
+  		})
+	}
+
 }
 
 function MessagesController($scope,$http){

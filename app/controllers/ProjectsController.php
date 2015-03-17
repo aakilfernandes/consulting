@@ -89,6 +89,27 @@ class ProjectsController extends \BaseController {
 		return Auth::user()->projects;
 	}
 
+	public function bump($id){
+		
+		$project0 = Auth::user()->projects()->find($id);
+		$order0 = $project0->order; 
+
+		if(Input::get('direction')=='up')
+			$order1 = $order0 - 1;
+		else
+			$order1 = $order0 + 1;
+
+		$project1 = Auth::user()->projects()->whereOrder($order1)->first();
+
+		$project0->order = $order1;
+		$project1->order = $order0;
+
+		$project0->save();
+		$project1->save();
+
+		return Auth::user()->projects;
+	}
+
 
 	/**
 	 * Remove the specified resource from storage.

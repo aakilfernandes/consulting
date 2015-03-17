@@ -32,8 +32,19 @@
 			<hr>
 			<div ng-cloak>
 				<h3>Projects <button ng-show="frontloaded.isEditable" class="btn btn-primary btn-sm" ng-click="openProjectModal()">New</button></h3>
-				<div ng-repeat="project in user.projects">
+				<div ng-repeat="project in user.projects | orderBy:'order'">
 					<span class="icons" ng-show="frontloaded.isEditable">
+						<span
+							class="glyphicon glyphicon-chevron-up text-muted"
+							ng-if="project.order!=0"
+							ng-click="bumpProject(project,'up')"
+							></span>
+
+						<span
+							class="glyphicon glyphicon-chevron-down text-muted"
+							ng-if="$index<user.projects.length-1"
+							ng-click="bumpProject(project,'down')"
+							></span>
 						<span class="glyphicon glyphicon-pencil text-muted" ng-click="openProjectModal(project)"></span>
 						<span class="text-danger glyphicon glyphicon-remove-sign" ng-click="deleteProject(project,$index)"></span>
 					</span>

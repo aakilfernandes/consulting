@@ -97,6 +97,7 @@ Route::group(['before'=>['csrf','auth']],function(){
 	Route::delete('/api/skills/{id}', 'SkillsController@destroy');
 	Route::post('/api/projects', 'ProjectsController@store');
 	Route::post('/api/projects/{id}', 'ProjectsController@update');
+	Route::post('/api/projects/{id}/bump', 'ProjectsController@bump');
 	Route::delete('/api/projects/{id}', 'ProjectsController@destroy');
 
 	Route::post('/api/user','UserController@update');
