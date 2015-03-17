@@ -64,6 +64,9 @@
 				</div>
 			  <div class="panel-body">
 			    <button class="btn btn-danger btn-lg request-button" ng-click="openMessageModal()" ng-disabled="frontloaded.isEditable">Send {{$user->firstName}} a Message</button>
+			    @if($user->isEmailPublic)
+			    	<center class="text-muted" style="margin-top:10px">{{$user->email}}</center>
+			    @endif
 			  </div>
 			  <div class="panel-footer text-center">no signup requred</div>
 			</div>
