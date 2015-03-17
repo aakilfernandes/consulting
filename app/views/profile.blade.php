@@ -48,7 +48,15 @@
 						<span class="glyphicon glyphicon-pencil text-muted" ng-click="openProjectModal(project)"></span>
 						<span class="text-danger glyphicon glyphicon-remove-sign" ng-click="deleteProject(project,$index)"></span>
 					</span>
-					<a class="project-title" ng-href="@{{project.url}}" target="_blank">@{{project.name}} <span class="glyphicon glyphicon-globe"></span></a>
+					<span class="project-title">
+						@{{project.name}}, @{{project.role}}
+						<a
+							ng-if="project.url"
+							class="glyphicon glyphicon-globe"
+							ng-href="@{{project.url}}"
+							target="_blank">
+						</a>
+					</span>
 					<p>@{{project.blurb}}</p>
 				</div>
 				<h3>Technologies/Skills <button ng-show="frontloaded.isEditable" class="btn btn-primary btn-sm" ng-click="openSkillModal()">New</button></h3>
