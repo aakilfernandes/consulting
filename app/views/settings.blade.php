@@ -96,6 +96,20 @@
 			</td>				
 		</tr>
 		<tr>
+			<td>City</td>
+			<td>
+				<input name="city" class="form-control" ng-model="city" placeholder="New York City">
+				{{getHtmlForIsoformMessages('city')}}
+			</td>				
+		</tr>
+		<tr>
+			<td>State/Territory</td>
+			<td>
+				<input name="state" class="form-control" ng-model="state" placeholder="New York">
+				{{getHtmlForIsoformMessages('state')}}
+			</td>				
+		</tr>
+		<tr>
 			<td>Zip/Postal Code</td>
 			<td>
 				<input name="zip" class="form-control" ng-model="zip">

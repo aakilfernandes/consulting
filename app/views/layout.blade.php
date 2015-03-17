@@ -1,4 +1,4 @@
-<html route="{{Route::getCurrentRoute()->getPath()}}">
+<html>
 <head>
 	<title>Consulting</title>
 	{{HTML::style('/components/bootstrap/dist/css/bootstrap.min.css')}}

@@ -9,7 +9,7 @@ var app = angular.module('app',[
 .config(configApp)
 .run(runApp)
 .controller('ProfileController',ProfileController)
-.controller('MessageController',MessageController)
+.controller('MessagesController',MessageController)
 .controller('JoinController',JoinController)
 .controller('UserController',UserController)
 .controller('PasswordController',PasswordController)

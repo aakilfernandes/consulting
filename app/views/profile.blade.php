@@ -3,7 +3,7 @@
 @section('content')
 <textarea frontload="user" frontload-type="json">{{$user}}</textarea>
 <textarea frontload="isEditable" frontload-type="boolean">{{$isEditable}}</textarea>
-<div class="container" ng-controller="ProfileController">
+<div class="container profile" ng-controller="ProfileController">
 	@if($isEditable)
 		<div class="alert alert-info">
 			Want to see how the rest of the world sees this page?
@@ -11,15 +11,21 @@
 		</div>
 	@endif
 	<div class="row">
-		<div class="col-sm-7">
+		<div class="col-sm-8">
 		<table class="table">
 				<tr>
+					@if($user->usesGravatar)
 					<td style="width:120px">
 						<img src="{{$user->gravatarUrl}}" class="img-thumbnail">
+						<div style="margin-top:5px;text-align:right;" ng-show="frontloaded.isEditable">
+							<a class="glyphicon glyphicon-pencil text-muted" href="http://gravatar.com" target="_blank"></a>
+							<a class="glyphicon glyphicon-remove-sign text-danger" href="/settings"></a>
+						</div>
 					</td>
+					@endif
 					<td>
-						<h1 ng-bind="user.name">{{$user->name}}</h1>
-						<h2 ng-bind="user.title" ng-if="user.title">{{$user->title}}</h2>
+						<h1>{{$user->name}}</h1>
+						<h2>{{$user->tagline}}</h2>
 					</td>
 				</tr>
 			</table>
@@ -51,12 +57,15 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-5">
+		<div class="col-sm-4">
 			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h6 class="panel-title">{{$user->availabilityString}}</h6>
+				</div>
 			  <div class="panel-body">
 			    <button class="btn btn-danger btn-lg request-button" ng-click="openMessageModal()" ng-disabled="frontloaded.isEditable">Send {{$user->firstName}} a Message</button>
 			  </div>
-			  <div class="panel-footer text-center">no signup or payment requred</div>
+			  <div class="panel-footer text-center">no signup requred</div>
 			</div>
 		</div>
 	</div>

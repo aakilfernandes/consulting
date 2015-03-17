@@ -7,14 +7,13 @@ label{font-weight: normal;font-size: 14px;display: block;}
 .icons{float: right;font-size: 16px;}
 .icons *{margin-left: 5px}
 .isoform-messages{margin-top: 5px;font-size: 14px}
-/*
-.navbar{background-color: #1c2b36 !important;}
-.navbar-brand, .navbar a{color:white !important; font-weight: bold;}
-*/
+.navbar-toggle{margin-top: 8px;}
 .pagination a{padding:4px 10px !important;font-size: 10px;}
 .pagination{margin-bottom: 0}
 .pagination .disabled{opacity: .5;}
-.panel-heading .btn{text-transform: none}
+.panel .panel-heading{text-transform: none;text-align: center;
+	border-bottom: 1px solid #ddd;
+}
 .container{max-width: 970px;}
 .breadcrumb a{text-decoration: underline;}
 .breadcrumb{
@@ -65,4 +64,11 @@ form .table{
 	font-weight: bold;
 }
 
-.request-button{width:100%;}
+.request-button{width:100%;  font-size: 14px;}
+
+.profile h1{margin-bottom:0px;}
+.profile h2{
+	margin: 0;
+	font-size:24px;
+	color:#666; 
+}

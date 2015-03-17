@@ -22,7 +22,7 @@ return [
 			,'between'=>[100,500]
 		],'country_id'=>[
 			'required'=>[]
-			//,'exists'=>['countries','id']
+			,'exists'=>['countries','id']
 		],'zip'=>[
 			'required'=>[]
 		]
@@ -55,8 +55,10 @@ return [
 			,'between'=>[100,500]
 		],'country_id'=>[
 			'required'=>[]
-			//,'exists'=>['countries','id']
-		],'zip'=>[
+			,'exists'=>['countries','id']
+		],'city'=>['required'=>[]]
+		,'state'=>[]
+		,'zip'=>[
 			'required'=>[]
 		]
 	],'password'=>[

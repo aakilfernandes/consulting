@@ -7,7 +7,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/">Consulting
+			<a class="navbar-brand" href="/">{{Config::get('constants')['brand']}}
 			</a>
 		</div>
 		<div collapse="!isNavOpen" class="collapse navbar-collapse">

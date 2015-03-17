@@ -1,7 +1,7 @@
 <?PHP
 
 return [
-	'brand'=>'10xDevs'
+	'brand'=>'Codesulants'
 	,'statuses' =>[
 			'open'=>'Open'
 			,'closed'=>'Closed'

@@ -19,6 +19,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		,'isAvailable'
 		,'isRemote'
 		,'country_id'
+		,'city'
+		,'state'
 		,'zip'
 		,'isNotifiedOfRequests'
 		,'isNotifiedOfRequestsEvenIfLowball'
@@ -54,7 +56,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function getAttribute($key){
 		if(in_array($key,$this->booleans))
-			throw new Exception($key);
+			return !! parent::getAttribute($key);
 		else
 			return parent::getAttribute($key);
 	}
@@ -106,6 +108,32 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function getFirstNameAttribute(){
 		return explode(' ',$this->name)[0];
+	}
+
+	public function getAvailabilityStringAttribute(){
+		
+		$string = $this->firstName;
+
+		if(!$this->isAvailable)
+			return $string.' is not available';
+		else if($this->isRemote)
+			return $string.' is available remotely';
+		else
+			return $string.' is available';
+	}
+
+	public function getTaglineAttribute(){
+		if($this->title)
+			$tagline = $this->title.' in ';
+		else
+			$tagline = 'Based in ';
+
+		$tagline.=$this->city;
+
+		if($this->state)
+			$tagline.=', '.$this->state;
+
+		return $tagline;
 	}
 
 	public function getProfileUrlAttribute(){
